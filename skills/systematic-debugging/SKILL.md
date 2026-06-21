@@ -36,10 +36,10 @@ You MUST complete each phase before the next.
 You MUST:
 
 1. **Read the error completely.** Read the full message and stack trace; note line numbers, file paths, error codes. You MUST NOT skip past warnings — they often name the cause.
-2. **Reproduce it consistently.** Establish the exact steps that trigger it. If you cannot reproduce it, you MUST gather more data; you MUST NOT guess at a fix for a failure you cannot trigger.
+2. **Reproduce it consistently.** Establish the exact steps that trigger it. If you cannot reproduce it, you MUST gather more data; you MUST NOT guess at a fix for a failure you cannot trigger. If the failure is intermittent (a flaky test that passes sometimes), suspect a timing race rather than the code under test — when a test waits on an arbitrary delay, the root-cause fix is to wait on the real condition instead (see `@condition-based-waiting.md`).
 3. **Check recent changes.** Inspect the diff, recent commits, new dependencies, config, and environment differences for what could have introduced it.
 4. **Instrument multi-component systems.** When the failure crosses component boundaries (e.g. CI → build → sign, or API → service → DB), before proposing a fix you MUST add diagnostic logging at each boundary (what enters, what exits, config/state at each layer), run once, and read the evidence to locate WHICH layer fails. You MUST NOT guess which layer is at fault.
-5. **Trace the bad value to its source.** When the error surfaces deep in the call stack, you MUST trace backward: where did the bad value originate? what passed it in? Keep going up until you reach the origin, and fix at the source — not where the symptom appears.
+5. **Trace the bad value to its source.** When the error surfaces deep in the call stack, you MUST trace backward: where did the bad value originate? what passed it in? Keep going up until you reach the origin, and fix at the source — not where the symptom appears. When the chain is long or you cannot follow it by reading code, the concrete backward-tracing method — including how to instrument with a captured stack trace — is in `@root-cause-tracing.md`.
 
 ### Phase 2 — Pattern analysis
 
@@ -59,7 +59,7 @@ You MUST:
 You MUST:
 
 1. **Reproduce with a failing test first.** Before changing production code, write the smallest test that reproduces the bug and watch it fail for the bug's reason. A fix without a reproducing test does not stick. You MAY proceed without a reproducing test ONLY when reproduction is genuinely impossible after real effort (a confirmed environmental, timing-dependent, or external cause — see "When Investigation Finds No Code Root Cause"), and only after you (1) summarize the complete reasons, (2) obtain the user's explicit permission, and (3) record those reasons in a comment in the relevant production code.
-2. **Apply a single fix at the root cause.** One change, addressing the cause you identified. You MUST NOT bundle refactors or "while I'm here" improvements.
+2. **Apply a single fix at the root cause.** One change, addressing the cause you identified. You MUST NOT bundle unrelated refactors or "while I'm here" improvements. *After* the root-cause fix is in and verified, when the bug was an invalid value reaching a dangerous operation you SHOULD additionally harden each layer that value crosses, so the class of bug becomes structurally impossible — see `@defense-in-depth.md`.
 3. **Verify.** The reproducing test now passes, no other tests broke, and the original symptom is gone. Claim success only with this evidence in hand.
 4. **If the fix fails, STOP and count.** Tried fewer than 3 fixes → return to Phase 1 with the new information. **Tried 3 or more → you MUST stop fixing and question the architecture** (below).
 
