@@ -172,7 +172,7 @@ Per-task reviews are task-scoped gates; the broad review happens once, at the en
 - You MUST NOT add open-ended directives ("check all uses", "run race tests if useful") without a concrete, task-specific reason.
 - You MUST NOT ask the reviewer to re-run tests the implementer already ran on the same code — the implementer's report carries the test evidence.
 - You MUST NOT pre-judge findings: never instruct a reviewer to ignore an issue, not flag something, or cap a severity ("treat it as Minor at most", "the plan chose this"). If you believe a finding would be a false positive, you MUST let the reviewer raise it and adjudicate it in the loop. The presence of "do not flag", "don't treat X as a defect", "at most Minor", or "the plan chose" in a review prompt is itself a defect — it means you are pre-judging to spare yourself a loop.
-- You MUST give the reviewer a **constraints block** copied verbatim from the plan's global-constraints section or the spec: exact values, exact formats, and stated relationships between components ("same layout as X", "matches Y"). This is the reviewer's attention lens; the process rules (YAGNI, test hygiene, review method) are already in the template below.
+- You MUST give the reviewer a **constraints block** copied verbatim from the plan's global-constraints section or the spec: exact values, exact formats, and stated relationships between components ("same layout as X", "matches Y"). This is the reviewer's attention lens; the process rules (YAGNI, test hygiene, review method) are already in the reviewer template (`@task-reviewer-prompt.md`).
 - You MUST hand the reviewer its diff as the review-package file path, not as pasted diff text.
 - A plan-mandated finding — or any finding that conflicts with what the plan's text requires — is the user's decision, like any plan contradiction. You MUST present the finding and the plan text and ask which governs. You MUST NOT dismiss a finding because the plan mandates it, and you MUST NOT dispatch a fix that contradicts the plan without asking.
 
@@ -203,173 +203,13 @@ Conversation memory does not survive compaction. A controller that loses its pla
 - The ledger is your recovery map: the commits it names exist in git even when your context no longer remembers creating them. After any compaction or resume you MUST trust the ledger and `git log` over your own recollection.
 - `git clean -fdx` destroys the ledger (it is git-ignored scratch); if that happens you MUST recover the state from `git log` before dispatching anything.
 
-## Implementer Prompt Template
+## Implementer Prompt Template — `@implementer-prompt.md`
 
-Use this when dispatching an implementer subagent. In inline mode, follow the same contract as your own implementation discipline for the task.
+When you dispatch an implementer (or, in inline mode, when you start implementing a task), read the same-directory file `@implementer-prompt.md` and use it as the implementer's prompt — in inline mode it is your own implementation contract for the task. It is the full dispatch template (task-brief pointer, before-you-begin, the job steps, code-organization rules, over-your-head escalation, self-review, after-review, and the report contract). It is needed only at the implement step, so it is kept out of this always-loaded body.
 
-```
-Implement Task N: [task name]
+## Task Reviewer Prompt Template — `@task-reviewer-prompt.md`
 
-## Task Description
-Read your task brief first: [BRIEF_FILE]
-It contains the full task text from the plan. The exact values to use
-are in the brief — use them verbatim.
-
-## Context
-[One line on where this task fits; dependencies; interfaces and decisions
-from earlier tasks that the brief cannot know; your resolution of any
-ambiguity you noticed in the brief.]
-
-## Before You Begin
-If anything about the requirements, approach, dependencies, or assumptions
-is unclear, ASK NOW before starting. Do not guess.
-
-## Your Job
-Once you are clear on requirements:
-1. Implement exactly what the task specifies — nothing more.
-2. Write tests (follow TDD if the task says to: write a failing test,
-   watch it fail for the right reason, then implement).
-3. Verify the implementation works.
-4. Commit your work.
-5. Self-review (below).
-6. Report back.
-
-Work from: [directory]
-
-While iterating, run the focused test for what you are changing; run the
-full suite once before committing, not after every edit.
-
-## Code Organization
-- Follow the file structure defined in the plan.
-- Each file has one clear responsibility with a well-defined interface.
-- If a file you are creating grows beyond the plan's intent, STOP and
-  report DONE_WITH_CONCERNS — do not split files on your own without
-  plan guidance.
-- In existing code, follow established patterns. Improve what you touch,
-  but do not restructure code outside your task.
-
-## When You Are in Over Your Head
-It is always OK to stop and say "this is too hard." Bad work is worse than
-no work; you will not be penalized for escalating. STOP and escalate when:
-the task needs an architectural decision with multiple valid approaches;
-you cannot find the clarity you need in the provided context; you are
-uncertain your approach is correct; or you have been reading file after
-file without progress. Escalate by reporting BLOCKED or NEEDS_CONTEXT with
-specifics: what you are stuck on, what you tried, what help you need.
-
-## Self-Review Before Reporting
-Review with fresh eyes:
-- Completeness: every requirement implemented? edge cases handled?
-- Quality: best work? names accurate? clean and maintainable?
-- Discipline: no overbuilding (YAGNI)? only what was requested? patterns followed?
-- Testing: tests verify real behavior (not mocks)? TDD followed if required?
-  comprehensive? output pristine (no stray warnings)?
-Fix anything you find now, before reporting.
-
-## After Review Findings
-If a reviewer finds issues and you fix them, re-run the tests covering the
-amended code and append the command + output to your report file. Reviewers
-do not re-run tests for you; your report is the test evidence.
-
-## Report
-Write your full report to [REPORT_FILE]: what you implemented (or attempted),
-what you tested and the results, TDD evidence if TDD was required (RED: command
-+ failing output + why expected; GREEN: command + passing output), files
-changed, self-review findings, any concerns.
-
-Then return ONLY (under 15 lines — detail lives in the report file):
-- Status: DONE | DONE_WITH_CONCERNS | BLOCKED | NEEDS_CONTEXT
-- Commits created (short SHA + subject)
-- One-line test summary (e.g. "14/14 passing, output pristine")
-- Concerns, if any
-- The report file path
-If BLOCKED or NEEDS_CONTEXT, put the specifics in the message itself.
-```
-
-## Task Reviewer Prompt Template
-
-Use this when dispatching a task reviewer subagent. In inline mode, switch to this stance deliberately and review against the brief and the package as if you were a fresh reviewer who did not write the code.
-
-```
-Review one task's implementation: first whether it matches its requirements,
-then whether it is well-built. This is a task-scoped gate, not a merge review —
-a broad whole-branch review happens separately after all tasks complete.
-
-## What Was Requested
-Read the task brief: [BRIEF_FILE]
-Global constraints from the spec/design that bind this task:
-[GLOBAL_CONSTRAINTS]   # verbatim exact values/formats/relationships
-
-## What the Implementer Claims
-Read the implementer's report: [REPORT_FILE]
-
-## Diff Under Review
-Base: [BASE_SHA]   Head: [HEAD_SHA]   Diff file: [DIFF_FILE]
-Read the diff file once — it holds the commit list, stat summary, and full
-diff with context, and it is your view of the change. The context lines ARE
-the changed files: do not Read a changed file separately unless a hunk you
-must judge is cut off mid-function (say so if it is). Do not re-run git
-commands. Do not crawl the broader codebase. Inspect code outside the diff
-ONLY to evaluate a concrete risk you can name — one focused check per named
-risk, naming both the risk and what you checked. Cross-cutting changes are
-legitimate named risks (lock ordering, a changed API contract, shared mutable
-state → checking call sites is correct method).
-Your review is READ-ONLY: do not mutate the working tree, index, HEAD, or
-branch state.
-
-## Do Not Trust the Report
-Treat the report as unverified claims. Verify against the diff. A stated
-rationale ("left it per YAGNI", "kept it simple") is the implementer grading
-their own work — it never downgrades a finding's severity.
-
-## Tests
-The implementer already ran the tests for exactly this code. Do not re-run the
-suite to confirm their report. Run a test only when reading the code raises a
-specific doubt no existing run answers — then a focused test, never a
-package-wide suite or high-count loop. If heavy validation seems warranted,
-recommend it instead of running it. Warnings/noise in the reported output are
-findings — test output should be pristine.
-
-## Part 1: Spec Compliance
-Compare the diff against What Was Requested:
-- Missing: requirements skipped or claimed-but-not-implemented
-- Extra: features not requested, over-engineering
-- Misunderstood: right feature built wrong, or wrong problem solved
-If a requirement cannot be verified from this diff alone (lives in unchanged
-code or spans tasks), report it as a ⚠️ item instead of broadening your search.
-
-## Part 2: Code Quality
-- Clean separation of concerns? Proper error handling? DRY without premature
-  abstraction? Edge cases handled?
-- Tests: do new/changed tests verify real behavior, not mocks? task edge cases covered?
-- Structure: one clear responsibility per file? units independently testable?
-  follows the plan's file structure? did THIS change create already-large files
-  or significantly grow existing ones? (Don't flag pre-existing file sizes.)
-Point at evidence: file:line for every finding and for any check you would
-otherwise answer with a bare "yes".
-
-## Calibration
-Categorize by actual severity; not everything is Critical. Important = this task
-cannot be trusted until fixed (incorrect/fragile behavior, a missed requirement,
-maintainability damage you would block a merge over — verbatim duplication of a
-logic block, swallowed errors, tests that assert nothing). "Coverage could be
-broader" and polish are Minor. If the plan/brief explicitly mandates something
-this rubric calls a defect, that IS a finding — report it Important, labeled
-plan-mandated; the user decides, not the plan's authorship. Acknowledge what was
-done well before listing issues.
-
-## Output (begin directly with the verdict; no preamble or process narration)
-### Spec Compliance
-- ✅ Spec compliant | ❌ Issues found: [missing/extra/misunderstood, with file:line]
-- ⚠️ Cannot verify from diff: [what you could not verify and what to check]
-### Strengths
-[specific]
-### Issues
-#### Critical (Must Fix)  /  #### Important (Should Fix)  /  #### Minor (Nice to Have)
-For each: file:line, what's wrong, why it matters, how to fix.
-### Assessment
-Task quality: [Approved | Needs fixes] — Reasoning: [1-2 sentences]
-```
+When you dispatch a task reviewer (or, in inline mode, when you switch to the reviewer stance), read the same-directory file `@task-reviewer-prompt.md` and use it as the reviewer's prompt / your reviewer stance. It is the full two-verdict review template (do-not-trust-the-report, tests, Part 1 spec compliance, Part 2 code quality, calibration, the exact output format). It is needed only at the review step, so it is kept out of this always-loaded body.
 
 A fix dispatch MAY address spec gaps and quality findings together; the re-review after a fix MUST cover both verdicts again.
 
@@ -387,7 +227,7 @@ git merge-base <base-branch> HEAD   # = MERGE_BASE (the commit the branch starte
 } > .omnipowers/sdd/branch-review.diff
 ```
 
-Dispatch the final reviewer (most capable model, or your most deliberate inline stance) with the branch package path and the accumulated Minor-findings list from the ledger. The final reviewer evaluates the whole change for cross-task integration, contract consistency, and any defect that only emerges across tasks, and triages which Minors must be fixed before merge. Use the same review contract as the task reviewer template, with the merge-base range as the diff and "merge review" rather than "task-scoped gate" as the scope. If it returns findings, you MUST resolve them per the Fix Dispatch Rules (one fix worker, complete list) and re-review before the branch is considered done.
+Dispatch the final reviewer (most capable model, or your most deliberate inline stance) with the branch package path and the accumulated Minor-findings list from the ledger. The final reviewer evaluates the whole change for cross-task integration, contract consistency, and any defect that only emerges across tasks, and triages which Minors must be fixed before merge. Use the same review contract as `@task-reviewer-prompt.md`, with the merge-base range as the diff and "merge review" rather than "task-scoped gate" as the scope. If it returns findings, you MUST resolve them per the Fix Dispatch Rules (one fix worker, complete list) and re-review before the branch is considered done.
 
 After the final review is clean, finish the development branch per the host project's branch-completion process (run the full test suite, ensure the working tree is clean, then merge or open the PR as the project requires).
 
