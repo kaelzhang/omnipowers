@@ -2,9 +2,11 @@
 
 **Load this reference when:** writing or changing tests, adding mocks, or tempted to add test-only methods to production code.
 
+> Normative keywords (MUST, MUST NOT, SHOULD, MAY, …) are used as defined in BCP 14 (RFC 2119, RFC 8174), and only when capitalized.
+
 ## Overview
 
-Tests must verify real behavior, not mock behavior. Mocks are a means to isolate, not the thing being tested.
+Tests MUST verify real behavior, not mock behavior. Mocks are a means to isolate, not the thing being tested.
 
 **Core principle:** Test what the code does, not what the mocks do.
 
@@ -13,9 +15,9 @@ Tests must verify real behavior, not mock behavior. Mocks are a means to isolate
 ## The Iron Laws
 
 ```
-1. NEVER test mock behavior
-2. NEVER add test-only methods to production classes
-3. NEVER mock without understanding dependencies
+1. You MUST NOT test mock behavior
+2. You MUST NOT add test-only methods to production classes
+3. You MUST NOT mock without understanding the dependency
 ```
 
 ## Anti-Pattern 1: Testing Mock Behavior
@@ -194,7 +196,7 @@ const mockResponse = {
 - **Tests pass but integration fails** - Mock incomplete, real API complete
 - **False confidence** - Test proves nothing about real behavior
 
-**The Iron Rule:** Mock the COMPLETE data structure as it exists in reality, not just fields your immediate test uses.
+**The Iron Rule:** You MUST mock the COMPLETE data structure as it exists in reality, not just the fields your immediate test uses.
 
 **The fix:**
 ```typescript
@@ -294,6 +296,6 @@ Reproduce-first cycle:
 
 **Mocks are tools to isolate, not things to test.**
 
-If TDD reveals you're testing mock behavior, you've gone wrong.
+If you find yourself testing mock behavior, you have gone wrong.
 
 Fix: Test real behavior or question why you're mocking at all.

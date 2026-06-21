@@ -1,34 +1,31 @@
 ---
 name: test-driven-bug-fixing
-description: Use when fixing any bug or defect, before changing production code — reproduce the bug with a failing test first
+description: Use when fixing any bug or defect — you MUST reproduce it with a failing test before changing production code
 ---
 
 # Test-Driven Bug Fixing
 
+> Normative keywords — MUST, MUST NOT, REQUIRED, SHALL, SHALL NOT, SHOULD, SHOULD NOT, RECOMMENDED, MAY, OPTIONAL — are used as defined in BCP 14 (RFC 2119, RFC 8174), and only when capitalized.
+
 ## Overview
 
-Reproduce the bug with a failing test first. Watch it fail for the right reason. Then fix it. Watch the test pass.
+You MUST reproduce the bug with a failing test before you change any production code. You MUST watch that test fail for the bug's reason. Only then MAY you write the fix.
 
-**Core principle:** If you didn't watch a test fail by reproducing the bug, you don't know you found the bug — or that your fix works.
+**Core principle:** If you did not watch a test fail by reproducing the bug, you have not found the bug — and you cannot know your fix works.
 
-A bug fix without a regression test isn't fixed. It's unverified, and it comes back.
-
-**Violating the letter of the rules is violating the spirit of the rules.**
+A bug fix without a regression test is not a fix. It is an unverified guess, and it WILL regress.
 
 ## When to Use
 
-**Always, when fixing a defect in existing behavior:**
+You MUST apply this skill whenever you fix a defect in existing behavior:
 - A reported bug
 - A crash, exception, or wrong output
 - A regression
 - A "works on my machine" investigation
 
-**This skill is for fixing defects, not building new behavior.** If nothing is broken — you're adding a capability, not correcting wrong behavior — this skill does not apply.
+This skill governs **fixing defects**, not building new behavior. If nothing is broken — you are adding a capability, not correcting wrong behavior — this skill does not apply, and you MUST NOT stretch it to cover feature work.
 
-**Exception (ask first):**
-- A bug that genuinely cannot be reproduced in a test (see "When You Can't Reproduce It")
-
-Thinking "this fix is obvious, skip the test"? Stop. That's the rationalization that lets the bug return.
+You MUST NOT downgrade a bug fix to "just a quick change" to avoid this skill. "It's obvious" and "it's one line" are not exceptions (see The Iron Law).
 
 ## The Iron Law
 
@@ -36,12 +33,11 @@ Thinking "this fix is obvious, skip the test"? Stop. That's the rationalization 
 NO BUG FIX WITHOUT A FAILING TEST THAT REPRODUCES THE BUG FIRST
 ```
 
-Already wrote the fix? Revert it. Reproduce the bug with a test, watch it fail, then re-apply the fix.
+You MUST NOT modify production code to fix a bug until a test reproduces that bug and fails.
 
-**No exceptions:**
-- Don't keep the fix "staged" while you write the test
-- Don't write a test that passes against the buggy code and call it done
-- A test that never failed proves nothing
+If you wrote the fix before the test, you MUST revert it, reproduce the bug with a failing test, then re-apply the fix. Specifically:
+- You MUST NOT keep the fix staged or commented out "for reference" while writing the test.
+- You MUST NOT write a test that passes against the buggy code and call it a regression test — a test that never failed proves nothing.
 
 ## Reproduce → Fix → Harden
 
@@ -66,7 +62,7 @@ digraph bugfix_cycle {
 
 ### REPRODUCE — Write a Failing Test That Triggers the Bug
 
-Reconstruct the triggering input and state in the test fixture, then assert the *correct* behavior.
+You MUST reconstruct the triggering input and state in the test fixture, and you MUST assert the *correct* behavior (what should happen) — never the buggy behavior.
 
 <Good>
 ```typescript
@@ -91,30 +87,30 @@ Tests the happy path that already worked — does not reproduce the bug
 </Bad>
 
 **Requirements:**
-- Reconstruct the data and state that triggered the bug
-- Assert the correct behavior (what *should* happen)
-- One defect per test, named after the bug
+- You MUST reconstruct the data and state that triggered the bug.
+- You MUST assert the correct behavior.
+- Each test MUST cover one defect and MUST be named after the bug.
 
 ### Verify It Fails — For the Bug's Reason
 
-**MANDATORY. Never skip.**
+This step is REQUIRED. You MUST NOT skip it.
 
 ```bash
 npm test path/to/test.test.ts
 ```
 
-Confirm:
-- The test **fails** (not errors out)
+You MUST confirm:
+- The test **fails** (it does not merely error out)
 - It fails **the way the bug manifests** (the wrong output, the missing error, the crash)
-- It fails because of the defect — not a typo or a wrong import
+- It fails because of the defect — not because of a typo or a wrong import
 
-**Test passes?** It doesn't reproduce the bug. You're testing behavior that already works. Fix the test until it reproduces the defect.
+If the test passes, it does NOT reproduce the bug; you MUST fix the test until it does.
 
-**Different failure than the bug?** You haven't reproduced *this* bug yet. Keep going.
+If the failure differs from the bug, you have NOT reproduced this bug yet; you MUST keep working.
 
 ### FIX — Minimal Change at the Root Cause
 
-Find the root cause, then make the smallest change that fixes the cause — not the symptom.
+You MUST locate the root cause and fix the cause. You MUST NOT patch the symptom.
 
 <Good>
 ```typescript
@@ -136,80 +132,81 @@ withdraw(amount: number) {
 Hides the symptom; the invalid withdrawal still "succeeds"
 </Bad>
 
-Don't refactor unrelated code, add features, or fix other bugs in the same change.
+You MUST make the minimal change. In the same change you MUST NOT refactor unrelated code, add features, or fix unrelated bugs.
 
 ### Verify It Passes
 
-**MANDATORY.**
+This step is REQUIRED.
 
 ```bash
 npm test path/to/test.test.ts
 ```
 
-Confirm:
+You MUST confirm:
 - The reproducing test now **passes**
-- **All other tests still pass** (your fix didn't break anything)
-- Output pristine — no new errors or warnings
+- **All other tests still pass** — your fix MUST NOT break them
+- Output is pristine — no new errors or warnings
 
-**Reproducing test still fails?** Fix the code, not the test.
+If the reproducing test still fails, you MUST fix the code, not the test.
 
-**Other tests broke?** Your fix has side effects. Address them now.
+If other tests broke, your fix has side effects; you MUST address them now.
 
 ### HARDEN — Cover the Defect Class
 
-After green:
-- Add tests for adjacent cases of the same defect (boundary, null, zero, concurrent)
-- Clean up the fix; keep names clear
-- Keep every test green; don't add new behavior
+After the suite is green:
+- You SHOULD add tests for adjacent cases of the same defect (boundary, null, zero, concurrent) wherever they could plausibly fail.
+- You MAY clean up the fix (names, duplication).
+- You MUST keep every test green; refactoring MUST NOT change behavior.
 
 ## Find the Root Cause First
 
-The reproducing test tells you *that* the bug exists. Before fixing, locate *why*:
+The reproducing test tells you *that* the bug exists. Before fixing, you MUST locate *why*:
 
-- Trace from the failing assertion to the line that produces the wrong result
-- Fix at the level where the cause lives, not where the symptom surfaces
-- A fix at the wrong level moves the bug instead of removing it
+- You MUST trace from the failing assertion to the line that produces the wrong result.
+- You MUST fix at the level where the cause lives, not where the symptom surfaces — a fix at the wrong level moves the bug, it does not remove it.
 
-If the cause is still unknown, keep investigating. Don't patch a symptom you don't understand.
+If the root cause is unknown, you MUST keep investigating. You MUST NOT patch a symptom you do not understand.
 
-## When You Can't Reproduce It
+## The Only Exception — When You Cannot Reproduce It
 
-If you cannot reproduce the bug in a test:
+The reproducing test is REQUIRED. You MAY skip it ONLY when reproduction is genuinely impossible after real effort. When — and only when — that is the case, you MUST do all of the following before treating the fix as done:
 
-- **You don't fully understand it yet.** A bug you can't trigger on demand is a bug you can't prove you fixed.
-- **Do not ship a speculative fix.** Keep investigating — add logging, narrow the inputs, reconstruct the environment — or escalate and ask for help.
-- A fix for an unreproduced bug is a guess. Guesses regress.
+1. You MUST summarize the complete reasons reproduction is impossible.
+2. You MUST obtain the user's explicit permission to proceed without a reproducing test.
+3. You MUST add a comment in the relevant production code recording that no regression test exists and why.
 
-Only when reproduction is genuinely impossible after real effort: say so explicitly, explain why, and get the user's agreement before treating the fix as done.
+You MUST NOT skip the reproducing test for any other reason — not because the fix is "obvious", "too small", urgent, or because no tests exist nearby. "Hard to reproduce" is not "impossible to reproduce": if you have not exhausted real effort, a reproducing test is still REQUIRED.
 
 ## Rationalizations — STOP
 
+Each of these thoughts means you are about to violate the Iron Law. Each is rejected:
+
 | Excuse | Reality |
 |--------|---------|
-| "The fix is obvious, skip the test" | Obvious fixes are wrong more often than you think. The test costs 30 seconds and stops the regression. |
-| "I already reproduced it manually" | Manual repro isn't re-runnable. The next change silently brings the bug back. |
-| "I can see the cause, just patch it" | Without a failing test you can't prove the patch addresses *this* bug. |
+| "The fix is obvious, skip the test" | Obvious fixes are wrong more often than you think. The test costs 30 seconds and stops the regression. You MUST still write it. |
+| "I already reproduced it manually" | Manual repro is not re-runnable. The next change silently brings the bug back. A test is REQUIRED. |
+| "I can see the cause, just patch it" | Without a failing test you cannot prove the patch addresses *this* bug. |
 | "I'll add the regression test after" | A test written after the fix passes immediately — it never proved it catches the bug. |
-| "It's a one-line fix" | One-line fixes cause regressions like any other. Guard it. |
-| "Hard to reproduce in a test" | Then you don't understand it yet. Keep investigating; don't guess. |
-| "The bug is in third-party code" | Test your usage. Pin the behavior you depend on so it can't drift. |
-| "No tests exist here" | You're fixing this file — start the safety net now, with this bug. |
+| "It's a one-line fix" | One-line fixes regress like any other. You MUST guard it. |
+| "Hard to reproduce in a test" | Hard is not impossible. Keep investigating; you MUST NOT guess. |
+| "The bug is in third-party code" | Test your usage. You MUST pin the behavior you depend on so it cannot drift. |
+| "No tests exist here" | You are fixing this file — you MUST start the safety net now, with this bug. |
 
 ## Red Flags — STOP and Start Over
 
+If any of these is true, you MUST revert the fix, reproduce with a failing test, then fix:
+
 - Fix written before a reproducing test
 - The "regression test" passes against the buggy code
-- Can't reproduce the bug in a test but "pretty sure" the fix is right
-- Regression test added "later", after the fix
-- Patching the symptom without locating the cause
-- A speculative fix for a bug you can't trigger
+- You cannot reproduce the bug but are "pretty sure" the fix is right (and have not met the "Only Exception" bar)
+- The regression test was added after the fix
+- The symptom is patched without locating the cause
+- A speculative fix for a bug you cannot trigger
 - "This bug is different because..."
-
-**All of these mean: revert the fix, reproduce with a failing test, then fix.**
 
 ## Example
 
-**Bug:** Submitting a form with an empty email is accepted; it should be rejected.
+**Bug:** Submitting a form with an empty email is accepted; it MUST be rejected.
 
 **REPRODUCE**
 ```typescript
@@ -247,7 +244,7 @@ Add cases for whitespace-only and malformed emails around the same validation.
 
 ## Verification Checklist
 
-Before calling the bug fixed:
+You MUST be able to check every box before calling the bug fixed:
 
 - [ ] Reproduced the bug with a test that failed first
 - [ ] The test failed the way the bug manifests (right reason)
@@ -255,14 +252,14 @@ Before calling the bug fixed:
 - [ ] Made the minimal fix (no unrelated changes)
 - [ ] The reproducing test now passes
 - [ ] All other tests still pass; output pristine
-- [ ] The regression test stays in the suite
-- [ ] Adjacent cases of the same defect are covered
+- [ ] The regression test remains in the suite
+- [ ] Adjacent cases of the same defect are covered, or their absence is justified
 
-Can't check every box? The bug isn't fixed — it's hidden. Start over.
+If you cannot check every box, the bug is not fixed — it is hidden, and you MUST start over. The only permitted gap is a missing reproducing test under the "Only Exception" conditions above.
 
 ## Testing Anti-Patterns
 
-When writing the regression test or adding mocks, read @testing-anti-patterns.md to avoid:
+When you write the regression test or add mocks, you MUST read @testing-anti-patterns.md and avoid:
 - Testing mock behavior instead of real behavior
 - Adding test-only methods to production classes
 - Mocking without understanding dependencies
@@ -274,4 +271,4 @@ Bug fixed → a test reproduced it (failed first) and now guards it
 Otherwise → not fixed, just hidden
 ```
 
-Ship a fix without a reproducing regression test only with the user's explicit agreement.
+You MAY ship a fix without a reproducing regression test ONLY under the "Only Exception" conditions: the complete reasons summarized, the user's explicit permission obtained, and an explanatory comment added in the code.

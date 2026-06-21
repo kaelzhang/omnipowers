@@ -6,7 +6,7 @@ A collection of skills that improve coding effectiveness for AI coding agents.
 
 | Skill | Use when |
 | --- | --- |
-| [test-driven-bug-fixing](skills/test-driven-bug-fixing/SKILL.md) | Fixing any bug or defect, before changing production code — reproduce with a failing test first |
+| [test-driven-bug-fixing](skills/test-driven-bug-fixing/SKILL.md) | Fixing any bug or defect — you MUST reproduce it with a failing test before changing production code |
 
 ## Install (development)
 
