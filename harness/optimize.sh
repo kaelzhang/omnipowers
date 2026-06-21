@@ -11,11 +11,10 @@
 # Generated artifacts live in <repo>/.skillopt-sleep/ (gitignored).
 #
 # Usage:
-#   optimize.sh dry    <skill> <tasks-file> [backend]   # replay + gate, report only (no staging)
-#   optimize.sh run    <skill> <tasks-file> [backend]   # + stage a proposal to review
-#   optimize.sh status <skill>                          # show the latest staged proposal
-#   optimize.sh adopt  <skill>                          # apply the latest staged proposal (with backup)
-# backend: mock (default, free) | claude | codex        # claude/codex call real models and COST API budget
+#   optimize.sh run    <skill> <tasks-file> [backend] [--dry]   # optimize; --dry = report only, no staging
+#   optimize.sh status <skill>                                  # show the latest staged proposal
+#   optimize.sh adopt  <skill>                                  # apply the latest staged proposal (with backup)
+# backend: mock (default, free) | claude | codex                # claude/codex call real models and COST API budget
 set -euo pipefail
 
 REPO="$(cd "$(dirname "$0")/.." && pwd)"
@@ -23,10 +22,13 @@ SKILLOPT_HOME="${SKILLOPT_HOME:-$HOME/Sources/harness/SkillOpt}"
 PY="${OMNIPOWERS_PY:-python3}"
 
 die(){ echo "optimize.sh: $*" >&2; exit 2; }
-usage(){ sed -n '15,21p' "$0" >&2; exit "${1:-0}"; }
+usage(){
+  sed -n 's/^# \{0,1\}//;13,17p' "$0" >&2
+  exit "${1:-0}"
+}
 
 cmd="${1:-}"; [ -n "$cmd" ] || usage 1
-case "$cmd" in dry|run|status|adopt) ;; *) die "unknown command '$cmd' (dry|run|status|adopt)";; esac
+case "$cmd" in run|status|adopt) ;; *) die "unknown command '$cmd' (run|status|adopt)";; esac
 
 skill="${2:-}"; [ -n "$skill" ] || die "skill name required"
 skill_path="$REPO/skills/$skill/SKILL.md"
@@ -38,10 +40,20 @@ PYTHONPATH="$SKILLOPT_HOME${PYTHONPATH:+:$PYTHONPATH}" "$PY" -c 'import skillopt
   || die "SkillOpt not importable — set SKILLOPT_HOME to a clone of microsoft/SkillOpt (now: $SKILLOPT_HOME), or pip install skillopt"
 
 case "$cmd" in
-  dry|run)
-    tasks="${3:-}"; backend="${4:-mock}"
+  run)
+    tasks="${3:-}"
+    backend="mock"; dry=0
+    # Trailing args after <skill> <tasks-file> are [backend] and/or --dry, in any order.
+    [ "$#" -ge 3 ] && shift 3 || shift "$#"
+    for a in "$@"; do
+      case "$a" in
+        --dry) dry=1 ;;
+        --*)   die "unknown flag '$a'" ;;
+        *)     backend="$a" ;;
+      esac
+    done
     { [ -n "$tasks" ] && [ -f "$tasks" ]; } || die "tasks-file required and must exist: '${tasks:-}'"
-    sub=$([ "$cmd" = dry ] && echo dry-run || echo run)
+    sub=$([ "$dry" = 1 ] && echo dry-run || echo run)
     skopt "$sub" --target-skill-path "$skill_path" --tasks-file "$tasks" --backend "$backend" --project "$REPO"
     ;;
   status) skopt status --target-skill-path "$skill_path" --project "$REPO" ;;
