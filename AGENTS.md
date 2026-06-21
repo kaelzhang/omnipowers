@@ -66,9 +66,34 @@ permission, and (3) adds an explanatory comment in the relevant production code.
 
 ### Self-contained
 
-Each skill MUST stand alone: no reference to anything outside this repo and no
-cross-skill prefixed includes; supporting files are included by same-directory
-reference only.
+Each skill MUST stand alone: it depends on nothing outside its own directory. No
+reference to anything outside this repo, no cross-skill prefixed includes;
+supporting files live in the skill's own directory and are referenced from its
+`SKILL.md` only (e.g. `@testing-anti-patterns.md`). Self-contained means
+directory-local — it does NOT mean single-file (see Progressive disclosure).
+
+### Progressive disclosure — inline vs. supporting file
+
+A host loads a skill's `SKILL.md` into context every time the skill fires, but
+loads a supporting file only when the `SKILL.md` directs the agent to read it —
+so a supporting file costs no context until it is needed. Split a skill's content
+by **load frequency**:
+
+- **Inline in `SKILL.md`** — everything the agent needs on **every** invocation:
+  the rules (`MUST` / `MUST NOT`), the Iron Law, the core workflow, the triggers,
+  the rationalization and red-flag tables. Load-bearing discipline MUST stay
+  inline — it MUST NOT be hidden behind a reference an agent could skip.
+- **Move to a same-directory supporting file** — content needed only in a
+  **specific sub-case**, or **heavy reference**: a deep technique used in a
+  minority of runs, a long worked example, a large lookup table, a reusable
+  tool/script. Reference it at the relevant point with a **conditional pointer**
+  ("when `<situation>`, read `@<file>.md` and apply it") so the agent loads it
+  exactly when it applies.
+
+Heuristic: a block over ~100 lines, or one needed in only a fraction of the
+skill's invocations, SHOULD be a supporting file; the discipline that must never
+be missed stays inline. When in doubt, ask "does the agent need this on every
+run?" — yes → inline; only sometimes → supporting file.
 
 ### Portable at runtime
 
@@ -92,4 +117,5 @@ For each statement in a skill:
 - [ ] Every MANDATORY rule states the consequence of violating it.
 - [ ] Any exception uses the one-escape shape above.
 - [ ] Self-contained: carries the BCP 14 note; no reference outside this repo.
+- [ ] Progressive disclosure: every-invocation discipline stays inline; situational or heavy reference (>~100 lines, or used in a minority of runs) is a same-directory supporting file reached by a conditional `@`-pointer.
 - [ ] Portable at runtime: works in any host project; no dependency on this repo's tooling; runtime state stays under the host project's `.omnipowers/`.
