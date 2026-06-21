@@ -11,6 +11,7 @@ SKILL ?=
 BACKEND ?=
 MODEL ?=
 DRY ?=
+PROGRESS ?=
 EVAL_ROOT ?=
 TEST_ARGS ?=
 
@@ -33,8 +34,8 @@ uninstall: ## Remove omnipowers skill symlinks from Claude + Codex
 test: ## Run skill tests (free content checks; TEST_ARGS="--integration" also runs agent tests, costs API)
 	@bash tests/run-skill-tests.sh $(TEST_ARGS)
 
-optimize: ## SkillOpt: optimize skills → staged proposals. SKILL=a,b,c (empty=all) BACKEND=claude|codex [MODEL=] [DRY=1]
-	@$(OPTIMIZE) run $(if $(SKILL),--skill $(SKILL),) $(if $(BACKEND),--backend $(BACKEND),) $(if $(MODEL),--model $(MODEL),) $(if $(DRY),--dry,) $(if $(EVAL_ROOT),--eval-root $(EVAL_ROOT),)
+optimize: ## SkillOpt: optimize skills → staged proposals. SKILL=a,b,c (empty=all) BACKEND=claude|codex [MODEL=] [DRY=1] [PROGRESS=1]
+	@$(OPTIMIZE) run $(if $(SKILL),--skill $(SKILL),) $(if $(BACKEND),--backend $(BACKEND),) $(if $(MODEL),--model $(MODEL),) $(if $(DRY),--dry,) $(if $(PROGRESS),--progress,) $(if $(EVAL_ROOT),--eval-root $(EVAL_ROOT),)
 
 optimize-status: ## Show staged optimization proposals — SKILL=a,b,c (empty=all staged)
 	@$(OPTIMIZE) status $(if $(SKILL),--skill $(SKILL),)

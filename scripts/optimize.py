@@ -182,6 +182,8 @@ def _build_overrides(name: str, backend: str, cfg: Dict[str, Any], args) -> Dict
         ov["transcript_source"] = args.source
     if args.lookback_hours is not None:
         ov["lookback_hours"] = args.lookback_hours
+    if getattr(args, "progress", False):
+        ov["progress"] = True
     return ov
 
 
@@ -341,6 +343,8 @@ def _add_run_flags(p: argparse.ArgumentParser) -> None:
                    help="transcript source for auto-discovery")
     p.add_argument("--lookback-hours", type=int, default=None,
                    help="auto-discovery harvest window (0 = full history)")
+    p.add_argument("--progress", action="store_true",
+                   help="stream SkillOpt phase progress (harvest/mine/consolidate) to stderr")
     p.add_argument("--json", action="store_true", help="machine-readable output")
 
 
