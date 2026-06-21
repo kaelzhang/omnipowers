@@ -8,14 +8,29 @@ A collection of skills that improve coding effectiveness for AI coding agents.
 | --- | --- |
 | [test-driven-bug-fixing](skills/test-driven-bug-fixing/SKILL.md) | Fixing any bug or defect — you MUST reproduce it with a failing test before changing production code |
 
-## Install (development)
+## Install
 
-During development, symlink a skill into a directory Claude Code watches so edits
-hot-reload without restarting the session:
+Install the skills into Claude Code and Codex. Skills are **symlinked**, so your
+edits auto-apply without reinstalling.
 
 ```bash
-ln -s "$(pwd)/skills/test-driven-bug-fixing" ~/.claude/skills/test-driven-bug-fixing
+make dev          # analyze Claude/Codex status, then install for both
+make status       # show what is installed
+make install      # install (idempotent; FORCE=1 to re-link)
+make uninstall    # remove the symlinks
 ```
+
+Skills are discovered at:
+
+| Tool | Path |
+| --- | --- |
+| Claude Code | `~/.claude/skills/<name>/` |
+| Codex | `~/.agents/skills/<name>/` |
+
+Because skills are symlinked, editing a skill's `SKILL.md` takes effect **without
+reinstalling**: Claude Code hot-reloads it live in the session; Codex auto-detects
+the change (restart Codex if it does not show). Re-run `make install` only when
+you add a new skill.
 
 ## Credits
 
