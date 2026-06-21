@@ -11,6 +11,15 @@ A collection of skills that improve coding effectiveness for AI coding agents.
 | [test-driven-bug-fixing](skills/test-driven-bug-fixing/SKILL.md) | Fixing any bug or defect — you MUST reproduce it with a failing test before changing production code |
 | [verification-before-completion](skills/verification-before-completion/SKILL.md) | About to claim work is complete/fixed/passing — you MUST run the verification and read its output before any success claim |
 | [code-auditing](skills/code-auditing/SKILL.md) | Reviewing or auditing code — audit against the project's `.omnipowers/rules/CODE_AUDITING.md` checklist, record the result, report a summary, and evolve the checklist over time |
+| [brainstorming](skills/brainstorming/SKILL.md) | Before any creative or implementation work — you MUST explore intent, requirements, and design and get the design approved before writing code |
+| [writing-plans](skills/writing-plans/SKILL.md) | Turning a spec into a multi-step task — you MUST produce a complete, self-contained, bite-sized plan with zero placeholders before coding |
+| [executing-plans](skills/executing-plans/SKILL.md) | Executing a written plan — you MUST review it critically, then run each step in order and verify at every checkpoint |
+| [subagent-driven-development](skills/subagent-driven-development/SKILL.md) | Executing a plan of mostly-independent tasks — one task at a time, reviewing spec + quality of each before the next, with a broad whole-branch review at the end |
+| [dispatching-parallel-agents](skills/dispatching-parallel-agents/SKILL.md) | 2+ genuinely independent tasks — verify independence, then one focused agent per domain (or sequential inline where subagents are unavailable) |
+| [requesting-code-review](skills/requesting-code-review/SKILL.md) | Work complete or before merge — you MUST get a fresh-eyes review of the finished work against its requirements |
+| [using-git-worktrees](skills/using-git-worktrees/SKILL.md) | Feature work needing isolation — you MUST ensure an isolated workspace via the host's native worktree tool or a `git worktree` fallback |
+| [finishing-a-development-branch](skills/finishing-a-development-branch/SKILL.md) | Work complete and verified — verify tests, present structured merge/PR/keep/discard options, execute the choice, and clean up only what you created |
+| [writing-skills](skills/writing-skills/SKILL.md) | Creating or editing a skill — you MUST develop it test-first (watch an agent fail without it first); conforms to `AGENTS.md` |
 
 ## Install
 
