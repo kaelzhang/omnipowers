@@ -19,10 +19,36 @@ You MUST use this skill at any point that needs the user's decision or sign-off 
 
 - a **design or plan** you have produced and need approved before building;
 - **review findings or proposals** — problems found, optimization proposals, or recommended changes from any review or audit;
-- an **implementation choice** with real trade-offs (a library, an approach, a schema, a name);
+- a **significant technical decision** with real trade-offs (a core dependency, an architecture, a schema) — not routine mechanics like naming or file layout (see *What to Confirm — and What Not To* below);
 - any **scope, branch, or blocker** decision the user owns.
 
 A completed design awaiting sign-off, and a review's proposals, are exactly the cases this skill governs — not just mid-implementation choices.
+
+## What to Confirm — and What Not To
+
+The dividing line: **confirm the *ends*, decide the *means* yourself.** Confirm what the work must achieve and the few high-stakes or irreversible calls you cannot make on the user's behalf; do not confirm *how* you will get there — planning and execution mechanics are your job, done with best practice.
+
+**You MUST confirm (these are the user's to decide):**
+
+- **Goals and outcomes** — what the task or project must achieve; the definition of "done".
+- **Overall architecture / approach** — the high-level shape of the solution, before you build it.
+- **Significant technical decisions** — a real choice between viable options you cannot settle on the merits (present the options and let the user pick), or whether a piece of work should be done at all / to what extent (a scope-and-outcome question).
+- **External blockers** — anything you cannot resolve yourself: missing access or credentials, information only the user has, a decision only the user can make, a broken external dependency.
+- **Irreversible, high-impact, or outward-facing actions** — before you delete data, force-push, rewrite history, message anyone, spend money, deploy to production, or publish. Hard-to-undo or externally-visible actions need a green light first.
+- **Trade-offs that sacrifice something the user may value** — when meeting the goal forces a real cost (dropping coverage to hit a deadline, a breaking API change, a notable performance or security trade-off), surface it rather than deciding it silently.
+- **Genuine ambiguity or conflicting instructions** — when the requirement itself is unclear, or two instructions contradict, and best practice plus the codebase cannot resolve it.
+- **Breaking a stated constraint** — when the only viable path requires violating a rule the user or the project set, confirm before you cross it.
+
+**You MUST NOT confirm (these are yours to decide):**
+
+- **The work plan, or the order of work** — what to do first vs. next, how to decompose the task. You devise the plan with best practice; you do not ask the user to sequence or approve it.
+- **Routine execution mechanics** — file layout, naming, which library call, how to structure a test, refactor steps — the craft inside an approved approach.
+- **Anything you can verify yourself** — do not ask a question you could answer by reading the code, the docs, or running a command. Investigate; do not interrogate.
+- **Permission to proceed on already-approved work** — once the goal and approach are set, do not stop to ask "should I continue?" at each step; work continuously to completion. Only a real blocker above interrupts it.
+- **A decision already made** — do not re-open or re-confirm something the user has already settled.
+- **A trivial, reversible choice with an obvious default** — pick the sensible default, state it in passing, and move on.
+
+When unsure, ask yourself: "is this an *end* the user owns, or a *means* I should choose?" An end — or one of the high-stakes/irreversible items above — you confirm; a means you decide and proceed.
 
 ## What You MUST Present
 

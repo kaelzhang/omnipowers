@@ -171,6 +171,18 @@ The reproducing test tells you *that* the bug exists. Before fixing, you MUST lo
 
 If the root cause is unknown, you MUST keep investigating. You MUST NOT patch a symptom you do not understand.
 
+## When the Regression Test Is Hard to Write
+
+A test that is painful to write is usually telling you something about the *code*, not just the test. Before you fight the test, read the signal:
+
+| Friction | What it signals | What to do |
+|---|---|---|
+| The test needs elaborate setup | The unit does too much / is too coupled | Extract helpers; consider splitting the unit. |
+| You must mock almost everything | The code depends on concretes, not interfaces | Inject the dependency instead of reaching for it. |
+| You cannot isolate the bug in a test | The responsibility is smeared across layers | Narrow the seam; test at the level the defect lives. |
+
+This does not waive the Iron Law — you still write the reproducing test. It tells you the fix may need a small structural change so that test (and the next one) is writable at all.
+
 ## The Only Exception — When You Cannot Reproduce It
 
 The reproducing test is REQUIRED. You MAY skip it ONLY when reproduction is genuinely impossible after real effort. When — and only when — that is the case, you MUST do all of the following before treating the fix as done:

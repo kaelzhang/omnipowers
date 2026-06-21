@@ -60,7 +60,7 @@ You MUST create `.omnipowers/reviews/` if it does not exist, and write the full 
 
 ### Phase 3 — Report a summary
 
-You MUST output a concise summary to the session: one line per dimension with its result (`pass` / `concern` / `fail`, optionally with a ✓ / ⚠ / ✗ glyph) plus a count; every `Critical` and `Important` finding (location + one-line fix); the overall assessment (ship / fix-first / needs-rework); and the path to the recorded audit file. Both outputs are REQUIRED — the full record on disk AND the summary in the session.
+You MUST output a concise summary to the session: one line per dimension with its result (`pass` / `concern` / `fail`, optionally with a ✓ / ⚠ / ✗ glyph) plus a count; every `Critical` and `Important` finding (location + one-line fix); the overall assessment (ship / fix-first / needs-rework); and the path to the recorded audit file. Both outputs are REQUIRED — the full record on disk AND the summary in the session. When the audit target is a pull request and you post findings to it, you SHOULD place each inline finding in its code comment thread (at the relevant line) rather than as one top-level comment, so each lands where it applies.
 
 ### Phase 4 — Evolve the checklist (gated)
 
