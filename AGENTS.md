@@ -68,8 +68,7 @@ permission, and (3) adds an explanatory comment in the relevant production code.
 
 Each skill MUST stand alone: no reference to anything outside this repo and no
 cross-skill prefixed includes; supporting files are included by same-directory
-reference only. Ported content MUST preserve the upstream copyright and credit
-the source (MIT).
+reference only.
 
 ### Portable at runtime
 
