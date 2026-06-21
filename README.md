@@ -7,7 +7,9 @@ A collection of skills that improve coding effectiveness for AI coding agents.
 | Skill | Use when |
 | --- | --- |
 | [using-omnipowers](skills/using-omnipowers/SKILL.md) | Starting any task or conversation — how omnipowers skills work; check for and invoke any applicable skill before responding |
+| [systematic-debugging](skills/systematic-debugging/SKILL.md) | Any bug, test failure, or unexpected behavior — you MUST find the root cause before proposing or making any fix |
 | [test-driven-bug-fixing](skills/test-driven-bug-fixing/SKILL.md) | Fixing any bug or defect — you MUST reproduce it with a failing test before changing production code |
+| [verification-before-completion](skills/verification-before-completion/SKILL.md) | About to claim work is complete/fixed/passing — you MUST run the verification and read its output before any success claim |
 | [code-auditing](skills/code-auditing/SKILL.md) | Reviewing or auditing code — audit against the project's `.omnipowers/rules/CODE_AUDITING.md` checklist, record the result, report a summary, and evolve the checklist over time |
 
 ## Install
