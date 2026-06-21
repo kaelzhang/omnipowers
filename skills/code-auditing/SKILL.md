@@ -1,6 +1,6 @@
 ---
 name: code-auditing
-description: Use when reviewing or auditing code (a diff, a file, a feature, or the whole project) — you MUST audit against the project's .omnipowers/rules/CODE_AUDITING.md checklist, record the result, and report a summary
+description: Use when reviewing or auditing code (a diff, a file, a feature, or the whole project) — you MUST audit against the project's .omnipowers/rules/CODE_AUDITING.md checklist, record the result, report a summary, and evolve the checklist over time
 ---
 
 # Code Auditing
@@ -9,9 +9,11 @@ description: Use when reviewing or auditing code (a diff, a file, a feature, or 
 
 ## Overview
 
-A code audit is a deep, evidence-based review against an explicit, project-tuned checklist — not an impression. You MUST check every checklist item against the real code, record the result, and report a summary.
+A code audit is a deep, evidence-based review against an explicit, project-tuned checklist that **gets sharper with use** — not a one-shot impression. You MUST check every checklist item against the real code, record the result, report a summary, and feed what you learn back into the checklist (gated).
 
-**Core principle:** A finding you did not verify in the actual code is not a finding. Evidence (`file:line`) over impression; technical correctness over reassurance.
+**Core principle:** A finding you did not verify in the actual code is not a finding. The checklist is a living project asset; each audit MUST make it sharper.
+
+**Self-contained & portable:** This skill and everything it creates live entirely inside the audited project, under `<project-root>/.omnipowers/`. The skill MUST NOT depend on any tool, service, or repository outside that project. It MUST work the same in any project it is installed into.
 
 ## When to Use
 
@@ -19,48 +21,32 @@ Use this skill whenever you are asked to review, audit, or assess the quality of
 
 ## The Workflow (MANDATORY)
 
-You MUST run all four phases, in order. You MUST NOT skip Phase 0 or shortcut Phase 1.
+You MUST run phases 0–4, in order. You MUST NOT skip Phase 0 or shortcut Phase 1.
 
-### Phase 0 — Ensure the project audit checklist exists
+### Phase 0 — Ensure the project audit checklist exists and is approved
 
-You MUST ensure the directory `<project-root>/.omnipowers/rules/` exists and contains `CODE_AUDITING.md` (`<project-root>` is the repository root, or your working directory if it is not a repo).
+You MUST ensure `<project-root>/.omnipowers/rules/CODE_AUDITING.md` exists (`<project-root>` is the repository root, or your working directory if it is not a repo).
 
-**If `CODE_AUDITING.md` does NOT exist, you MUST generate it before auditing anything:**
+**If it does NOT exist, you MUST generate it before auditing anything:**
 
-1. **Survey the project.** You MUST read enough of the project to ground the checklist in THIS codebase: languages, frameworks, architecture and layering, the domain, the security/trust surface, the concurrency model, data and schema, build/release, the test setup, and the project's own conventions (`CLAUDE.md` / `AGENTS.md` / docs / linters).
-2. **Draft a multi-dimensional checklist.** It MUST cover at least these dimensions, each specialized to this project (drop a dimension only if it genuinely cannot apply, and state why):
-   - Correctness & logic
-   - Security & trust boundaries (input validation, authn/authz, secrets, injection)
-   - Error handling & failure modes
-   - Concurrency, ordering & resource lifecycle
-   - Performance & algorithmic complexity
-   - API / contract / backward compatibility
-   - Data, schema & migrations
-   - Tests & coverage (including a regression test for every fixed bug)
-   - Readability, naming & maintainability
-   - Structure, layering & boundaries (no cross-layer or cross-module coupling)
-   - Dependencies & supply chain
-   - Documentation & comments
-
-   Each item MUST be a concrete, checkable question — not a vague "is it good?".
-3. **Iterate three optimization rounds.** Before saving, you MUST run three improvement rounds. In each round you MUST critique the current checklist for: missing failure modes, redundancy, items that are not actionable, items that do not fit THIS project, and wrong granularity — then revise. You MUST keep only the final, optimized checklist.
+1. **Survey the project.** You MUST read enough of it to ground the checklist in THIS codebase: languages, frameworks, architecture and layering, the domain, the security/trust surface, the concurrency model, data and schema, build/release, the test setup, and the project's own conventions (`CLAUDE.md` / `AGENTS.md` / docs / linters).
+2. **Draft a multi-dimensional checklist.** It MUST cover at least these dimensions, each specialized to this project (drop a dimension only if it genuinely cannot apply, and state why): correctness & logic; security & trust boundaries; error handling & failure modes; concurrency, ordering & resource lifecycle; performance & complexity; API / contract / backward compatibility; data, schema & migrations; tests & coverage (incl. a regression test for every fixed bug); readability, naming & maintainability; structure, layering & boundaries; dependencies & supply chain; documentation & comments. Each item MUST be a concrete, checkable question — not a vague "is it good?".
+3. **Optimize it by bounded iteration.** You MUST run **at least 3** improvement rounds and **at most 5**. Each round MUST apply a distinct lens (e.g. round 1 = completeness / missing failure modes; round 2 = project-fit / actionability; round 3 = redundancy / granularity; any further round only if it still finds a real gap). You MUST **stop at the first round that produces no material change** (convergence). You MUST NOT exceed the cap: beyond it, extra rounds tend to invent unsupported items (hallucination) and drift — stop and keep the last good version.
 4. **Write it** to `.omnipowers/rules/CODE_AUDITING.md` with a short header (project, generated date, the dimension list) and the items grouped by dimension.
+5. **Get approval before first use.** The checklist becomes this project's durable audit standard, so you MUST present it to the user and obtain approval (incorporating any edits they give) before you audit against it or treat it as fixed. You SHOULD treat it as a commit-worthy project artifact.
 
-**If `CODE_AUDITING.md` already exists, you MUST use it as-is for this audit.** You MAY note suggested improvements in the summary, but you MUST NOT silently rewrite it during an audit; regenerating or editing the checklist is a separate, explicit action.
+**If `CODE_AUDITING.md` already exists, you MUST use it as-is for this audit.** Improvements go through Phase 4 (gated); you MUST NOT silently rewrite it mid-audit.
 
-### Phase 1 — Audit against every checklist item
+### Phase 1 — Audit against the checklist
 
-You MUST check the target against EVERY item in `CODE_AUDITING.md`. For each item you MUST:
+You MUST cover every checklist item. Scope the depth to the target:
 
-- Inspect the actual code — read it; do not assume.
-- Reach a verdict: **pass**, **fail**, **concern**, or **n/a** (with a one-line reason for n/a).
-- For every `fail` or `concern`, record a concrete `file:line`, the evidence, a **severity** (`Critical` / `Important` / `Minor`), and a specific, actionable recommendation.
+- **Whole-project audit** — check every item against the whole codebase.
+- **Change / diff audit** (a PR, a commit range, a feature) — you MUST still consider every item, but you MUST focus the deep checks on the **changed surface and its blast radius**, ordered by risk and severity. You MUST NOT re-audit unrelated, unchanged code line by line.
 
-Audit rigor — you MUST:
+For each item you check, you MUST: inspect the actual code (read it; do not assume); reach a verdict — **pass**, **fail**, **concern**, or **n/a** (with a one-line reason for n/a); and for every `fail` / `concern` record a concrete `file:line`, the evidence, a **severity** (`Critical` / `Important` / `Minor`), and a specific, actionable fix.
 
-- Verify each finding against the real code. You MUST NOT raise a speculative finding you could not confirm; if you cannot verify it, say so and mark it unverified.
-- Apply YAGNI and context: before flagging "missing X", confirm X is actually needed or used; before flagging a pattern, check for a legacy, compatibility, or intentional reason (read comments and history).
-- Be specific and non-performative: state the issue and the fix. You MUST NOT pad the audit with praise or filler.
+Audit rigor — you MUST: verify each finding against the real code (raise no speculative finding you could not confirm; if you cannot verify, say so and mark it unverified); apply YAGNI and context (before flagging "missing X", confirm X is needed/used; before flagging a pattern, check for a legacy/compatibility/intentional reason); be specific and non-performative (state the issue and the fix; no praise or filler).
 
 ### Phase 2 — Record the audit
 
@@ -70,18 +56,21 @@ You MUST create `.omnipowers/reviews/` if it does not exist, and write the full 
 <project-root>/.omnipowers/reviews/<YYYY-MM-DD>-<HHMMSS>-<review-target>.md
 ```
 
-`<review-target>` is a short kebab-case slug of what was audited (e.g. `auth-refactor`, `pr-142`, `whole-project`). The file MUST contain: the target and scope, the checklist reference, every item's verdict, all findings (each with `file:line` + severity + recommendation), and the overall assessment.
+`<review-target>` is a short kebab-case slug of what was audited (e.g. `auth-refactor`, `pr-142`, `whole-project`). The file MUST contain: the target and scope, the checklist reference, every item's verdict, all findings (each with `file:line` + severity + fix), and the overall assessment.
 
 ### Phase 3 — Report a summary
 
-You MUST output a concise summary to the session containing:
+You MUST output a concise summary to the session: one line per dimension with its result (e.g. ✓ / ⚠ / ✗ plus a count); every `Critical` and `Important` finding (location + one-line fix); the overall assessment (ship / fix-first / needs-rework); and the path to the recorded audit file. Both outputs are REQUIRED — the full record on disk AND the summary in the session.
 
-- one line per dimension with its result (e.g. ✓ / ⚠ / ✗ plus a count),
-- every `Critical` and `Important` finding (location + one-line fix),
-- the overall assessment (e.g. ship / fix-first / needs-rework),
-- the path to the recorded audit file.
+### Phase 4 — Evolve the checklist (gated)
 
-Both outputs are REQUIRED: the full record on disk AND the summary in the session. You MUST NOT report only the summary without recording the full audit, and you MUST NOT record the file without reporting the summary.
+The checklist MUST get sharper with use. After the audit you MUST evaluate whether it should change, and propose **bounded** edits when it should — but you MUST NOT apply any change to `CODE_AUDITING.md` without the user's approval. Specifically:
+
+- A real defect the checklist did **not** lead you to catch MUST become a **proposed new item** (a regression item, so that defect class is caught next time).
+- A finding type that recurs across audits SHOULD be proposed for promotion (higher severity, or a hard project rule).
+- An item that produced false positives or proved unactionable SHOULD be proposed for revision.
+
+Propose at most a few edits per audit (bounded — avoid churn). Present them in the summary; apply only those the user approves.
 
 ## Severity
 
@@ -94,12 +83,14 @@ Both outputs are REQUIRED: the full record on disk AND the summary in the sessio
 ## Red Flags — STOP
 
 - Auditing without `.omnipowers/rules/CODE_AUDITING.md` present — generate it first.
+- Generating the checklist in fewer than 3 rounds, or grinding past the cap and inventing unsupported items.
+- Using a freshly generated checklist without the user's approval.
 - Skimming the checklist instead of checking each item against the real code.
 - A finding with no `file:line` evidence.
-- Praise or "looks good" instead of per-item verdicts.
-- Generating the checklist in fewer than three optimization rounds.
 - Reporting the session summary but not recording the full audit to disk (or vice versa).
+- Finishing an audit that exposed a checklist gap without proposing a checklist improvement.
+- Depending on any tool or repository outside the audited project's `.omnipowers/`.
 
 ## The Bottom Line
 
-Check every item, against the real code, with evidence. Record it. Summarize it. No impressions, no performative praise.
+Check every item against the real code, with evidence. Record it. Summarize it. Then make the checklist sharper. No impressions, no performative praise, no runaway iteration.
