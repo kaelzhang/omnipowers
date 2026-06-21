@@ -43,7 +43,7 @@ Skills are discovered at:
 
 Because skills are symlinked, editing a skill's `SKILL.md` takes effect **without
 reinstalling**: Claude Code hot-reloads it live in the session; Codex auto-detects
-the change (restart Codex if it does not show). Re-run `make install` only when
+the change (restart Codex if it does not show). Re-run `make dev` only when
 you add a new skill.
 
 ## Project files (`.omnipowers/`)
@@ -55,6 +55,31 @@ the project you run them in (not in this repo). For `code-auditing`:
   reviewed quality standard. **Commit it** so the whole team shares one standard.
 - `.omnipowers/reviews/` — dated audit logs (`<date>-<time>-<target>.md`). A
   running record; **gitignore it** if you do not want logs in version control.
+
+## Developing skills
+
+This repo ships tooling to test and improve the skills. It operates on the skills
+here and is **not** part of what downstream projects install.
+
+```bash
+make test                                  # content checks on every skill (free)
+make optimize BACKEND=claude               # optimize ALL skills -> staged proposals
+make optimize SKILL=a,b,c BACKEND=codex    # only these skills
+make optimize SKILL=a BACKEND=claude DRY=1 # report only, no staging
+make optimize-status SKILL=a               # review a staged proposal
+make optimize-adopt  SKILL=a               # apply it (a backup is kept)
+make optimize-list                         # skills + eval/config/staged state
+```
+
+`make optimize` uses [SkillOpt-Sleep](https://github.com/microsoft/SkillOpt) — an
+external dependency; set `SKILLOPT_HOME` to a local clone. For each skill it
+replays tasks, proposes bounded edits, gates them on a held-out split, and
+**stages** a proposal under `.skillopt-sleep/` (gitignored). It never edits a skill
+until you `optimize-adopt`. A backend is **required** (`claude` or `codex`; both
+call real models). Tasks come from an optional `<eval-root>/<skill>/tasks.json`
+(set `OMNIPOWERS_EVAL_ROOT`); with no eval set, SkillOpt auto-discovers them from
+your agent transcripts. An optional `<eval-root>/<skill>/config.json` sets per-skill
+knobs (model, gate, edit budget).
 
 ## Credits
 

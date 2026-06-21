@@ -5,15 +5,17 @@
 
 SHELL := /bin/bash
 INSTALLER := scripts/install-skills.sh
+OPTIMIZE := $(if $(OMNIPOWERS_PY),$(OMNIPOWERS_PY),python3) scripts/optimize.py
 FORCE ?=
 SKILL ?=
-TASKS ?=
-BACKEND ?= mock
+BACKEND ?=
+MODEL ?=
 DRY ?=
+EVAL_ROOT ?=
 TEST_ARGS ?=
 
 .DEFAULT_GOAL := help
-.PHONY: help dev status uninstall test optimize optimize-status optimize-adopt
+.PHONY: help dev status uninstall test optimize optimize-status optimize-adopt optimize-list
 
 help: ## Show available targets
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
@@ -31,11 +33,14 @@ uninstall: ## Remove omnipowers skill symlinks from Claude + Codex
 test: ## Run skill tests (free content checks; TEST_ARGS="--integration" also runs agent tests, costs API)
 	@bash tests/run-skill-tests.sh $(TEST_ARGS)
 
-optimize: ## SkillOpt: optimize a skill → staged proposal (DRY=1 = report only) — SKILL= TASKS= [BACKEND=mock] (claude/codex cost API)
-	@bash harness/optimize.sh run $(SKILL) $(TASKS) $(BACKEND) $(if $(DRY),--dry,)
+optimize: ## SkillOpt: optimize skills → staged proposals. SKILL=a,b,c (empty=all) BACKEND=claude|codex [MODEL=] [DRY=1]
+	@$(OPTIMIZE) run $(if $(SKILL),--skill $(SKILL),) $(if $(BACKEND),--backend $(BACKEND),) $(if $(MODEL),--model $(MODEL),) $(if $(DRY),--dry,) $(if $(EVAL_ROOT),--eval-root $(EVAL_ROOT),)
 
-optimize-status: ## Show the latest staged optimization proposal — SKILL=
-	@bash harness/optimize.sh status $(SKILL)
+optimize-status: ## Show staged optimization proposals — SKILL=a,b,c (empty=all staged)
+	@$(OPTIMIZE) status $(if $(SKILL),--skill $(SKILL),)
 
-optimize-adopt: ## Apply the latest staged optimization proposal, with backup — SKILL=
-	@bash harness/optimize.sh adopt $(SKILL)
+optimize-adopt: ## Apply one skill's staged proposal, with backup — SKILL=name
+	@$(OPTIMIZE) adopt --skill $(SKILL)
+
+optimize-list: ## List skills + whether each has an eval set / config / staged proposal
+	@$(OPTIMIZE) list $(if $(EVAL_ROOT),--eval-root $(EVAL_ROOT),)
