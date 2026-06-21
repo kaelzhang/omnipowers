@@ -70,13 +70,15 @@ A detached HEAD in a worktree means the host environment manages this workspace.
 
 ### Phase 3 — Determine the Base Branch
 
-You MUST establish the base branch the work will integrate into before offering a merge or PR.
+You MUST establish the base branch NAME the work will integrate into before offering a merge or PR — it is consumed downstream as `<base-branch>` in `git checkout` / `git merge`, so it MUST be a branch name, not a commit SHA.
 
 ```bash
-git merge-base HEAD main 2>/dev/null || git merge-base HEAD master 2>/dev/null
+# Resolve the base branch NAME (prefers main, then master):
+BASE=$(git rev-parse --verify --quiet main >/dev/null && echo main \
+  || (git rev-parse --verify --quiet master >/dev/null && echo master))
 ```
 
-If the base is ambiguous or the project uses a different integration branch, you MUST confirm it with the user (for example: "This branch split from `main` — is that the correct base?") rather than guessing.
+If `BASE` comes back empty, the base is ambiguous, or the project uses a different integration branch, you MUST confirm it with the user (for example: "This branch split from `main` — is that the correct base?") rather than guessing. Do not feed a `git merge-base` commit SHA where a branch name is required.
 
 ### Phase 4 — Present the Options (let the user choose)
 
@@ -124,7 +126,9 @@ MAIN_ROOT=$(git -C "$(git rev-parse --git-common-dir)/.." rev-parse --show-tople
 cd "$MAIN_ROOT"
 
 git checkout <base-branch>
-git pull
+# Pull only if the base tracks a remote — a local-only branch has no upstream
+# and `git pull` would error mid-sequence.
+git rev-parse --abbrev-ref --symbolic-full-name @{u} >/dev/null 2>&1 && git pull
 git merge <feature-branch>
 
 # Re-run the project's test command on the merged result. If it fails, STOP —
@@ -202,7 +206,7 @@ WORKTREE_PATH=$(git rev-parse --show-toplevel)
 Apply the matching case:
 
 - **`GIT_DIR == GIT_COMMON`** — plain repo, no worktree exists. Nothing to clean up. Done.
-- **`WORKTREE_PATH` is under `.worktrees/` or `worktrees/`** — you own this worktree; remove it. You MUST `cd` to the main checkout first, because `git worktree remove` fails when the current directory is inside the worktree being removed:
+- **`WORKTREE_PATH` is under `.worktrees/` or `worktrees/` AND you created this worktree in this session** — you own it; remove it. The path is only a heuristic: a host environment can also provision worktrees under `.worktrees/` (it is the sibling worktree convention's default location), so a path match alone is NOT proof of ownership. If you did not create this worktree this session, or provenance is uncertain, you MUST NOT remove it — fall through to the host-owned case below. When you do own it, you MUST `cd` to the main checkout first, because `git worktree remove` fails when the current directory is inside the worktree being removed:
 
   ```bash
   MAIN_ROOT=$(git -C "$(git rev-parse --git-common-dir)/.." rev-parse --show-toplevel)
@@ -211,7 +215,7 @@ Apply the matching case:
   git worktree prune   # self-healing: clear any stale worktree registrations
   ```
 
-- **Otherwise** — the host environment owns this workspace. You MUST NOT remove it. If the host provides a workspace-exit mechanism, use it; otherwise leave the workspace in place and report that the host owns it.
+- **Otherwise (including any uncertain-provenance worktree)** — the host environment owns this workspace. You MUST NOT remove it; removing a host-owned workspace corrupts host state. If the host provides a workspace-exit mechanism, use it; otherwise leave the workspace in place and report that the host owns it.
 
 ## Quick Reference
 
@@ -226,13 +230,13 @@ Apply the matching case:
 
 You MUST stop and correct course if you are about to:
 
-- Present options before the test suite is green.
+- Present options before the test suite is green — unless the project has no suite AND the user has explicitly acknowledged that (the Phase 1 exception); a missing test command MUST NOT be silently treated as "no tests".
 - Merge, or open a PR, without verifying tests on the result.
 - Pick an integration path for the user instead of presenting the menu.
 - Delete a branch or discard work without the typed `discard` confirmation.
 - Force-push without the user's explicit request.
 - Remove a worktree before confirming the merge succeeded.
-- Remove a worktree you did not create — anything outside `.worktrees/` / `worktrees/`.
+- Remove a worktree you did not create this session, or whose provenance is uncertain — a `.worktrees/` / `worktrees/` path alone does not prove you own it.
 - Run `git worktree remove` from inside the worktree being removed.
 - Delete a branch before removing the worktree that references it.
 

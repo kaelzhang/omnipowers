@@ -35,7 +35,9 @@ If the user explicitly tells you not to apply a skill, follow the user. The user
 
 ## The rule
 
-You MUST check for an applicable skill BEFORE any response or action — including before asking a clarifying question or reading the codebase. Even a 1% chance that a skill applies REQUIRES you to invoke it and check. If, once loaded, the skill does not fit, you MAY set it aside.
+You MUST check for an applicable skill BEFORE any response or action — including before asking a clarifying question or reading the codebase. Even a 1% chance that a skill applies means you MUST invoke it and check. If, once loaded, the skill does not fit, you MAY set it aside.
+
+Immediately after invoking a skill and before acting on it, you MUST announce `Using <skill> to <purpose>` so the user can see which skill is governing the step; without that announcement the skill governs the work invisibly and the user cannot tell which discipline is in force.
 
 ```dot
 digraph omnipowers_skill_flow {

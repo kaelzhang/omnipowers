@@ -58,7 +58,7 @@ You MUST:
 
 You MUST:
 
-1. **Reproduce with a failing test first.** Before changing production code, write the smallest test that reproduces the bug and watch it fail for the bug's reason. A fix without a reproducing test does not stick.
+1. **Reproduce with a failing test first.** Before changing production code, write the smallest test that reproduces the bug and watch it fail for the bug's reason. A fix without a reproducing test does not stick. You MAY proceed without a reproducing test ONLY when reproduction is genuinely impossible after real effort (a confirmed environmental, timing-dependent, or external cause — see "When Investigation Finds No Code Root Cause"), and only after you (1) summarize the complete reasons, (2) obtain the user's explicit permission, and (3) record those reasons in a comment in the relevant production code.
 2. **Apply a single fix at the root cause.** One change, addressing the cause you identified. You MUST NOT bundle refactors or "while I'm here" improvements.
 3. **Verify.** The reproducing test now passes, no other tests broke, and the original symptom is gone. Claim success only with this evidence in hand.
 4. **If the fix fails, STOP and count.** Tried fewer than 3 fixes → return to Phase 1 with the new information. **Tried 3 or more → you MUST stop fixing and question the architecture** (below).
@@ -78,7 +78,7 @@ If you catch any of these, you MUST stop and restart at Phase 1:
 - "It's probably X, let me fix that"
 - "I don't fully understand but this might work"
 - Listing fixes before tracing the data flow
-- "One more fix attempt" after 2+ failures
+- "One more fix attempt" after 3 failed fixes (a 4th attempt — stop and question the architecture)
 - Each fix exposing a new problem elsewhere (→ question the architecture)
 
 ## Rationalizations — rejected
@@ -92,11 +92,11 @@ If you catch any of these, you MUST stop and restart at Phase 1:
 | "Several fixes at once saves time" | You can't isolate what worked, and it breeds new bugs. |
 | "The reference is long, I'll adapt it" | Partial understanding guarantees bugs. Read it fully. |
 | "I see the problem" | Seeing the symptom is not understanding the cause. |
-| "One more attempt" (after 2+) | 3+ failures = an architecture problem. Stop and question it. |
+| "One more attempt" (after 3 failed fixes) | 3 failures = an architecture problem. Stop and question it; do not attempt a 4th. |
 
 ## When Investigation Finds No Code Root Cause
 
-If a thorough investigation shows the cause is genuinely environmental, timing-dependent, or external, you MUST: document what you investigated; implement appropriate handling (retry / timeout / a clear error); and add logging for future diagnosis. Most "no root cause" conclusions are incomplete investigation — you MUST first be sure you actually finished Phase 1.
+If a thorough investigation shows the cause is genuinely environmental, timing-dependent, or external, you MUST: document what you investigated; implement appropriate handling (retry / timeout / a clear error); and add logging for future diagnosis. This is the only path on which Phase 4's reproducing test may be skipped, and only through that step's escape clause (summarize the reasons, obtain the user's explicit permission, record them in a code comment). Most "no root cause" conclusions are incomplete investigation — you MUST first be sure you actually finished Phase 1.
 
 ## The Bottom Line
 

@@ -31,7 +31,7 @@ You MUST ensure `<project-root>/.omnipowers/rules/CODE_AUDITING.md` exists (`<pr
 
 1. **Survey the project.** You MUST read enough of it to ground the checklist in THIS codebase: languages, frameworks, architecture and layering, the domain, the security/trust surface, the concurrency model, data and schema, build/release, the test setup, and the project's own conventions (`CLAUDE.md` / `AGENTS.md` / docs / linters).
 2. **Draft a multi-dimensional checklist.** It MUST cover at least these dimensions, each specialized to this project (drop a dimension only if it genuinely cannot apply, and state why): correctness & logic; security & trust boundaries; error handling & failure modes; concurrency, ordering & resource lifecycle; performance & complexity; API / contract / backward compatibility; data, schema & migrations; tests & coverage (incl. a regression test for every fixed bug); readability, naming & maintainability; structure, layering & boundaries; dependencies & supply chain; documentation & comments. Each item MUST be a concrete, checkable question — not a vague "is it good?".
-3. **Optimize it by bounded iteration.** You MUST run **at least 3** improvement rounds and **at most 5**. Each round MUST apply a distinct lens (e.g. round 1 = completeness / missing failure modes; round 2 = project-fit / actionability; round 3 = redundancy / granularity; any further round only if it still finds a real gap). You MUST **stop at the first round that produces no material change** (convergence). You MUST NOT exceed the cap: beyond it, extra rounds tend to invent unsupported items (hallucination) and drift — stop and keep the last good version.
+3. **Optimize it by bounded iteration.** You MUST apply at least three distinct improvement lenses before accepting the checklist — completeness / missing failure modes, project-fit / actionability, and redundancy / granularity — each as its own round (you MAY add a further round only if it still finds a real gap). Once all three lenses are covered, you MUST **stop at the first round that produces no material change** (convergence). You MUST NOT exceed **5** rounds: beyond the cap, extra rounds tend to invent unsupported items (hallucination) and drift — stop and keep the last good version.
 4. **Write it** to `.omnipowers/rules/CODE_AUDITING.md` with a short header (project, generated date, the dimension list) and the items grouped by dimension.
 5. **Get approval before first use.** The checklist becomes this project's durable audit standard, so you MUST present it to the user and obtain approval (incorporating any edits they give) before you audit against it or treat it as fixed. You SHOULD treat it as a commit-worthy project artifact.
 
@@ -60,15 +60,15 @@ You MUST create `.omnipowers/reviews/` if it does not exist, and write the full 
 
 ### Phase 3 — Report a summary
 
-You MUST output a concise summary to the session: one line per dimension with its result (e.g. ✓ / ⚠ / ✗ plus a count); every `Critical` and `Important` finding (location + one-line fix); the overall assessment (ship / fix-first / needs-rework); and the path to the recorded audit file. Both outputs are REQUIRED — the full record on disk AND the summary in the session.
+You MUST output a concise summary to the session: one line per dimension with its result (`pass` / `concern` / `fail`, optionally with a ✓ / ⚠ / ✗ glyph) plus a count; every `Critical` and `Important` finding (location + one-line fix); the overall assessment (ship / fix-first / needs-rework); and the path to the recorded audit file. Both outputs are REQUIRED — the full record on disk AND the summary in the session.
 
 ### Phase 4 — Evolve the checklist (gated)
 
 The checklist MUST get sharper with use. After the audit you MUST evaluate whether it should change, and propose **bounded** edits when it should — but you MUST NOT apply any change to `CODE_AUDITING.md` without the user's approval. Specifically:
 
 - A real defect the checklist did **not** lead you to catch MUST become a **proposed new item** (a regression item, so that defect class is caught next time).
-- A finding type that recurs across audits SHOULD be proposed for promotion (higher severity, or a hard project rule).
-- An item that produced false positives or proved unactionable SHOULD be proposed for revision.
+- A finding type that recurs across audits MUST be proposed for promotion (higher severity, or a hard project rule).
+- An item that produced false positives or proved unactionable MUST be proposed for revision.
 
 Propose at most a few edits per audit (bounded — avoid churn). Present them in the summary; apply only those the user approves.
 
@@ -83,7 +83,7 @@ Propose at most a few edits per audit (bounded — avoid churn). Present them in
 ## Red Flags — STOP
 
 - Auditing without `.omnipowers/rules/CODE_AUDITING.md` present — generate it first.
-- Generating the checklist in fewer than 3 rounds, or grinding past the cap and inventing unsupported items.
+- Accepting the checklist before applying all three improvement lenses, or grinding past the 5-round cap and inventing unsupported items.
 - Using a freshly generated checklist without the user's approval.
 - Skimming the checklist instead of checking each item against the real code.
 - A finding with no `file:line` evidence.

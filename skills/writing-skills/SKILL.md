@@ -1,6 +1,6 @@
 ---
 name: writing-skills
-description: Use when creating, editing, or verifying any skill before deployment — you MUST develop it test-first, watching an agent fail without it before you write a word
+description: Use when creating, editing, authoring, hardening, or verifying any skill (a SKILL.md) before deployment, or when a skill keeps getting rationalized around — you MUST develop it test-first, watching an agent fail without it before you write a word
 ---
 
 # Writing Skills
@@ -13,7 +13,15 @@ Writing a skill IS test-driven development applied to process documentation. You
 
 **Core principle:** If you did not watch an agent fail without the skill, you do not know whether the skill teaches the right thing. A skill written from your own intuition documents what *you* think needs preventing, not what *actually* needs preventing.
 
-This skill governs **how to develop and test** a skill. It does NOT restate what a skill must *be*. The repository's `AGENTS.md` "Skill authoring standard" is the single source of truth for the authoring rules — BCP 14 keyword usage, MANDATORY-by-default classification, the one-escape exception pattern, self-containment, and runtime portability. You MUST read `AGENTS.md` and conform every skill you write to it. This skill MUST NOT be used to justify shipping a skill that violates that standard.
+This skill governs **how to develop and test** a skill. The skill you produce MUST also satisfy these authoring invariants, which this skill carries inline so it binds in any project it is installed into:
+
+- **BCP 14 keywords.** Every normative statement MUST express its force with a BCP 14 keyword (MUST / MUST NOT / REQUIRED / SHALL / SHALL NOT / SHOULD / SHOULD NOT / RECOMMENDED / MAY / OPTIONAL), and the skill MUST carry the one-line BCP 14 interpretation note so it is self-contained when loaded alone.
+- **MANDATORY-by-default classification.** A specific scenario with exactly one correct answer MUST be written as MUST / MUST NOT, not softened to SHOULD / "consider" / "try to". Reserve SHOULD / MAY for genuine judgment where the right response varies, and say why it varies.
+- **One auditable escape.** A MANDATORY rule MAY define at most one escape hatch, of the shape `MAY <skip> ONLY when <condition>`, gated by a MUST checklist plus explicit user permission plus a durable record (e.g. a code comment). Never a soft "if you can't, skip it".
+- **Self-contained.** The skill MUST stand alone: no reference to anything outside the host project, and supporting files included by same-directory reference only.
+- **Runtime-portable.** The skill MUST run the same in any host project, MUST NOT depend on any authoring/test/optimize tooling, and MUST keep any state it needs under the host project's `.omnipowers/`.
+
+This skill MUST NOT be used to justify shipping a skill that violates these invariants.
 
 ## When to Use
 
@@ -29,7 +37,7 @@ You MUST NOT treat any of these as exempt:
 
 ### When to create a skill at all
 
-You SHOULD create a skill when the technique is reusable across projects, was not intuitively obvious, and applies broadly. This is judgment, so it is SHOULD, not MUST.
+You SHOULD create a skill when the technique is reusable beyond this one task and not intuitively obvious — weigh reuse, non-obviousness, and breadth together, no single one being dispositive. This is judgment, so it is SHOULD, not MUST.
 
 You MUST NOT create a skill for:
 - One-off solutions with no reuse.
@@ -278,7 +286,7 @@ You MUST be able to check every applicable box before deploying the skill. Track
 - [ ] Documented the agent's rationalizations verbatim
 
 **GREEN — Write the Minimal Skill:**
-- [ ] Conforms to the repository `AGENTS.md` authoring standard (BCP 14 keywords, MANDATORY-by-default, one-escape exceptions, self-contained, runtime-portable)
+- [ ] Conforms to the authoring invariants in Overview (BCP 14 keywords, MANDATORY-by-default, one-escape exceptions, self-contained, runtime-portable)
 - [ ] `name` matches the directory name exactly
 - [ ] `description` is a normative "Use when … — you MUST …" trigger with concrete symptoms, in third person, with no workflow summary
 - [ ] Guidance form matches the failure type (see Match the Form to the Failure)

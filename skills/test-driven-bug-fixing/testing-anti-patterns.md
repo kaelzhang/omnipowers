@@ -260,7 +260,7 @@ Reproduce-first cycle:
 
 **Ask yourself:** "Do we need a mock here at all?"
 
-**Consider:** Integration tests with real components often simpler than complex mocks
+When mock setup exceeds the test logic, you SHOULD prefer an integration test with real components — the choice varies by how expensive or external the real dependency is, so it is a recommendation, not an absolute.
 
 ## Reproduce-First Prevents These Anti-Patterns
 

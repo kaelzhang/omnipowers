@@ -11,9 +11,9 @@ This skill is a pre-implementation gate. Before any creative or implementation w
 
 ## Iron Law
 
-YOU MUST NOT WRITE CODE, SCAFFOLD A PROJECT, INVOKE ANY IMPLEMENTATION SKILL, OR TAKE ANY IMPLEMENTATION ACTION UNTIL YOU HAVE PRESENTED A DESIGN AND THE USER HAS APPROVED IT.
+YOU MUST NOT WRITE CODE, SCAFFOLD A PROJECT, INVOKE ANY IMPLEMENTATION SKILL, OR TAKE ANY IMPLEMENTATION ACTION UNTIL YOU HAVE WRITTEN AND COMMITTED A DESIGN SPEC AND THE USER HAS APPROVED THAT WRITTEN SPEC. Verbal approval of a design alone MUST NOT satisfy this gate.
 
-This applies to EVERY task regardless of perceived simplicity. A todo list, a single-function utility, a one-line config change — all of them pass through this gate. If you catch yourself starting implementation before approval, you MUST stop, revert any premature action, and return to this process.
+This applies to EVERY task regardless of perceived simplicity. A todo list, a single-function utility, a one-line config change — all of them pass through this gate. If you catch yourself starting implementation before the written-spec approval, you MUST stop, revert any premature action, and return to this process.
 
 ## Anti-Pattern: "This Is Too Simple To Need A Design"
 
@@ -95,9 +95,9 @@ The terminal state is the user approving the written spec. You MUST NOT take any
 
 ### Design for isolation and clarity
 
-- You MUST break the system into smaller units that each have one clear purpose, communicate through well-defined interfaces, and can be understood and tested independently.
-- For each unit you MUST be able to answer: what does it do, how is it used, and what does it depend on?
-- If someone cannot understand what a unit does without reading its internals, or you cannot change the internals without breaking consumers, the boundaries need work and you MUST refine them.
+- You SHOULD break the system into smaller units that each have one clear purpose, communicate through well-defined interfaces, and can be understood and tested independently — where the unit boundaries lie is domain-dependent judgment, so it varies by situation.
+- The design MUST state, for each unit, what it does, how it is used, and what it depends on.
+- If someone cannot understand what a unit does without reading its internals, or you cannot change the internals without breaking consumers, the boundaries need work and you SHOULD refine them — how much refinement serves the goal is a judgment call.
 - Smaller, well-bounded units are easier to work with and edit reliably. When a file grows large, that is a signal it is doing too much, and the design SHOULD split it — judgment applies because the right boundary depends on the domain.
 
 ### Working in existing codebases
@@ -110,7 +110,7 @@ The terminal state is the user approving the written spec. You MUST NOT take any
 
 ### Documentation
 
-- You MUST write the validated design (the spec) to a dated design file under the project's docs directory, using a path of the form `docs/specs/YYYY-MM-DD-<topic>-design.md`. If the user has stated a preference for spec location, that preference overrides this default.
+- You MUST write the validated design (the spec) under the host project at `.omnipowers/specs/YYYY-MM-DD-<topic>-design.md`, creating any missing parent directories first. If the user has stated a preference for spec location, that preference overrides this default.
 - You MUST commit the design document to version control.
 
 ### Spec self-review

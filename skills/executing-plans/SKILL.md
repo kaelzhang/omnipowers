@@ -23,8 +23,8 @@ A plan is a sequence of bite-sized steps, each with a verification. The plan onl
 
 1. You MUST read the entire plan file before taking any action.
 2. You MUST review it critically and identify every question, gap, ambiguity, or concern.
-3. If you have ANY concern, you MUST raise it with the user and get resolution BEFORE starting execution. You MUST NOT begin implementation while a material concern is unresolved.
-4. If you have no concerns, you MUST create a tracked checklist of the plan's steps (one entry per step) and proceed.
+3. If you have any MATERIAL concern — one that could change what gets built, break a step, or invalidate a verification — you MUST raise it with the user and get resolution BEFORE starting execution. You MUST NOT begin implementation while a material concern is unresolved. A purely cosmetic concern (a typo, a stylistic preference) you MUST note but MUST NOT block on.
+4. If no material concern remains, you MUST create a tracked checklist of the plan's steps (one entry per step) — using the host's task/todo tool if one exists, otherwise an explicit written checklist you keep updated in your responses — and proceed.
 
 ### Step 2: Execute Each Step
 
@@ -99,7 +99,7 @@ Before reporting the work complete, confirm:
 
 - [ ] I read the entire plan and reviewed it critically before starting.
 - [ ] I raised every concern with the user and resolved them before execution.
-- [ ] I created a tracked checklist of the plan's steps.
+- [ ] I created a tracked checklist of the plan's steps (host task/todo tool, or an explicit written checklist kept updated in my responses).
 - [ ] I am on a dedicated branch/workspace (not `main`/`master` without consent).
 - [ ] I executed every step in order, exactly as written.
 - [ ] I ran and read the output of every step's verification before marking it done.

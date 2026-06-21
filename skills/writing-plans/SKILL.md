@@ -46,7 +46,7 @@ A task is the smallest unit that carries its own test cycle and is worth a fresh
 
 ## Bite-Sized Task Granularity
 
-Each step MUST be one action sized at roughly 2–5 minutes. A task's steps MUST follow the TDD cycle:
+Each step MUST be a single concrete action — one test, one minimal implementation, one command, or one commit. A step that bundles multiple actions MUST be split, because a step the implementer cannot complete and check off in one motion hides progress and defeats the checkbox tracking. Steps SHOULD be small enough to finish in a few minutes; the exact size varies by action, so this is a guideline, not a hard threshold. A task's steps MUST follow the TDD cycle:
 
 - "Write the failing test" — one step
 - "Run it to confirm it fails" — one step
@@ -61,7 +61,7 @@ Every plan MUST start with this header:
 ```markdown
 # [Feature Name] Implementation Plan
 
-> **For implementers:** Implement this plan task-by-task. Complete and verify each task before starting the next. Steps use checkbox (`- [ ]`) syntax for tracking; check each off only after its command has run and produced the expected output.
+> **For implementers:** Implement this plan task-by-task. Complete and verify each task before starting the next. Steps use checkbox (`- [ ]`) syntax for tracking; check each off only after the step is done — for a command step, after the command has run and produced the expected output; for a code or test step, after the content is written as specified.
 
 **Goal:** [One sentence describing what this builds]
 
@@ -176,7 +176,7 @@ After writing the complete plan, you MUST review it against the spec with fresh 
 2. **Placeholder scan:** You MUST search the plan for every pattern in "No Placeholders" and the Red Flags table, and fix each occurrence.
 3. **Type consistency:** The types, method signatures, and property names used in later tasks MUST match those defined in earlier tasks. A function named `clearLayers()` in one task and `clearFullLayers()` in another is a bug and MUST be reconciled.
 
-You MUST fix issues inline. After fixing, you do not need to re-review.
+You MUST fix issues inline. If a fix adds or renames a task, step, type, or symbol, you MUST re-run checks 2 and 3 over the changed material, because a fix can itself introduce a new placeholder or a new name mismatch that a single pass will not catch.
 
 ## Execution Handoff
 

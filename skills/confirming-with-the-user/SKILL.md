@@ -5,7 +5,7 @@ description: Use whenever you reach a point that needs the user's decision or si
 
 # Confirming With the User
 
-> Normative keywords — MUST, MUST NOT, REQUIRED, SHALL, SHALL NOT, SHOULD, SHOULD NOT, MAY — are used as defined in BCP 14 (RFC 2119, RFC 8174), and only when capitalized.
+> Normative keywords — MUST, MUST NOT, REQUIRED, SHALL, SHALL NOT, SHOULD, SHOULD NOT, RECOMMENDED, MAY, OPTIONAL — are used as defined in BCP 14 (RFC 2119, RFC 8174), and only when capitalized.
 
 ## Overview
 
@@ -72,4 +72,4 @@ You are presenting a decision badly if any of these is true:
 
 ## The Bottom Line
 
-A good confirmation lets the user decide in seconds: plain language, one decision, a concrete example, the options, each option's impact, your recommendation. Anything less makes the user do your work.
+A confirmation that omits any element required above forces the user to do your work — re-deriving context, decoding jargon, or inventing the options you failed to lay out.

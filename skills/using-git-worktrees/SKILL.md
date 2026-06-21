@@ -35,16 +35,11 @@ GIT_COMMON=$(cd "$(git rev-parse --git-common-dir)" 2>/dev/null && pwd -P)
 BRANCH=$(git branch --show-current)
 ```
 
-**Submodule guard (REQUIRED).** GIT_DIR != GIT_COMMON is also true inside a git submodule. Before concluding "already in a worktree," you MUST verify you are not in a submodule:
+A linked worktree is the only context where `GIT_DIR != GIT_COMMON`. A plain submodule keeps `GIT_DIR == GIT_COMMON` (both resolve to `.git/modules/<name>`), so it lands in the normal-checkout branch below and needs no special handling.
 
-```bash
-# If this returns a path, you are in a submodule, not a worktree — treat as a normal repo.
-git rev-parse --show-superproject-working-tree 2>/dev/null
-```
+**If GIT_DIR != GIT_COMMON:** you are already in a linked worktree. You MUST skip to Step 2 and you MUST NOT create another worktree; creating a nested worktree wastes effort and leaves orphaned state the host cannot track. You MUST report: on a branch — "Already in isolated workspace at PATH on branch NAME"; detached HEAD — "Already in isolated workspace at PATH (detached HEAD, externally managed); branch creation needed at finish time."
 
-**If GIT_DIR != GIT_COMMON and NOT in a submodule:** you are already in a linked worktree. You MUST skip to Step 2 and you MUST NOT create another worktree. You MUST report: on a branch — "Already in isolated workspace at PATH on branch NAME"; detached HEAD — "Already in isolated workspace at PATH (detached HEAD, externally managed); branch creation needed at finish time."
-
-**If GIT_DIR == GIT_COMMON (or in a submodule):** you are in a normal repo checkout. Go to the consent gate.
+**If GIT_DIR == GIT_COMMON:** you are in a normal repo checkout (this includes a plain submodule). Go to the consent gate.
 
 ### Consent gate (REQUIRED before creating a worktree)
 
@@ -72,7 +67,7 @@ You MUST use this path only when Step 1a does not apply. You MUST create the wor
 
 #### Directory selection
 
-You MUST resolve the directory by this priority; an explicit user preference always wins over filesystem state:
+You MUST resolve the directory by this priority and bind the result to `LOCATION`; an explicit user preference always wins over filesystem state:
 
 1. **Declared preference.** If the user specified a worktree directory, you MUST use it without asking.
 2. **Existing project-local directory.** Otherwise detect one with `ls -d .worktrees 2>/dev/null` (preferred, hidden) or `ls -d worktrees 2>/dev/null`. If one exists, you MUST use it; if both, you MUST use `.worktrees`.
@@ -80,17 +75,21 @@ You MUST resolve the directory by this priority; an explicit user preference alw
 
 #### Safety verification (project-local directories only)
 
-You MUST confirm the chosen project-local directory is git-ignored before creating a worktree inside it; otherwise its contents get tracked and can be committed by accident.
+You MUST confirm the chosen project-local directory is git-ignored before creating a worktree inside it; otherwise its contents get tracked and can be committed by accident. You MUST run the check against the single directory you selected (`$LOCATION`), not a fixed OR over both candidate names — testing both can pass on the wrong directory and let you create a worktree in an un-ignored one.
 
 ```bash
-git check-ignore -q .worktrees 2>/dev/null || git check-ignore -q worktrees 2>/dev/null
+git check-ignore -q "$LOCATION" 2>/dev/null
 ```
 
 If it is NOT ignored, you MUST add it to `.gitignore` and commit that change before creating the worktree. You MUST NOT create a project-local worktree in an un-ignored directory.
 
 #### Create the worktree
 
+You MUST bind both variables before running the block: `LOCATION` is the directory chosen above and `BRANCH_NAME` is derived from the feature or plan you are isolating. Leaving them unset makes `git worktree add` target `/` or fail outright, so you MUST assign concrete values, not copy the block verbatim.
+
 ```bash
+LOCATION=.worktrees                # the directory chosen by the priority list above
+BRANCH_NAME=feature/<derived-name> # derived from the feature or plan
 path="$LOCATION/$BRANCH_NAME"
 git worktree add "$path" -b "$BRANCH_NAME"
 cd "$path"
@@ -114,7 +113,7 @@ You MUST use the project's actual toolchain when it differs from these patterns 
 
 ## Step 3 — Verify a Clean Baseline (REQUIRED)
 
-You MUST run the project's test suite to confirm the workspace starts clean, using the project-appropriate command (npm test, cargo test, pytest, or go test ./...). A clean baseline lets you attribute any later failure to your own change.
+You MUST run the project's test suite to confirm the workspace starts clean. The commands `npm test`, `cargo test`, `pytest`, and `go test ./...` are illustrative only; when the project declares its own test command (a Makefile target, a lockfile-pinned runner, a configured script), you MUST use that instead, or you may measure a baseline the project never uses. A clean baseline lets you attribute any later failure to your own change.
 
 **If tests fail:** you MUST report the failures and ask the user whether to proceed or investigate first. You MUST NOT start implementation on an unexplained failing baseline without that explicit decision.
 
@@ -125,7 +124,7 @@ You MUST run the project's test suite to confirm the workspace starts clean, usi
 | Situation | Required action |
 |-----------|-----------------|
 | Already in a linked worktree | Skip creation; go to Step 2 |
-| In a submodule | Treat as a normal repo (Step 0 guard) |
+| In a plain submodule | Lands in the normal-repo branch (GIT_DIR == GIT_COMMON) |
 | Normal checkout, no declared preference | Ask for consent before creating |
 | Native worktree mechanism available | Use it (Step 1a) |
 | No native mechanism | Git worktree fallback (Step 1b) |

@@ -1,6 +1,6 @@
 ---
 name: requesting-code-review
-description: Use when work is complete, a major feature is implemented, or before merging — you MUST get a fresh-eyes review of the finished work against its requirements before proceeding.
+description: Use when work is complete, a major feature is implemented, a plan task is finished, or before merging — you MUST get a fresh-eyes review of the finished work against its requirements before proceeding.
 ---
 
 # Requesting Code Review
@@ -33,10 +33,14 @@ You MUST NOT skip review on the grounds that the change "is simple," "is small,"
 
 ### 1. Capture the git range
 
+The captured range MUST cover the entire body of work under review, not just the latest commit. For a feature-complete or pre-merge review (work that spans multiple commits), you MUST base the range on the merge-base with the main branch:
+
 ```bash
-BASE_SHA=$(git rev-parse HEAD~1)   # or the merge-base with the main branch
+BASE_SHA=$(git merge-base HEAD <main-branch>)   # feature / pre-merge review
 HEAD_SHA=$(git rev-parse HEAD)
 ```
+
+Use `BASE_SHA=$(git rev-parse HEAD~1)` ONLY for a single-task checkpoint where exactly one commit is under review. Scoping the range to one commit when the work spans several silently leaves most of the diff unreviewed, so an agent can satisfy the Iron Law's letter while the bulk of the change is never seen.
 
 You MUST review a committed range. If the work is uncommitted, you MUST commit it first (or stash and review the stash) so the reviewer sees a stable, well-defined diff.
 
@@ -57,7 +61,7 @@ The fallback MUST NOT be a token gesture. A self-review that merely confirms you
 ### 3. Act on feedback
 
 - You MUST fix every Critical issue before proceeding.
-- You MUST fix every Important issue before moving to the next task or merging.
+- You MUST fix every Important issue before proceeding to any further implementation work (the next task, a refactor, or a merge). Deferring it past the current checkpoint leaves the defect to compound into later work.
 - You MUST record Minor issues (e.g. in the task notes or an issue tracker) rather than silently dropping them.
 - If the reviewer is wrong, you MUST push back with specific technical reasoning — cite the code, the tests, or the requirement that proves the point. You MUST NOT accept an incorrect finding just to close it out, and you MUST NOT dismiss a finding without that reasoning.
 
@@ -265,7 +269,7 @@ If you catch yourself thinking any of these, you are about to violate this skill
 | "It's simple, skip review." | Simple changes are where self-audits miss the most. You MUST review. |
 | "I'll just re-read my own reasoning." | That is not a review. The pass MUST be independent of your intent. |
 | "The Critical issue is probably fine." | You MUST NOT proceed with an unfixed Critical issue. |
-| "I'll fix the Important issue later." | You MUST fix Important issues before the next task or merge. |
+| "I'll fix the Important issue later." | You MUST fix Important issues before any further implementation work (next task, refactor, or merge). |
 | "The reviewer is wrong, I'll ignore it." | You MUST push back with technical evidence, or fix it. Silent dismissal is not allowed. |
 | "No subagent here, so I'll skip the review." | You MUST run the fallback self-review pass. Absence of subagents is not absence of review. |
 | "I'll edit while I review." | The review pass MUST be read-only; act on findings only in step 3. |
@@ -289,6 +293,6 @@ Before you treat work as reviewed, confirm every item:
 - [ ] The full diff was read top to bottom against the stated requirements.
 - [ ] The review produced the brief's exact output format (Strengths, Issues by severity, Recommendations, Assessment).
 - [ ] Every Critical issue is fixed.
-- [ ] Every Important issue is fixed before the next task or merge.
+- [ ] Every Important issue is fixed before any further implementation work (the next task, a refactor, or a merge).
 - [ ] Every Minor issue is recorded.
 - [ ] Any disputed finding was answered with specific technical reasoning, not silent dismissal.

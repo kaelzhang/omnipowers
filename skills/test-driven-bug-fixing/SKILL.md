@@ -95,6 +95,8 @@ Tests the happy path that already worked — does not reproduce the bug
 
 This step is REQUIRED. You MUST NOT skip it.
 
+The commands and code in this skill use npm/Jest/TypeScript only as an example. The reproduce → fail → fix → pass discipline is language-agnostic: you MUST run the bug fix through the host project's own test runner, following its test-file conventions — not literally `npm test` unless that is the host's runner.
+
 ```bash
 npm test path/to/test.test.ts
 ```
@@ -206,7 +208,7 @@ If any of these is true, you MUST revert the fix, reproduce with a failing test,
 
 ## Example
 
-**Bug:** Submitting a form with an empty email is accepted; it MUST be rejected.
+**Bug:** Submitting a form with an empty email is accepted; it should be rejected.
 
 **REPRODUCE**
 ```typescript
