@@ -11,6 +11,8 @@ description: Use when you have a written implementation plan to execute — you 
 
 A written plan exists. Your job is to load it, review it critically, execute every step in order, verify at each checkpoint, and report when the work is complete. You MUST NOT improvise around the plan or skip its verifications.
 
+If the host provides subagents (isolated worker agents) and the plan's tasks are largely independent, the `subagent-driven-development` skill is the better fit — it executes and reviews each task in an isolated context. Use *this* skill when subagents are unavailable, or when the plan's steps are tightly coupled and must run in one continuous context.
+
 ## Iron Law
 
 **EXECUTE THE PLAN STEP BY STEP, VERIFYING AT EACH CHECKPOINT. WHEN BLOCKED, STOP AND ASK — NEVER GUESS.**
@@ -44,7 +46,14 @@ After every step is complete and every verification has passed:
 
 1. You MUST run the project's full verification (tests, type checks, linters, build — whatever the project defines as its completeness gate) and read the output.
 2. You MUST NOT claim the work is complete until that verification has passed on real, observed output.
-3. Report completion with the evidence: which steps were executed and the result of the final verification.
+3. **Integrate the work.** Once the final verification passes, you MUST integrate the branch — invoke the `finishing-a-development-branch` skill (verify tests, present the merge / PR / keep / discard options, execute the user's choice, clean up only what you created). If that skill is not installed, run your host project's branch-completion process directly: full suite green, working tree clean, then merge or open the PR as the project requires.
+4. Report completion with the evidence: which steps were executed and the result of the final verification.
+
+## Continuous Execution
+
+When the plan and its goal are clear, you MUST execute in continuous work mode: run every step through to completion without pausing to check in. Once the plan is reviewed (Step 1) and execution has begun, you MUST NOT ask "should I continue?", request permission to proceed, or stop to deliver an unsolicited progress summary between steps — the user asked you to execute the plan, so you execute it to the end. Deciding what to do next and how to do it is your job: you apply best practice rather than asking the user to sequence or approve the mechanics. Between steps you SHOULD narrate at most one short line.
+
+The only permitted reason to stop before every step is complete is a genuine blocker (see "When to Stop and Ask for Help"). When — and only when — you hit one, you MUST surface it with the `confirming-with-the-user` skill (plain-language options + your recommendation), get the decision, then resume continuous execution.
 
 ## Branch Safety
 
@@ -59,7 +68,7 @@ You MUST stop executing immediately when any of the following occurs:
 - The plan has a critical gap that prevents you from starting or continuing.
 - A verification fails repeatedly.
 
-When stopped, you MUST ask the user for clarification. You MUST NOT guess, fabricate a missing step, or force your way past a blocker. You MUST NOT silently downgrade a step to a weaker version that you can complete.
+When stopped, you MUST surface the blocker to the user using the `confirming-with-the-user` skill — state it in plain language with concrete options and your recommendation, get the decision, then resume continuous execution. You MUST NOT guess, fabricate a missing step, or force your way past a blocker. You MUST NOT silently downgrade a step to a weaker version that you can complete.
 
 ## When to Revisit Earlier Steps
 
@@ -103,6 +112,8 @@ Before reporting the work complete, confirm:
 - [ ] I am on a dedicated branch/workspace (not `main`/`master` without consent).
 - [ ] I executed every step in order, exactly as written.
 - [ ] I ran and read the output of every step's verification before marking it done.
+- [ ] I worked in continuous mode — no permission-to-proceed pauses between steps; I stopped only for a real blocker, surfaced via confirming-with-the-user.
 - [ ] I never guessed past a blocker — I stopped and asked when unclear.
 - [ ] I ran the project's full verification at the end and read its output.
+- [ ] I integrated the work (finishing-a-development-branch, or the host's branch-completion process).
 - [ ] My completion report cites the actual verification result as evidence.
