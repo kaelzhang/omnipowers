@@ -6,6 +6,7 @@ A collection of skills that improve coding effectiveness for AI coding agents.
 
 | Skill | Use when |
 | --- | --- |
+| [using-omnipowers](skills/using-omnipowers/SKILL.md) | Starting any task or conversation — how omnipowers skills work; check for and invoke any applicable skill before responding |
 | [test-driven-bug-fixing](skills/test-driven-bug-fixing/SKILL.md) | Fixing any bug or defect — you MUST reproduce it with a failing test before changing production code |
 
 ## Install
