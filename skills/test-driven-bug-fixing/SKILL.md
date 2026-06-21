@@ -88,7 +88,7 @@ Tests the happy path that already worked — does not reproduce the bug
 
 **Requirements:**
 - You MUST reconstruct the data and state that triggered the bug.
-- You MUST assert the correct behavior.
+- You MUST assert the exact behavior the bug report names — the specific value, error message, status, or count it specifies (e.g. returns `[3,4,5]`, rejects with `'Email required'`, throws `'Insufficient funds'`, stops after 3 attempts) — not a vague "it works".
 - Each test MUST cover one defect and MUST be named after the bug.
 
 ### Verify It Fails — For the Bug's Reason
@@ -135,6 +135,8 @@ Hides the symptom; the invalid withdrawal still "succeeds"
 </Bad>
 
 You MUST make the minimal change. In the same change you MUST NOT refactor unrelated code, add features, or fix unrelated bugs.
+
+You MUST apply the fix to the host project's actual production implementation — the code that ships and that your reproducing test exercises. If you cannot locate that implementation, you MUST keep searching for it; you MUST NOT substitute a standalone "corrected" function, a snippet, or sample code as the fix. A correction that does not change the code under test changes nothing.
 
 ### Verify It Passes
 
@@ -193,6 +195,7 @@ Each of these thoughts means you are about to violate the Iron Law. Each is reje
 | "Hard to reproduce in a test" | Hard is not impossible. Keep investigating; you MUST NOT guess. |
 | "The bug is in third-party code" | Test your usage. You MUST pin the behavior you depend on so it cannot drift. |
 | "No tests exist here" | You are fixing this file — you MUST start the safety net now, with this bug. |
+| "I can't find the implementation, here's a corrected version" | A fix not applied to the host code fixes nothing — your test still fails against the real code. Locate the real implementation; a standalone snippet is not a fix. |
 
 ## Red Flags — STOP and Start Over
 
@@ -203,6 +206,7 @@ If any of these is true, you MUST revert the fix, reproduce with a failing test,
 - You cannot reproduce the bug but are "pretty sure" the fix is right (and have not met the "Only Exception" bar)
 - The regression test was added after the fix
 - The symptom is patched without locating the cause
+- A standalone "corrected" function or snippet submitted as the fix instead of a patch to the real implementation (because it was not located)
 - A speculative fix for a bug you cannot trigger
 - "This bug is different because..."
 
