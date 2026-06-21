@@ -8,22 +8,17 @@ INSTALLER := scripts/install-skills.sh
 FORCE ?=
 
 .DEFAULT_GOAL := help
-.PHONY: help dev status install uninstall
+.PHONY: help dev status uninstall
 
 help: ## Show available targets
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
 	  | awk 'BEGIN{FS=":.*?## "}{printf "  \033[36m%-10s\033[0m %s\n", $$1, $$2}'
 
-dev: ## Analyze Claude/Codex status, then install this repo's skills for both
-	@bash $(INSTALLER) status
-	@echo
-	@FORCE='$(FORCE)' bash $(INSTALLER) install
+dev: ## Analyze status, then symlink this repo's skills into Claude + Codex (FORCE=1 to re-link)
+	@FORCE='$(FORCE)' bash $(INSTALLER) dev
 
 status: ## Show Claude/Codex install state and which skills are linked
 	@bash $(INSTALLER) status
-
-install: ## Symlink skills into Claude + Codex (idempotent; FORCE=1 to relink)
-	@FORCE='$(FORCE)' bash $(INSTALLER) install
 
 uninstall: ## Remove omnipowers skill symlinks from Claude + Codex
 	@bash $(INSTALLER) uninstall

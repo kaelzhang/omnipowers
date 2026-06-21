@@ -14,10 +14,10 @@ Install the skills into Claude Code and Codex. Skills are **symlinked**, so your
 edits auto-apply without reinstalling.
 
 ```bash
-make dev          # analyze Claude/Codex status, then install for both
-make status       # show what is installed
-make install      # install (idempotent; FORCE=1 to re-link)
-make uninstall    # remove the symlinks
+make dev            # analyze Claude/Codex status, then install for both
+make dev FORCE=1    # re-link even if already installed
+make status         # show what is installed
+make uninstall      # remove the symlinks
 ```
 
 Skills are discovered at:

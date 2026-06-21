@@ -11,7 +11,7 @@
 #
 # Usage:
 #   install-skills.sh status      # analyze install state, link nothing
-#   install-skills.sh install     # symlink skills (idempotent; FORCE=1 to relink)
+#   install-skills.sh dev         # analyze, then symlink skills (idempotent; FORCE=1 to relink)
 #   install-skills.sh uninstall   # remove omnipowers symlinks
 #
 # Env:
@@ -144,7 +144,7 @@ do_uninstall() {
 
 case "${1:-status}" in
   status)    print_status ;;
-  install)   do_install ;;
+  dev)       print_status; info ""; do_install ;;
   uninstall) do_uninstall ;;
-  *) err "unknown command: ${1:-}"; info "use: status | install | uninstall"; exit 2 ;;
+  *) err "unknown command: ${1:-}"; info "use: status | dev | uninstall"; exit 2 ;;
 esac
