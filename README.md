@@ -34,6 +34,16 @@ reinstalling**: Claude Code hot-reloads it live in the session; Codex auto-detec
 the change (restart Codex if it does not show). Re-run `make install` only when
 you add a new skill.
 
+## Project files (`.omnipowers/`)
+
+Some skills keep per-project state in a `.omnipowers/` directory at the root of
+the project you run them in (not in this repo). For `code-auditing`:
+
+- `.omnipowers/rules/CODE_AUDITING.md` — the project's audit checklist; a durable,
+  reviewed quality standard. **Commit it** so the whole team shares one standard.
+- `.omnipowers/reviews/` — dated audit logs (`<date>-<time>-<target>.md`). A
+  running record; **gitignore it** if you do not want logs in version control.
+
 ## Credits
 
 omnipowers is inspired by [Superpowers](https://github.com/obra/superpowers) by
