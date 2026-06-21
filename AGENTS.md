@@ -71,6 +71,17 @@ cross-skill prefixed includes; supporting files are included by same-directory
 reference only. Ported content MUST preserve the upstream copyright and credit
 the source (MIT).
 
+### Portable at runtime
+
+omnipowers is a skills library that OTHER projects install. A skill MUST run the
+same inside any project it is installed into. At runtime a skill MUST NOT depend
+on this repository or on its dev / test / optimize tooling (the `Makefile`, the
+install scripts, any eval or optimization harness, the test suite) or on any
+service outside the host project — that tooling exists only to author and improve
+the skills here and is not available downstream. Any state a skill needs MUST
+live inside the host project (under `.omnipowers/`), and any self-improvement loop
+a skill defines MUST be self-contained and gated by the host project's user.
+
 ### Authoring & review checklist
 
 For each statement in a skill:
@@ -82,3 +93,4 @@ For each statement in a skill:
 - [ ] Every MANDATORY rule states the consequence of violating it.
 - [ ] Any exception uses the one-escape shape above.
 - [ ] Self-contained: carries the BCP 14 note; no reference outside this repo.
+- [ ] Portable at runtime: works in any host project; no dependency on this repo's tooling; runtime state stays under the host project's `.omnipowers/`.
