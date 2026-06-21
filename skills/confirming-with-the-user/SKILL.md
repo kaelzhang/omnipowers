@@ -26,10 +26,10 @@ A completed design awaiting sign-off, and a review's proposals, are exactly the 
 
 ## What You MUST Present
 
-For each decision you MUST include ALL of:
+For each decision you MUST include the following (item 2 applies as noted):
 
 1. **Context, in plain language.** State the situation and why a decision is needed, in concrete terms the user can follow. You MUST NOT rely on internal codes, jargon, or unexplained references the user has to decode.
-2. **A concrete example.** You MUST ground the decision in at least one specific example (a real case, a sample input/output, a before/after) so its impact is tangible rather than abstract.
+2. **A concrete example, when the impact is not obvious.** You MUST include a concrete example (a real case, a sample input/output, a before/after) whenever an option's impact is not self-evident, so the impact is tangible rather than abstract. For a decision whose impact is already obvious on its face — a simple binary sign-off, for instance — an example is OPTIONAL; you MUST NOT pad such a decision with a degenerate example.
 3. **The options.** You MUST lay out the distinct options as a short, clearly separated, labelled list. Each option MUST be a real, actionable choice.
 4. **Each option's impact.** For every option you MUST state what it changes — its cost, risk, trade-off, or consequence — and how it differs from the others. An option with no stated impact is not a real option.
 5. **Your recommendation.** You MUST state which option you recommend and why, in one or two sentences.
@@ -68,7 +68,7 @@ You are presenting a decision badly if any of these is true:
 - the user would have to re-read earlier context, open files, or decode jargon/codes to understand the choice;
 - you switched languages mid-explanation;
 - you piled multiple unrelated decisions into one question;
-- there is no concrete example to anchor the impact.
+- an option's impact is not obvious and you gave no concrete example to anchor it.
 
 ## The Bottom Line
 
