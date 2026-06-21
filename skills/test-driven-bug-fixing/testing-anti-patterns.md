@@ -8,7 +8,7 @@ Tests must verify real behavior, not mock behavior. Mocks are a means to isolate
 
 **Core principle:** Test what the code does, not what the mocks do.
 
-**Following strict TDD prevents these anti-patterns.**
+**Following the reproduce-first discipline prevents these anti-patterns.**
 
 ## The Iron Laws
 
@@ -34,7 +34,7 @@ test('renders sidebar', () => {
 - Test passes when mock is present, fails when it's not
 - Tells you nothing about real behavior
 
-**your human partner's correction:** "Are we testing the behavior of a mock?"
+**Ask yourself:** "Am I testing the behavior of a mock?"
 
 **The fix:**
 ```typescript
@@ -225,27 +225,27 @@ BEFORE creating mock responses:
   If uncertain: Include all documented fields
 ```
 
-## Anti-Pattern 5: Integration Tests as Afterthought
+## Anti-Pattern 5: Fixing Without a Reproducing Test
 
 **The violation:**
 ```
-✅ Implementation complete
-❌ No tests written
-"Ready for testing"
+✅ Fix applied
+❌ No test reproduces the bug
+"Should be fixed now"
 ```
 
 **Why this is wrong:**
-- Testing is part of implementation, not optional follow-up
-- TDD would have caught this
-- Can't claim complete without tests
+- A fix you never watched fail proves nothing
+- The bug can silently return on the next change
+- Can't claim fixed without a test that failed first
 
 **The fix:**
 ```
-TDD cycle:
-1. Write failing test
-2. Implement to pass
-3. Refactor
-4. THEN claim complete
+Reproduce-first cycle:
+1. Write a test that reproduces the bug (it fails)
+2. Fix the root cause to make it pass
+3. Harden adjacent cases
+4. THEN claim fixed
 ```
 
 ## When Mocks Become Too Complex
@@ -256,19 +256,19 @@ TDD cycle:
 - Mocks missing methods real components have
 - Test breaks when mock changes
 
-**your human partner's question:** "Do we need to be using a mock here?"
+**Ask yourself:** "Do we need a mock here at all?"
 
 **Consider:** Integration tests with real components often simpler than complex mocks
 
-## TDD Prevents These Anti-Patterns
+## Reproduce-First Prevents These Anti-Patterns
 
-**Why TDD helps:**
-1. **Write test first** → Forces you to think about what you're actually testing
-2. **Watch it fail** → Confirms test tests real behavior, not mocks
-3. **Minimal implementation** → No test-only methods creep in
+**Why reproducing the bug first helps:**
+1. **Write the failing test first** → Forces you to pin what the bug actually is
+2. **Watch it fail** → Confirms the test exercises real behavior, not mocks
+3. **Minimal fix** → No test-only methods creep in
 4. **Real dependencies** → You see what the test actually needs before mocking
 
-**If you're testing mock behavior, you violated TDD** - you added mocks without watching test fail against real code first.
+**If you're testing mock behavior, you skipped reproduce-first** - you added mocks without watching the test fail against real code first.
 
 ## Quick Reference
 
@@ -278,7 +278,7 @@ TDD cycle:
 | Test-only methods in production | Move to test utilities |
 | Mock without understanding | Understand dependencies first, mock minimally |
 | Incomplete mocks | Mirror real API completely |
-| Tests as afterthought | TDD - tests first |
+| Fix without a reproducing test | Reproduce the bug first |
 | Over-complex mocks | Consider integration tests |
 
 ## Red Flags
