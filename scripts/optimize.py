@@ -42,6 +42,7 @@ SKILLS_DIR = os.path.join(REPO, "skills")
 ARTIFACT_DIR = os.path.join(REPO, ".skillopt-sleep")          # gitignored
 STATE_ROOT = os.path.join(ARTIFACT_DIR, "state")              # per-skill SkillOpt state
 INDEX_PATH = os.path.join(ARTIFACT_DIR, "driver-index.json")  # skill -> last staging dir
+POOL_PATH = os.path.join(ARTIFACT_DIR, "pool.json")           # persisted mined task pool
 
 USER_BACKENDS = ("claude", "codex")
 # config.json keys forwarded to SkillOpt (everything else is ignored).
@@ -154,6 +155,31 @@ def _write_index(idx: Dict[str, str]) -> None:
         json.dump(idx, f, indent=2)
 
 
+# ── persisted mined pool (harvest cheap, mine expensive → mine once, reuse) ───
+
+def _save_pool(pool: List[Any], n_sessions: int, path: str, backend: str) -> None:
+    os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
+    payload = {
+        "format": "omnipowers.pool.v1",
+        "backend": backend,
+        "n_sessions": n_sessions,
+        "n_tasks": len(pool),
+        "tasks": [t.to_dict() for t in pool],
+    }
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(payload, f, ensure_ascii=False, indent=2)
+
+
+def _load_pool(path: str):
+    load_skillopt()
+    from skillopt_sleep.types import TaskRecord
+    with open(path, encoding="utf-8") as f:
+        data = json.load(f)
+    tasks = data.get("tasks", []) if isinstance(data, dict) else []
+    n_sessions = data.get("n_sessions", 0) if isinstance(data, dict) else 0
+    return [TaskRecord.from_dict(d) for d in tasks], n_sessions
+
+
 # ── run ──────────────────────────────────────────────────────────────────────
 
 def _build_overrides(name: str, backend: str, cfg: Dict[str, Any], args) -> Dict[str, Any]:
@@ -241,6 +267,25 @@ def _harvest_mine_pool(args, backend_name: str):
     return pool, len(digests)
 
 
+def cmd_pool(args) -> int:
+    """Harvest + LLM-mine the shared task pool ONCE and persist it.
+
+    Reading transcripts is cheap; mining (LLM task extraction) is the expensive,
+    slow step — so it runs a single time here and is reused by `run --pool`,
+    instead of being repeated per skill or per run. Mine with a fast, cheap
+    backend (e.g. claude / haiku); optimize later with a strong one (codex).
+    """
+    load_skillopt()
+    backend = resolve_backend(args.backend, "")
+    pool, n_sessions = _harvest_mine_pool(args, backend)
+    out = args.out or POOL_PATH
+    _save_pool(pool, n_sessions, out, backend)
+    print(f"[optimize] mined pool: {n_sessions} session(s) → {len(pool)} task(s) "
+          f"(backend={backend}) → {out}")
+    print(f"[optimize] reuse it (no re-mining): make optimize POOL={out} BACKEND=<claude|codex>")
+    return 0
+
+
 def cmd_run(args) -> int:
     load_skillopt()
     import copy
@@ -262,11 +307,19 @@ def cmd_run(args) -> int:
     pool: List[Any] = []
     n_sessions = 0
     if mine_targets:
-        pool_backend = resolve_backend(args.backend, str(config_for(mine_targets[0], root).get("backend", "")))
-        pool, n_sessions = _harvest_mine_pool(args, pool_backend)
-        if not args.json:
-            print(f"[optimize] shared pool: {n_sessions} session(s) → {len(pool)} mined task(s), "
-                  f"harvested + mined once for {len(mine_targets)} auto-discovery skill(s)")
+        pool_path = getattr(args, "pool", "") or ""
+        if pool_path:
+            if not os.path.isfile(pool_path):
+                die(f"--pool file not found: {pool_path} (run `make optimize-pool` first)")
+            pool, n_sessions = _load_pool(pool_path)
+            if not args.json:
+                print(f"[optimize] loaded persisted pool: {len(pool)} task(s) from {pool_path} (no re-mining)")
+        else:
+            pool_backend = resolve_backend(args.backend, str(config_for(mine_targets[0], root).get("backend", "")))
+            pool, n_sessions = _harvest_mine_pool(args, pool_backend)
+            if not args.json:
+                print(f"[optimize] shared pool: {n_sessions} session(s) → {len(pool)} mined task(s), "
+                      f"harvested + mined once for {len(mine_targets)} auto-discovery skill(s)")
 
     for name in targets:
         cfg = config_for(name, root)
@@ -421,6 +474,8 @@ def _add_run_flags(p: argparse.ArgumentParser) -> None:
                    help="auto-discovery harvest window (0 = full history)")
     p.add_argument("--max-tasks", type=int, default=None,
                    help="cap mined candidate pool + per-skill task count (cost control)")
+    p.add_argument("--pool", default="",
+                   help="reuse a persisted mined pool (from `optimize pool`) instead of re-mining")
     p.add_argument("--progress", action="store_true",
                    help="stream SkillOpt phase progress (harvest/mine/consolidate) to stderr")
     p.add_argument("--json", action="store_true", help="machine-readable output")
@@ -433,6 +488,14 @@ def main(argv: Optional[List[str]] = None) -> int:
 
     p_run = sub.add_parser("run", help="optimize skill(s) -> staged proposals")
     _add_run_flags(p_run)
+    p_pool = sub.add_parser("pool", help="harvest + mine the shared task pool ONCE and persist it")
+    p_pool.add_argument("--backend", default="", help="mining backend: claude | codex (claude/haiku is fast + cheap)")
+    p_pool.add_argument("--model", default="", help="backend model (e.g. haiku)")
+    p_pool.add_argument("--source", default="", choices=["", "claude", "codex", "auto"])
+    p_pool.add_argument("--lookback-hours", type=int, default=None)
+    p_pool.add_argument("--max-tasks", type=int, default=None)
+    p_pool.add_argument("--out", default="", help=f"output path (default {POOL_PATH})")
+    p_pool.add_argument("--progress", action="store_true")
     p_status = sub.add_parser("status", help="show staged proposals")
     p_status.add_argument("--skill", default="", help="comma list; empty = all staged")
     p_adopt = sub.add_parser("adopt", help="apply one skill's staged proposal (backup kept)")
@@ -443,6 +506,8 @@ def main(argv: Optional[List[str]] = None) -> int:
     args = parser.parse_args(argv)
     if args.cmd == "run":
         return cmd_run(args)
+    if args.cmd == "pool":
+        return cmd_pool(args)
     if args.cmd == "status":
         return cmd_status(args)
     if args.cmd == "adopt":
