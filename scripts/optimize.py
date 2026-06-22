@@ -177,6 +177,8 @@ def _build_overrides(name: str, backend: str, cfg: Dict[str, Any], args) -> Dict
             ov["transcript_source" if k == "source" else k] = cfg[k]
     if args.model:
         ov["model"] = args.model
+    if getattr(args, "max_tasks", None) is not None:
+        ov["max_tasks_per_night"] = args.max_tasks
     if getattr(args, "progress", False):
         ov["progress"] = True
     return ov
@@ -211,6 +213,8 @@ def _harvest_mine_pool(args, backend_name: str):
         ov["transcript_source"] = args.source
     if args.lookback_hours is not None:
         ov["lookback_hours"] = args.lookback_hours
+    if getattr(args, "max_tasks", None) is not None:
+        ov["max_tasks_per_night"] = args.max_tasks
     cfg = load_config(**ov)
 
     lb = cfg.get("lookback_hours", 72)
@@ -415,6 +419,8 @@ def _add_run_flags(p: argparse.ArgumentParser) -> None:
                    help="transcript source for auto-discovery")
     p.add_argument("--lookback-hours", type=int, default=None,
                    help="auto-discovery harvest window (0 = full history)")
+    p.add_argument("--max-tasks", type=int, default=None,
+                   help="cap mined candidate pool + per-skill task count (cost control)")
     p.add_argument("--progress", action="store_true",
                    help="stream SkillOpt phase progress (harvest/mine/consolidate) to stderr")
     p.add_argument("--json", action="store_true", help="machine-readable output")

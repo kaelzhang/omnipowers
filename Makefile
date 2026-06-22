@@ -13,6 +13,9 @@ MODEL ?=
 DRY ?=
 PROGRESS ?=
 EVAL_ROOT ?=
+MAXTASKS ?=
+LOOKBACK ?=
+SOURCE ?=
 TEST_ARGS ?=
 
 .DEFAULT_GOAL := help
@@ -35,7 +38,7 @@ test: ## Run skill tests (free content checks; TEST_ARGS="--integration" also ru
 	@bash tests/run-skill-tests.sh $(TEST_ARGS)
 
 optimize: ## SkillOpt: optimize skills → staged proposals. SKILL=a,b,c (empty=all) BACKEND=claude|codex [MODEL=] [DRY=1] [PROGRESS=1]
-	@$(OPTIMIZE) run $(if $(SKILL),--skill $(SKILL),) $(if $(BACKEND),--backend $(BACKEND),) $(if $(MODEL),--model $(MODEL),) $(if $(DRY),--dry,) $(if $(PROGRESS),--progress,) $(if $(EVAL_ROOT),--eval-root $(EVAL_ROOT),)
+	@$(OPTIMIZE) run $(if $(SKILL),--skill $(SKILL),) $(if $(BACKEND),--backend $(BACKEND),) $(if $(MODEL),--model $(MODEL),) $(if $(DRY),--dry,) $(if $(PROGRESS),--progress,) $(if $(EVAL_ROOT),--eval-root $(EVAL_ROOT),) $(if $(MAXTASKS),--max-tasks $(MAXTASKS),) $(if $(LOOKBACK),--lookback-hours $(LOOKBACK),) $(if $(SOURCE),--source $(SOURCE),)
 
 optimize-status: ## Show staged optimization proposals — SKILL=a,b,c (empty=all staged)
 	@$(OPTIMIZE) status $(if $(SKILL),--skill $(SKILL),)
