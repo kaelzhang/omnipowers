@@ -157,69 +157,141 @@ def _write_index(idx: Dict[str, str]) -> None:
 # ── run ──────────────────────────────────────────────────────────────────────
 
 def _build_overrides(name: str, backend: str, cfg: Dict[str, Any], args) -> Dict[str, Any]:
-    """Compose SkillOpt config overrides: CLI > per-skill config > driver defaults."""
-    auto = not tasks_file_for(name, eval_root(args.eval_root))
+    """Compose SkillOpt config overrides for ONE skill's consolidate run.
+
+    Every per-skill run replays seed_tasks (curated eval or a slice of the shared
+    mined pool), so harvest is skipped here — which also sidesteps SkillOpt's
+    per-run `last_harvest` shared-default bug. CLI flags > per-skill config.json.
+    """
     ov: Dict[str, Any] = {
         "invoked_project": REPO,
+        "projects": "invoked",                          # harvest skipped (seed_tasks given)
         "target_skill_path": skill_md(name),
         "backend": backend,
-        "state_dir": os.path.join(STATE_ROOT, name),  # per-skill isolation
+        "state_dir": os.path.join(STATE_ROOT, name),    # per-skill staging/night isolation
         "evolve_skill": True,
-        "evolve_memory": False,                        # never touch repo CLAUDE.md/AGENTS.md
-        # auto-discovery harvests across the user's projects; curated runs skip harvest
-        "projects": "all" if auto else "invoked",
+        "evolve_memory": False,                          # never touch repo CLAUDE.md/AGENTS.md
     }
-    # per-skill config.json (forwarded keys only)
     for k in _CONFIG_KEYS:
         if k in cfg and cfg[k] is not None:
             ov["transcript_source" if k == "source" else k] = cfg[k]
-    if "scope" in cfg and cfg["scope"]:
-        ov["projects"] = cfg["scope"]
-    # CLI flags win
+    if args.model:
+        ov["model"] = args.model
+    if getattr(args, "progress", False):
+        ov["progress"] = True
+    return ov
+
+
+def _read_skill_text(name: str) -> str:
+    try:
+        with open(skill_md(name), encoding="utf-8") as f:
+            return f.read()
+    except Exception:  # noqa: BLE001
+        return ""
+
+
+def _harvest_mine_pool(args, backend_name: str):
+    """Harvest transcripts + LLM-mine ONCE into a shared candidate task pool.
+
+    The expensive step (LLM mining of the user's sessions) runs a single time and
+    feeds every auto-discovery skill, instead of being repeated per skill. Returns
+    (pool, n_sessions).
+    """
+    import time
+    from skillopt_sleep.config import load_config
+    from skillopt_sleep.harvest_sources import harvest_for_config
+    from skillopt_sleep.mine import mine
+    from skillopt_sleep.backend import get_backend
+    from skillopt_sleep.state import _now_iso
+
+    ov: Dict[str, Any] = {"invoked_project": REPO, "projects": "all", "backend": backend_name}
     if args.model:
         ov["model"] = args.model
     if args.source:
         ov["transcript_source"] = args.source
     if args.lookback_hours is not None:
         ov["lookback_hours"] = args.lookback_hours
-    if getattr(args, "progress", False):
-        ov["progress"] = True
-    return ov
+    cfg = load_config(**ov)
+
+    lb = cfg.get("lookback_hours", 72)
+    since = _now_iso(time.time() - lb * 3600) if lb and lb > 0 else None
+    cap = cfg.get("max_tasks_per_night", 40)
+    max_sessions = cfg.get("max_sessions_per_night", 0) or cap * 3
+    digests = harvest_for_config(cfg, since_iso=since, limit=max_sessions)
+    if not digests:
+        return [], 0
+
+    llm_miner = None
+    if backend_name != "mock":
+        try:
+            from skillopt_sleep.llm_miner import make_llm_miner
+            be = get_backend(backend_name, model=cfg.get("model", ""),
+                             codex_path="", project_dir=REPO)
+            llm_miner = make_llm_miner(be, max_sessions=max_sessions, max_tasks=cap * 3)
+        except Exception:  # noqa: BLE001
+            llm_miner = None
+
+    pool = mine(digests, llm_miner=llm_miner, target_skill_text="", target_skill_path="",
+                max_tasks=cap * 3, candidate_limit=cap * 3,
+                holdout_fraction=cfg.get("holdout_fraction", 0.34), seed=cfg.get("seed", 42))
+    return pool, len(digests)
 
 
 def cmd_run(args) -> int:
     load_skillopt()
+    import copy
     from skillopt_sleep.config import load_config
     from skillopt_sleep.cycle import run_sleep_cycle
     from skillopt_sleep.tasks_file import load_tasks_file
+    from skillopt_sleep.mine import assign_splits, filter_tasks_for_target
 
     root = eval_root(args.eval_root)
     targets = resolve_targets(args.skill)
     idx = _read_index()
     rows: List[Dict[str, Any]] = []
 
+    # Auto-discovery skills (no curated eval) share ONE harvest+mine pass — the
+    # expensive LLM mining runs once, not once per skill. Every per-skill run
+    # below replays seed_tasks and never harvests, so SkillOpt's per-run
+    # last_harvest shared-default bug cannot bite.
+    mine_targets = [n for n in targets if not tasks_file_for(n, root)]
+    pool: List[Any] = []
+    n_sessions = 0
+    if mine_targets:
+        pool_backend = resolve_backend(args.backend, str(config_for(mine_targets[0], root).get("backend", "")))
+        pool, n_sessions = _harvest_mine_pool(args, pool_backend)
+        if not args.json:
+            print(f"[optimize] shared pool: {n_sessions} session(s) → {len(pool)} mined task(s), "
+                  f"harvested + mined once for {len(mine_targets)} auto-discovery skill(s)")
+
     for name in targets:
         cfg = config_for(name, root)
         backend = resolve_backend(args.backend, str(cfg.get("backend", "")))
-        overrides = _build_overrides(name, backend, cfg, args)
-        scfg = load_config(**overrides)
+        scfg = load_config(**_build_overrides(name, backend, cfg, args))
+        cap = scfg.get("max_tasks_per_night", 40)
+        frac = scfg.get("holdout_fraction", 0.34)
+        seed = scfg.get("seed", 42)
 
         tf = tasks_file_for(name, root)
-        seed_tasks = None
-        source = "mined"
         if tf:
-            seed_tasks, meta = load_tasks_file(
-                tf,
-                holdout_fraction=scfg.get("holdout_fraction", 0.34),
-                seed=scfg.get("seed", 42),
-            )
+            seed_tasks, meta = load_tasks_file(tf, holdout_fraction=frac, seed=seed)
             source = "eval"
             if backend != "mock" and meta.get("reviewed") is not True:
                 print(f"[skip] {name}: real-backend replay refused — {tf} is not "
                       'reviewed (set "reviewed": true after inspecting it)', file=sys.stderr)
-                rows.append({"skill": name, "source": "eval", "tasks": 0,
-                             "baseline": None, "candidate": None, "gate": "refused",
-                             "accepted": False, "staging": ""})
+                rows.append({"skill": name, "source": "eval:refused", "tasks": 0, "baseline": None,
+                             "candidate": None, "gate": "refused", "accepted": False, "staging": ""})
+                continue
+        else:
+            source = "mined"
+            relevant = filter_tasks_for_target(pool, _read_skill_text(name), skill_md(name)) if pool else []
+            if relevant is pool:                  # identity sentinel → nothing matched this skill
+                relevant = []
+            relevant = copy.deepcopy(list(relevant)[:cap])
+            seed_tasks = assign_splits(relevant, holdout_fraction=frac, seed=seed) if relevant else []
+            if not seed_tasks:
+                rows.append({"skill": name, "source": "mined:0", "tasks": 0, "baseline": None,
+                             "candidate": None, "gate": "", "accepted": False, "staging": ""})
                 continue
 
         outcome = run_sleep_cycle(scfg, seed_tasks=seed_tasks, dry_run=bool(args.dry))
@@ -242,7 +314,7 @@ def cmd_run(args) -> int:
 
     if args.json:
         print(json.dumps({"dry_run": bool(args.dry), "backend_default": args.backend,
-                          "results": rows}, ensure_ascii=False, indent=2))
+                          "n_sessions": n_sessions, "results": rows}, ensure_ascii=False, indent=2))
     else:
         _print_table(rows, dry=bool(args.dry))
     return 0
