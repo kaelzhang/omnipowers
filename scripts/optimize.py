@@ -218,17 +218,55 @@ def _read_skill_text(name: str) -> str:
         return ""
 
 
-def _harvest_mine_pool(args, backend_name: str):
-    """Harvest transcripts + LLM-mine ONCE into a shared candidate task pool.
+def _digest_text(d) -> str:
+    parts = list(getattr(d, "user_prompts", []) or [])
+    fin = getattr(d, "assistant_finals", []) or []
+    if fin:
+        parts.append(fin[-1])
+    parts += list(getattr(d, "tools_used", []) or [])
+    gb = getattr(d, "git_branch", "")
+    if gb:
+        parts.append(gb)
+    return "\n".join(str(p) for p in parts)
 
-    The expensive step (LLM mining of the user's sessions) runs a single time and
-    feeds every auto-discovery skill, instead of being repeated per skill. Returns
-    (pool, n_sessions).
+
+def _relevant_digests(digests, skill_names):
+    """Keep only sessions whose text overlaps SOME target skill's keywords (cheap,
+    no LLM). This both raises relevance and cuts how many sessions we pay to mine.
+    Falls back to all sessions if nothing matches (so a sparse history still runs).
+    """
+    try:
+        from skillopt_sleep.mine import target_task_keywords, _target_tokens
+    except Exception:  # noqa: BLE001
+        return digests
+    kw = []
+    for name in skill_names:
+        strong, weak = target_task_keywords(_read_skill_text(name), skill_md(name))
+        if strong or weak:
+            kw.append((strong, weak))
+    if not kw:
+        return digests
+    keep = []
+    for d in digests:
+        toks = set(_target_tokens(_digest_text(d)))
+        if any((toks & strong) or len(toks & weak) >= 2 for strong, weak in kw):
+            keep.append(d)
+    return keep or digests
+
+
+def _harvest_mine_pool(args, backend_name: str, skill_names: List[str]):
+    """Harvest + mine the shared candidate task pool ONCE.
+
+    Engineering: (1) relevance pre-filter sessions to the target skills (cheap, no
+    LLM) so we never pay to mine irrelevant history; (2) mine the survivors with
+    BOUNDED parallelism (`--jobs`), because per-session mining is slow (~25s) but
+    independent. Returns (pool, n_mined_sessions).
     """
     import time
+    from concurrent.futures import ThreadPoolExecutor
     from skillopt_sleep.config import load_config
     from skillopt_sleep.harvest_sources import harvest_for_config
-    from skillopt_sleep.mine import mine
+    from skillopt_sleep.mine import mine, dedup_tasks, assign_splits
     from skillopt_sleep.backend import get_backend
     from skillopt_sleep.state import _now_iso
 
@@ -247,23 +285,46 @@ def _harvest_mine_pool(args, backend_name: str):
     since = _now_iso(time.time() - lb * 3600) if lb and lb > 0 else None
     cap = cfg.get("max_tasks_per_night", 40)
     max_sessions = cfg.get("max_sessions_per_night", 0) or cap * 3
+    frac, seed = cfg.get("holdout_fraction", 0.34), cfg.get("seed", 42)
     digests = harvest_for_config(cfg, since_iso=since, limit=max_sessions)
     if not digests:
         return [], 0
+    n_harvested = len(digests)
+    digests = _relevant_digests(digests, skill_names)[:max_sessions]
+    jobs = max(1, int(getattr(args, "jobs", 0) or 6))
 
-    llm_miner = None
-    if backend_name != "mock":
-        try:
-            from skillopt_sleep.llm_miner import make_llm_miner
-            be = get_backend(backend_name, model=cfg.get("model", ""),
-                             codex_path="", project_dir=REPO)
-            llm_miner = make_llm_miner(be, max_sessions=max_sessions, max_tasks=cap * 3)
-        except Exception:  # noqa: BLE001
-            llm_miner = None
+    if backend_name == "mock":
+        print(f"[optimize] mining: {n_harvested} harvested → {len(digests)} relevant (heuristic, mock)")
+        pool = mine(digests, llm_miner=None, target_skill_text="", target_skill_path="",
+                    max_tasks=cap * 3, candidate_limit=cap * 3, holdout_fraction=frac, seed=seed)
+        return pool, len(digests)
 
-    pool = mine(digests, llm_miner=llm_miner, target_skill_text="", target_skill_path="",
-                max_tasks=cap * 3, candidate_limit=cap * 3,
-                holdout_fraction=cfg.get("holdout_fraction", 0.34), seed=cfg.get("seed", 42))
+    # real backend → bounded-parallel LLM mining (own loop; SkillOpt's is serial)
+    from skillopt_sleep.llm_miner import _digest_to_prompt, _extract_json, _mk_task
+    be = get_backend(backend_name, model=cfg.get("model", ""), codex_path="", project_dir=REPO)
+    print(f"[optimize] mining: {n_harvested} harvested → {len(digests)} relevant, "
+          f"{jobs}-way parallel ({backend_name})…")
+
+    def _mine_one(d):
+        if not getattr(d, "user_prompts", None):
+            return []
+        arr = _extract_json(be._call(_digest_to_prompt(d), max_tokens=800), "array")
+        if not isinstance(arr, list):
+            return []
+        out = []
+        for i, obj in enumerate(arr[:3]):
+            if isinstance(obj, dict):
+                t = _mk_task(d, obj, i)
+                if t is not None:
+                    out.append(t)
+        return out
+
+    pool: List[Any] = []
+    with ThreadPoolExecutor(max_workers=jobs) as ex:
+        for tasks in ex.map(_mine_one, digests):
+            pool.extend(tasks)
+    pool = dedup_tasks(pool)[:cap * 3]
+    pool = assign_splits(pool, holdout_fraction=frac, seed=seed)
     return pool, len(digests)
 
 
@@ -277,7 +338,7 @@ def cmd_pool(args) -> int:
     """
     load_skillopt()
     backend = resolve_backend(args.backend, "")
-    pool, n_sessions = _harvest_mine_pool(args, backend)
+    pool, n_sessions = _harvest_mine_pool(args, backend, all_skills())
     out = args.out or POOL_PATH
     _save_pool(pool, n_sessions, out, backend)
     print(f"[optimize] mined pool: {n_sessions} session(s) → {len(pool)} task(s) "
@@ -316,7 +377,7 @@ def cmd_run(args) -> int:
                 print(f"[optimize] loaded persisted pool: {len(pool)} task(s) from {pool_path} (no re-mining)")
         else:
             pool_backend = resolve_backend(args.backend, str(config_for(mine_targets[0], root).get("backend", "")))
-            pool, n_sessions = _harvest_mine_pool(args, pool_backend)
+            pool, n_sessions = _harvest_mine_pool(args, pool_backend, mine_targets)
             if not args.json:
                 print(f"[optimize] shared pool: {n_sessions} session(s) → {len(pool)} mined task(s), "
                       f"harvested + mined once for {len(mine_targets)} auto-discovery skill(s)")
@@ -474,6 +535,8 @@ def _add_run_flags(p: argparse.ArgumentParser) -> None:
                    help="auto-discovery harvest window (0 = full history)")
     p.add_argument("--max-tasks", type=int, default=None,
                    help="cap mined candidate pool + per-skill task count (cost control)")
+    p.add_argument("--jobs", type=int, default=None,
+                   help="parallel mining concurrency (default 6)")
     p.add_argument("--pool", default="",
                    help="reuse a persisted mined pool (from `optimize pool`) instead of re-mining")
     p.add_argument("--progress", action="store_true",
@@ -494,6 +557,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     p_pool.add_argument("--source", default="", choices=["", "claude", "codex", "auto"])
     p_pool.add_argument("--lookback-hours", type=int, default=None)
     p_pool.add_argument("--max-tasks", type=int, default=None)
+    p_pool.add_argument("--jobs", type=int, default=None, help="parallel mining concurrency (default 6)")
     p_pool.add_argument("--out", default="", help=f"output path (default {POOL_PATH})")
     p_pool.add_argument("--progress", action="store_true")
     p_status = sub.add_parser("status", help="show staged proposals")

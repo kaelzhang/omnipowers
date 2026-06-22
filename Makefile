@@ -17,6 +17,7 @@ MAXTASKS ?=
 LOOKBACK ?=
 SOURCE ?=
 POOL ?=
+JOBS ?=
 TEST_ARGS ?=
 
 .DEFAULT_GOAL := help
@@ -39,10 +40,10 @@ test: ## Run skill tests (free content checks; TEST_ARGS="--integration" also ru
 	@bash tests/run-skill-tests.sh $(TEST_ARGS)
 
 optimize: ## SkillOpt: optimize skills → staged proposals. SKILL=a,b,c (empty=all) BACKEND=claude|codex [MODEL=] [DRY=1] [PROGRESS=1]
-	@$(OPTIMIZE) run $(if $(SKILL),--skill $(SKILL),) $(if $(BACKEND),--backend $(BACKEND),) $(if $(MODEL),--model $(MODEL),) $(if $(DRY),--dry,) $(if $(PROGRESS),--progress,) $(if $(EVAL_ROOT),--eval-root $(EVAL_ROOT),) $(if $(MAXTASKS),--max-tasks $(MAXTASKS),) $(if $(LOOKBACK),--lookback-hours $(LOOKBACK),) $(if $(SOURCE),--source $(SOURCE),) $(if $(POOL),--pool $(POOL),)
+	@$(OPTIMIZE) run $(if $(SKILL),--skill $(SKILL),) $(if $(BACKEND),--backend $(BACKEND),) $(if $(MODEL),--model $(MODEL),) $(if $(DRY),--dry,) $(if $(PROGRESS),--progress,) $(if $(EVAL_ROOT),--eval-root $(EVAL_ROOT),) $(if $(MAXTASKS),--max-tasks $(MAXTASKS),) $(if $(LOOKBACK),--lookback-hours $(LOOKBACK),) $(if $(SOURCE),--source $(SOURCE),) $(if $(JOBS),--jobs $(JOBS),) $(if $(POOL),--pool $(POOL),)
 
-optimize-pool: ## Harvest+mine the shared task pool ONCE and persist it (mine cheap, e.g. BACKEND=claude MODEL=haiku) [MAXTASKS=][LOOKBACK=][SOURCE=][POOL=out]
-	@$(OPTIMIZE) pool $(if $(BACKEND),--backend $(BACKEND),) $(if $(MODEL),--model $(MODEL),) $(if $(MAXTASKS),--max-tasks $(MAXTASKS),) $(if $(LOOKBACK),--lookback-hours $(LOOKBACK),) $(if $(SOURCE),--source $(SOURCE),) $(if $(POOL),--out $(POOL),) $(if $(PROGRESS),--progress,)
+optimize-pool: ## Harvest+mine the shared task pool ONCE and persist it (mine cheap+parallel, e.g. BACKEND=claude MODEL=haiku JOBS=8) [MAXTASKS=][LOOKBACK=][SOURCE=][POOL=out]
+	@$(OPTIMIZE) pool $(if $(BACKEND),--backend $(BACKEND),) $(if $(MODEL),--model $(MODEL),) $(if $(MAXTASKS),--max-tasks $(MAXTASKS),) $(if $(LOOKBACK),--lookback-hours $(LOOKBACK),) $(if $(SOURCE),--source $(SOURCE),) $(if $(JOBS),--jobs $(JOBS),) $(if $(POOL),--out $(POOL),) $(if $(PROGRESS),--progress,)
 
 optimize-status: ## Show staged optimization proposals — SKILL=a,b,c (empty=all staged)
 	@$(OPTIMIZE) status $(if $(SKILL),--skill $(SKILL),)
