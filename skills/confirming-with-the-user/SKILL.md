@@ -67,6 +67,7 @@ For each decision you MUST include the following (the example in item 3 applies 
 - **Plain language.** You MUST explain in accessible terms. If a term is unavoidable, you MUST define it in passing the first time you use it.
 - **One decision at a time.** You MUST NOT bundle several independent decisions into one tangled question. If there are several, present the most important first, or enumerate them so each item has its own options and recommendation.
 - **Make responding trivial.** You MUST label the options (A / B / C or 1 / 2 / 3) so the user can answer with a single word or short phrase.
+- **Conversational prose, not an interactive picker.** You MUST present the whole decision as prose in your message — the background, the options, each option's impact, and your recommendation — and let the user reply in natural language. You MUST NOT hand the choice off to an **interactive option picker**: a host UI that pops up selectable/clickable options for the user to tick (for example a plan-mode prompt, a multiple-choice tool, or a menu widget). A picker reduces the choice to bare labels and strips the context and recommendation this skill requires, so it defeats the skill's purpose. If the host offers such a picker, the full decision MUST still live in your prose; a picker MAY mirror it but MUST NOT replace it.
 
 ## Template
 
@@ -96,6 +97,7 @@ You are presenting a decision badly if any of these is true:
 - you give a recommendation with no options, or options with no recommendation;
 - the user would have to re-read earlier context, open files, or decode jargon/codes to understand the choice;
 - you named the thing being decided only by a number, label, or filename — or "the X above" — instead of restating its content in this message;
+- you handed the choice to a clickable option picker or menu widget instead of writing the decision — with each impact and your recommendation — as prose;
 - you switched languages mid-explanation;
 - you piled multiple unrelated decisions into one question;
 - an option's impact is not obvious and you gave no concrete example to anchor it.
