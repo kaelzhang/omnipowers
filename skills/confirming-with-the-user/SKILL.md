@@ -1,6 +1,6 @@
 ---
 name: confirming-with-the-user
-description: Use whenever you reach a point that needs the user's decision or sign-off — a design to approve, review findings or proposals, or a choice with trade-offs — you MUST present it as plain-language options with each option's impact and your recommendation, one decision at a time, in one consistent language
+description: Use whenever a decision or sign-off is on the table — whether you need the user's approval (a design, plan, review findings, a trade-off) or the user asks you to review, confirm, weigh, or decide on something with them — you MUST present plain-language options, each option's impact, and your recommendation, one decision at a time, in one language
 ---
 
 # Confirming With the User
@@ -20,9 +20,10 @@ You MUST use this skill at any point that needs the user's decision or sign-off 
 - a **design or plan** you have produced and need approved before building;
 - **review findings or proposals** — problems found, optimization proposals, or recommended changes from any review or audit;
 - a **significant technical decision** with real trade-offs (a core dependency, an architecture, a schema) — not routine mechanics like naming or file layout (see *What to Confirm — and What Not To* below);
-- any **scope, branch, or blocker** decision the user owns.
+- any **scope, branch, or blocker** decision the user owns;
+- the **user asks you to review, confirm, weigh, or decide on** a plan, design, approach, or proposal *with* them ("review this with me", "which should we pick", "let's confirm the approach", "what do you think") — the same discipline applies whether you raised the decision or they did.
 
-A completed design awaiting sign-off, and a review's proposals, are exactly the cases this skill governs — not just mid-implementation choices.
+A completed design awaiting sign-off, a review's proposals, and a user-initiated "let's go over this" are all cases this skill governs — not just mid-implementation choices you raise yourself.
 
 ## What to Confirm — and What Not To
 
