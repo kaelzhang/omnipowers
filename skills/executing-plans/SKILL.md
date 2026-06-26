@@ -1,6 +1,6 @@
 ---
 name: executing-plans
-description: Use when you have a written implementation plan to execute — you MUST review it critically first, then execute each step in order and verify at every checkpoint before moving on, stopping the moment you hit a blocker
+description: Use when you have a written implementation plan (plan.md / a plan file) to execute, implement, or follow — you MUST review it critically first, then execute each step in order and verify at every checkpoint before moving on, stopping the moment you hit a blocker
 ---
 
 # Executing Plans

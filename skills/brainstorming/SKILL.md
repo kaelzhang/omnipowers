@@ -1,6 +1,6 @@
 ---
 name: brainstorming
-description: "Use when about to do any creative or implementation work — creating a feature, building a component, adding functionality, modifying behavior, or scaffolding a project — you MUST first explore intent, requirements, and design and get the design approved before writing any code."
+description: "Use when about to do any creative or implementation work — building a feature, adding functionality, modifying behavior, scaffolding a project, or even a quick tweak, a one-line change, or a task that feels too small or simple to design — you MUST first explore intent, requirements, and design and get the design approved before writing any code."
 ---
 
 # Brainstorming Ideas Into Designs

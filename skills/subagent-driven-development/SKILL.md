@@ -1,6 +1,6 @@
 ---
 name: subagent-driven-development
-description: Use when executing an implementation plan whose tasks are mostly independent — you MUST run one task at a time, review each task (spec compliance + code quality) before the next, and run a broad whole-branch review at the end
+description: Use when executing an implementation plan whose tasks are mostly independent, especially when delegating each task to a fresh subagent (implementer + reviewer) — you MUST run one task at a time and gate each on a spec-and-quality review before the next
 ---
 
 # Subagent-Driven Development

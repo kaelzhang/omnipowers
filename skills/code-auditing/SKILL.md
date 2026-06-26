@@ -1,6 +1,6 @@
 ---
 name: code-auditing
-description: Use when reviewing or auditing code (a diff, a file, a feature, or the whole project) — you MUST audit against the project's .omnipowers/rules/CODE_AUDITING.md checklist, record the result, report a summary, and evolve the checklist over time
+description: Use when reviewing, auditing, or assessing the quality of code (a diff, a commit range, a file, a feature, a pull request, or the whole project) — you MUST audit against the project's .omnipowers/rules/CODE_AUDITING.md checklist, record the result, report a summary, and evolve the checklist over time
 ---
 
 # Code Auditing

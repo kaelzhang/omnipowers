@@ -1,6 +1,6 @@
 ---
 name: writing-plans
-description: Use when you have a spec or requirements for a multi-step task, before touching code — you MUST produce a complete, self-contained, bite-sized implementation plan with zero placeholders before any code is written
+description: Use when asked to plan, break down, or decompose a multi-step feature, spec, design, or ticket before touching code (any "write/create a plan" or "plan this out" request) — you MUST produce a complete, self-contained, bite-sized implementation plan with zero placeholders before any code is written
 ---
 
 # Writing Plans

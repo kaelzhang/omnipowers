@@ -1,6 +1,6 @@
 ---
 name: verification-before-completion
-description: Use when about to claim work is complete, fixed, or passing — you MUST run the verification and read its output before making any success claim; evidence before assertions, always
+description: Use when about to claim work is complete, fixed, passing, or ready — or before committing, pushing, or opening a PR — you MUST run the verification and read its output before making any success claim; evidence before assertions, always
 ---
 
 # Verification Before Completion

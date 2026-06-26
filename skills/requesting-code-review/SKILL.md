@@ -1,6 +1,6 @@
 ---
 name: requesting-code-review
-description: Use when work is complete, a major feature is implemented, a plan task is finished, or before merging — you MUST get a fresh-eyes review of the finished work against its requirements before proceeding.
+description: Use when work is complete or you want a code review — a feature or plan task is finished, a complex bug is fixed, or before a refactor, commit, push, or merge — you MUST get a fresh-eyes review of the finished diff against its requirements before proceeding.
 ---
 
 # Requesting Code Review

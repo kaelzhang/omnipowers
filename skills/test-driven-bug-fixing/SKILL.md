@@ -1,6 +1,6 @@
 ---
 name: test-driven-bug-fixing
-description: Use when fixing any bug or defect — you MUST reproduce it with a failing test before changing production code
+description: Use when fixing any bug, defect, crash, exception, regression, or wrong/incorrect output — you MUST reproduce it with a failing test before changing production code
 ---
 
 # Test-Driven Bug Fixing

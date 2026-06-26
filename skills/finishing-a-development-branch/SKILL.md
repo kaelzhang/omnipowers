@@ -1,6 +1,6 @@
 ---
 name: finishing-a-development-branch
-description: Use when implementation is complete and verified and you need to integrate the work — you MUST verify tests, detect the workspace, present structured merge/PR/keep/discard options, execute the user's choice, and clean up only what you created
+description: Use when a feature branch's work is done and verified and you're ready to wrap it up — merge it, open a PR, ship it, keep it, or discard it (incl. cleaning up the worktree/branch) — you MUST verify tests pass, then present the integration options and let the user choose before any merge, push, or deletion
 ---
 
 # Finishing a Development Branch

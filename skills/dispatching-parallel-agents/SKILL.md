@@ -1,6 +1,6 @@
 ---
 name: dispatching-parallel-agents
-description: Use when you have 2+ genuinely independent tasks (no shared state, no sequential dependency) — you MUST verify independence first, then dispatch one focused agent per domain (or run them sequentially inline where subagents are unavailable).
+description: Use when you're about to run multiple tasks in parallel or spin up subagents to tackle 2+ separate problems at once (different test files, subsystems, or bugs) — you MUST verify the tasks are truly independent (no shared state, no sequential dependency) first, then dispatch one focused agent per domain (or run them sequentially inline where subagents are unavailable).
 ---
 
 # Dispatching Parallel Agents

@@ -1,6 +1,6 @@
 ---
 name: systematic-debugging
-description: Use when encountering any bug, test failure, or unexpected behavior — you MUST find the root cause before proposing or making any fix
+description: Use when encountering any bug, crash, test failure (including flaky/intermittent), build or performance problem, or other unexpected behavior — you MUST find the root cause before proposing or making any fix
 ---
 
 # Systematic Debugging
