@@ -26,7 +26,7 @@ You MUST complete these items in order. You MUST NOT skip an item because the ta
 1. **Explore project context** — read the relevant files, docs, and recent commits before asking anything.
 2. **Assess scope** — if the request spans multiple independent subsystems, flag it and decompose before refining details.
 3. **Ask clarifying questions** — one at a time; understand purpose, constraints, and success criteria.
-4. **Propose 2-3 approaches** — with trade-offs and your recommendation, leading with the recommended option.
+4. **Propose 2-3 approaches** — with trade-offs and your recommendation, leading with the recommended option; each grounded in the relevant industry's best practice (researched, not recalled, when the problem is complex or the domain emerging).
 5. **Present the design** — in sections scaled to complexity; get approval after each section.
 6. **Write the design doc** — save the agreed spec and commit it.
 7. **Spec self-review** — inline check for placeholders, contradictions, ambiguity, and scope.
@@ -85,6 +85,12 @@ The terminal state is the user approving the written spec. You MUST NOT take any
 - You MUST propose 2-3 distinct approaches with their trade-offs before settling on a design.
 - You MUST lead with your recommended option and explain why, then present the alternatives and their trade-offs conversationally.
 
+### Ground the design in relevant best practice
+
+- Every approach you propose MUST be grounded in the established best practices of the **industry and domain this project's goals belong to** — the norms of *that* field (a payments system follows payment-industry norms; a realtime pipeline follows that domain's norms), not generic engineering platitudes — and MUST fit the host project's existing paradigm and conventions.
+- When the problem is **complex, unfamiliar to you, or in a fast-moving or emerging domain**, you MUST actively research current authoritative practice (the host's research capability: web search, current official docs, standards) before settling the design. You MUST NOT rely solely on built-in knowledge for such problems — it lags and misleads precisely where the domain is new. If the host offers no research capability, you MUST say the design rests on built-in knowledge and flag that uncertainty to the user.
+- You SHOULD apply recognized design doctrines where they fit the domain and the host's paradigm — object-oriented design principles (e.g. SOLID), domain-driven design (bounded contexts, layered domains) for domain-rich systems, clear layering and boundaries — and SHOULD NOT force a paradigm onto a host that follows another; which doctrine applies is domain-dependent judgment.
+
 ### Presenting the design
 
 - Once you believe you understand what is being built, you MUST present the design.
@@ -141,6 +147,7 @@ You MUST wait for the user's response. If they request changes, you MUST make th
 
 - **One question at a time** — never overwhelm with multiple questions in one message.
 - **Research before asking** — answer from the project itself whenever you can; ask the user only what you cannot determine.
+- **Best practice is domain-specific and current** — anchor designs in the norms of the industry this project serves, researched afresh when the problem is complex or the domain emerging.
 - **Concrete options over open-ended** — present enumerable choices rather than open prompts wherever the space allows.
 - **YAGNI ruthlessly** — remove unnecessary features from every design.
 - **Explore alternatives** — always propose 2-3 approaches before settling.
@@ -161,6 +168,7 @@ If any of these is true, you MUST stop and return to the gate:
 | You asked an open-ended question when concrete options exist | STOP. Offer enumerable options instead. |
 | You started implementation before the user reviewed the written spec | STOP. Revert and complete the user review gate. |
 | The request spans multiple independent subsystems and you began refining details | STOP. Decompose first, then brainstorm the first sub-project. |
+| You settled a design for a complex or emerging-domain problem purely from memory, without researching current practice | STOP. Research current authoritative practice first, or explicitly flag that the design rests on built-in knowledge. |
 
 ## Rationalizations — all REJECTED
 
@@ -173,3 +181,4 @@ If any of these is true, you MUST stop and return to the gate:
 | "Asking the user is quicker than reading the code." | You MUST research before asking. Reading the project is the job. |
 | "Open-ended questions give richer answers." | Concrete options are easier to answer and converge faster. Use them wherever the space is enumerable. |
 | "I'll write the spec after I review the user's approval verbally." | The spec MUST be written, committed, and user-reviewed before implementation. Verbal approval of a design does not replace the written-spec review gate. |
+| "I already know the best practice here." | For complex or emerging domains, built-in knowledge lags the field. Research current practice; recall alone is not grounding. |
