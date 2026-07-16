@@ -34,7 +34,8 @@ If the spec covers multiple independent subsystems, you MUST split it into separ
 Before defining any task, you MUST map out which files will be created or modified and what each is responsible for. Decomposition decisions are locked in here.
 
 - Each file MUST have one clear responsibility, with well-defined boundaries and interfaces.
-- You MUST prefer smaller, focused files over large files that do too much. Reasoning and edits are more reliable when a file fits in context at once.
+- You SHOULD prefer smaller, focused **code** files over large ones that do too much — reasoning and edits are more reliable when a file fits in context. Line count is a **smell, not a hard cap**: past a few hundred lines, check a code file's cohesion; past ~1000 it is a strong smell — but a genuinely single-responsibility file MAY exceed it, and the host codebase's own norms override any absolute number.
+- The length concern above applies to **code units judged by responsibility only**. It does NOT apply to **documentation** (Markdown / docs — judged by structure and navigability, not line count; a well-organized long document is fine, split only when length actually hurts navigation or it has grown to span separable topics, a looser ~2000-line reference) or to **data / generated / config files** (JSON/YAML data, fixtures, snapshots, lockfiles, migrations, large static maps — no line-count concern; you MUST NOT split them for length, they are data, not logic units).
 - Files that change together MUST live together. You MUST split by responsibility, not by technical layer.
 - In an existing codebase, you MUST follow established patterns. You MUST NOT unilaterally restructure a codebase that uses large files. If a file you are already modifying has grown unwieldy, you MAY include a split for that file in the plan — this is a judgment call because it depends on whether the split is incidental to the change or a separate refactor that belongs in its own plan.
 

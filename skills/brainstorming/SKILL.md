@@ -104,7 +104,7 @@ The terminal state is the user approving the written spec. You MUST NOT take any
 - You SHOULD break the system into smaller units that each have one clear purpose, communicate through well-defined interfaces, and can be understood and tested independently — where the unit boundaries lie is domain-dependent judgment, so it varies by situation.
 - The design MUST state, for each unit, what it does, how it is used, and what it depends on.
 - If someone cannot understand what a unit does without reading its internals, or you cannot change the internals without breaking consumers, the boundaries need work and you SHOULD refine them — how much refinement serves the goal is a judgment call.
-- Smaller, well-bounded units are easier to work with and edit reliably. When a file grows large, that is a signal it is doing too much, and the design SHOULD split it — judgment applies because the right boundary depends on the domain.
+- Smaller, well-bounded units are easier to work with and edit reliably. When a **code** file grows large, that is a signal it is doing too much, and the design SHOULD split it — judgment applies because the right boundary depends on the domain. This signal is about code units only: documentation is judged by structure and navigability (a well-organized long doc is fine), and data / generated files (JSON data, fixtures, snapshots, lockfiles) carry no line-count concern.
 
 ### Working in existing codebases
 
