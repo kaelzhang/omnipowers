@@ -86,6 +86,8 @@ Each task — whether handed to a subagent or executed inline — MUST specify:
 
 ### 3. Dispatch (or Execute Inline)
 
+Before any dispatch, you MUST validate every input that all agents will share — the file, spec, diff, or dataset each task consumes — in the parent: confirm it exists, is well-formed, and is the version you intend. A defective shared input does not fail once; it amplifies into every agent's failure and wastes the whole fan-out.
+
 **With subagents:** Issue all independent dispatches in a single response so they run concurrently. Multiple dispatch calls in one response run in parallel; one dispatch per response runs sequentially.
 
 ```text
