@@ -15,6 +15,8 @@ YOU MUST NOT WRITE CODE, SCAFFOLD A PROJECT, INVOKE ANY IMPLEMENTATION SKILL, OR
 
 This applies to EVERY task regardless of perceived simplicity. A todo list, a single-function utility, a one-line config change — all of them pass through this gate. If you catch yourself starting implementation before the written-spec approval, you MUST stop, revert any premature action, and return to this process.
 
+**The one code-shaped exception:** a design question that reasoning and research cannot settle MAY be answered during the design phase with a throwaway prototype built under the `prototyping` skill's full rule-set — such code does not violate this gate, and its verdict MUST feed the spec. Anything not built under that skill's rules is implementation and stays forbidden.
+
 ## Anti-Pattern: "This Is Too Simple To Need A Design"
 
 Every task goes through this process. "Simple" tasks are exactly where unexamined assumptions cause the most wasted work, because the gate gets skipped and the wrong thing gets built fast. The design MAY be short — a few sentences for a genuinely simple task — but you MUST present it and get approval. Brevity is permitted; skipping is not.
@@ -77,18 +79,23 @@ The terminal state is the user approving the written spec. You MUST NOT take any
 - Before refining details, you MUST assess scope. If the request describes multiple independent subsystems (for example "a platform with chat, file storage, billing, and analytics"), you MUST flag this immediately. You MUST NOT spend questions refining details of a project that needs to be decomposed first.
 - If the project is too large for a single spec, you MUST help the user decompose it into sub-projects: identify the independent pieces, how they relate, and the build order. You then brainstorm the first sub-project through the normal design flow. Each sub-project gets its own spec → design → implementation cycle.
 - For appropriately scoped work, you MUST ask questions one at a time. You MUST NOT bundle multiple questions into one message; if a topic needs more exploration, break it into multiple separate questions.
+- Questions MUST follow the decision tree's dependency order: settle a parent decision before asking the questions that hang off it, because an early answer reshapes which later questions exist at all. This ordering is why questions arrive singly — a firehose of parallel questions loses the structure that makes the interview converge.
 - You MUST offer concrete options over open-ended prompts. When the decision space is enumerable, present multiple-choice or A/B/C options rather than asking "what do you want?". Open-ended questions are acceptable only when the space genuinely cannot be enumerated.
+- Each clarifying question SHOULD carry your recommended answer with a one-line reason, so the user reacts to a proposal instead of a blank prompt (SHOULD, because pure-preference questions have no meritable recommendation).
 - Each question MUST focus on understanding purpose, constraints, or success criteria.
+- Before designing, you MUST search the codebase for an existing implementation of the requested capability — by domain concept, not just keywords — and report where you looked. Rebuilding what already exists is a design failure no amount of good design repairs.
+- When the conversation has already explored the intent, approaches, and decisions (a long working discussion), the exploration steps above are satisfied — you MUST NOT re-interview ritualistically; proceed directly to presenting the design and writing the spec. The Iron Law is unchanged: the written, approved spec still gates implementation.
 
 ### Exploring approaches
 
 - You MUST propose 2-3 distinct approaches with their trade-offs before settling on a design.
 - You MUST lead with your recommended option and explain why, then present the alternatives and their trade-offs conversationally.
+- When the design centers on a module interface and the alternatives are non-obvious, read `@design-it-twice.md` and produce constraint-differentiated alternatives per that method.
 
 ### Ground the design in relevant best practice
 
 - Every approach you propose MUST be grounded in the established best practices of the **industry and domain this project's goals belong to** — the norms of *that* field (a payments system follows payment-industry norms; a realtime pipeline follows that domain's norms), not generic engineering platitudes — and MUST fit the host project's existing paradigm and conventions.
-- When the problem is **complex, unfamiliar to you, or in a fast-moving or emerging domain**, you MUST actively research current authoritative practice (the host's research capability: web search, current official docs, standards) before settling the design. You MUST NOT rely solely on built-in knowledge for such problems — it lags and misleads precisely where the domain is new. If the host offers no research capability, you MUST say the design rests on built-in knowledge and flag that uncertainty to the user.
+- When the problem is **complex, unfamiliar to you, or in a fast-moving or emerging domain**, you MUST actively research current authoritative practice (the host's research capability: web search, current official docs, standards) before settling the design. You MUST NOT rely solely on built-in knowledge for such problems — it lags and misleads precisely where the domain is new. If the host offers no research capability, you MUST say the design rests on built-in knowledge and flag that uncertainty to the user. Follow every load-bearing claim back to the source that owns it — official docs, spec, or source code, not a paraphrase (the `researching` skill governs standalone research and its citation discipline).
 - You SHOULD apply recognized design doctrines where they fit the domain and the host's paradigm — object-oriented design principles (e.g. SOLID), domain-driven design (bounded contexts, layered domains) for domain-rich systems, clear layering and boundaries — and SHOULD NOT force a paradigm onto a host that follows another; which doctrine applies is domain-dependent judgment.
 
 ### Presenting the design
@@ -96,19 +103,21 @@ The terminal state is the user approving the written spec. You MUST NOT take any
 - Once you believe you understand what is being built, you MUST present the design.
 - You MUST scale each section to its complexity: a few sentences if straightforward, up to a few hundred words if nuanced.
 - You MUST ask, after each section, whether it looks right so far, and you MUST get approval before moving on (incremental validation).
-- The design MUST cover, as applicable: architecture, components, data flow, error handling, and testing.
+- The design MUST cover, as applicable: architecture, components, data flow, error handling, and testing. For testing, the design MUST name the public seams tests will exercise and what each verifies — the fewest seams, at the highest level that stays fast and deterministic — so the test boundaries are agreed with the user at design time, not invented during implementation.
 - You MUST be ready to go back and clarify when something does not make sense, and you MUST update the agreed design as understanding sharpens rather than letting the spec drift from the conversation.
 
 ### Design for isolation and clarity
 
-- You SHOULD break the system into smaller units that each have one clear purpose, communicate through well-defined interfaces, and can be understood and tested independently — where the unit boundaries lie is domain-dependent judgment, so it varies by situation.
-- The design MUST state, for each unit, what it does, how it is used, and what it depends on.
+- You SHOULD break the system into smaller units that each have one clear purpose, communicate through well-defined interfaces, and can be understood and tested independently — where the unit boundaries lie is domain-dependent judgment, so it varies by situation. Prefer deep units: a lot of behavior behind a small interface (the `designing-deep-modules` skill carries the full doctrine).
+- The design MUST state, for each unit, what it does, how it is used, and what it depends on. An interface is everything a caller must know — the design MUST enumerate each unit's invariants, error modes, ordering constraints, configuration, and performance expectations, not just its signatures.
+- You MUST NOT introduce an interface or abstraction layer with only one justified implementation — abstraction is earned by a second real implementer, not by "we might need it later".
 - If someone cannot understand what a unit does without reading its internals, or you cannot change the internals without breaking consumers, the boundaries need work and you SHOULD refine them — how much refinement serves the goal is a judgment call.
 - Smaller, well-bounded units are easier to work with and edit reliably. When a **code** file grows large, that is a signal it is doing too much, and the design SHOULD split it — judgment applies because the right boundary depends on the domain. This signal is about code units only: documentation is judged by structure and navigability (a well-organized long doc is fine), and data / generated files (JSON data, fixtures, snapshots, lockfiles) carry no line-count concern.
 
 ### Working in existing codebases
 
 - You MUST explore the current structure before proposing changes, and you MUST follow existing patterns.
+- If the host project carries a domain glossary (e.g. a `CONTEXT.md`) or architecture decision records, you MUST read them and use their canonical vocabulary in the design; if the design contradicts a recorded decision, you MUST flag the contradiction explicitly rather than silently overriding it. When these files are absent, proceed silently — you MUST NOT nag the user to create them (the `domain-modeling` skill governs building them).
 - Where existing code has problems that directly affect the work (a file that has grown too large, unclear boundaries, tangled responsibilities), you SHOULD include targeted improvements as part of the design — the scope of such improvements is a judgment call about what serves the current goal.
 - You MUST NOT propose unrelated refactoring. You MUST stay focused on what serves the current goal.
 
@@ -117,6 +126,8 @@ The terminal state is the user approving the written spec. You MUST NOT take any
 ### Documentation
 
 - You MUST write the validated design (the spec) under the host project at `.omnipowers/specs/YYYY-MM-DD-<topic>-design.md`, creating any missing parent directories first. If the user has stated a preference for spec location, that preference overrides this default.
+- The spec SHOULD follow the structure in `@spec-template.md` (read it when writing the spec); its **Out of Scope** section is REQUIRED — explicit exclusions are what prevent gold-plating.
+- A spec is a durable artifact: it MUST NOT embed file paths, line numbers, or code — those go stale while the spec sits, and the implementation plan carries them. A prototype-derived snippet MAY be embedded ONLY when the snippet itself is the recorded decision.
 - You MUST commit the design document to version control.
 
 ### Spec self-review
