@@ -31,6 +31,11 @@ a skill's content MUST be a hard requirement, not a suggestion. Prose that reads
 as "mild" or "balanced" where a firm rule applies is a defect: it invites the
 agent to rationalize its way out of the rule.
 
+Constrain the **process**, never the **output**: a skill makes the agent run the
+same process every time, not produce the same result every time. A divergent
+skill (brainstorming, prototyping) must predictably *diverge* — over-constraining
+its output defeats it as surely as under-constraining its process.
+
 ### Classify every normative statement before writing it
 
 - **MANDATORY** → `MUST` / `MUST NOT` / `REQUIRED` / `SHALL` / `SHALL NOT`. Use
@@ -95,6 +100,12 @@ skill's invocations, SHOULD be a supporting file; the discipline that must never
 be missed stays inline. When in doubt, ask "does the agent need this on every
 run?" — yes → inline; only sometimes → supporting file.
 
+The pointer's **wording**, not its target, decides whether the disclosed
+material is ever reached: a vague pointer ("more detail in X") gets skipped; a
+conditional imperative ("when `<situation>`, read `@<file>.md` and apply it")
+fires. A supporting file that never gets loaded is a disclosure failure — fix
+the pointer, do not reflexively inline the content back.
+
 ### Portable at runtime
 
 omnipowers is a skills library that OTHER projects install. A skill MUST run the
@@ -106,11 +117,33 @@ the skills here and is not available downstream. Any state a skill needs MUST
 live inside the host project (under `.omnipowers/`), and any self-improvement loop
 a skill defines MUST be self-contained and gated by the host project's user.
 
+`.omnipowers/` holds the skill's own **runtime state**. A human-facing project
+document a skill creates for the host's team (a domain glossary, ADRs) MAY
+instead live at the host's conventional location (project root, `docs/`) — with
+the user's consent on first creation, since the skill is writing into space the
+user owns.
+
+Host-artifact dependencies split hard vs soft: a skill whose output is
+**incorrect** without a host artifact MUST state how to bootstrap that artifact;
+a skill that merely **sharpens** with one MUST NOT carry a bootstrap pointer or
+nag about its absence — consumers proceed silently.
+
+### Vocabulary
+
+Use these terms exactly; the _Avoid_ list prevents synonym drift.
+
+- **skill** — one directory under `skills/` with a `SKILL.md`. _Avoid_: power, command, plugin.
+- **supporting file** — a same-directory file loaded via a conditional `@`-pointer. _Avoid_: sub-skill, attachment, resource.
+- **host project** — the downstream project a skill is installed into. _Avoid_: client project, target repo, downstream (bare).
+- **collection** — this repository's shipped set of skills. _Avoid_: library, suite, framework.
+- **description** — the frontmatter trigger line. _Avoid_: summary, blurb.
+
 ### Authoring & review checklist
 
 For each statement in a skill:
 
 - [ ] Normative? Then it carries a BCP 14 keyword.
+- [ ] Invocation surface classified: guardrail → model-invoked; heavyweight orchestrator / outward side effects → explicit-invocation-only description.
 - [ ] Specific scenario + single correct answer → `MUST` / `MUST NOT`.
 - [ ] Genuine judgment / no standard answer → `SHOULD` / `MAY`, and say why it varies.
 - [ ] No softening of a real rule ("consider", "try to", "it's good practice").

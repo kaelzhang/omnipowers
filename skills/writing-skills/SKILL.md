@@ -44,6 +44,14 @@ You MUST NOT create a skill for:
 - Project-specific conventions (those belong in the host project's instructions file).
 - A constraint enforceable by regex, a linter, or validation — automate it instead; reserve skills for judgment calls.
 
+**Splitting economics.** Every model-invoked skill's description is permanent context load — it rides in every session of every host project, forever. Split content into a new skill only when independent reach pays for that cost; discipline reachable only from inside one workflow belongs in that skill (inline or as a supporting file), not as a sibling.
+
+### Classify the invocation surface first
+
+Before writing a skill, classify who may invoke it:
+- **Model-invoked (the default).** The agent reaches for it autonomously when the situation matches. Guardrail skills — disciplines that protect the user from the agent's own shortcuts — MUST be model-invoked: a guardrail the agent must choose to load is not a guardrail.
+- **Explicit-invocation-only.** A heavyweight orchestrator (whose ceremony would bury ordinary tasks) or a skill with outward side effects (posting to public surfaces, persisting conversation content) SHOULD be gated to explicit user request: scope its description to the user's literal ask ("Use only when the user explicitly asks to …") and use the host's manual-only frontmatter where supported. Such a skill firing on a 1% hunch is a defect, not diligence.
+
 ## The Iron Law
 
 ```
@@ -126,12 +134,27 @@ Before writing any guidance, you MUST classify the baseline failure. The form th
 | Complies, but output has the wrong shape (bloated, buried, restated) | Positive recipe/contract: state what the output IS — its parts, in order | Prohibition list ("don't restate", "never narrate") |
 | Omits a required element from something it already produces | Structural: a REQUIRED field or slot in the template it fills | Prose reminders near the template |
 | Behavior should depend on a condition | Conditional keyed to an observable predicate ("if the brief exists, reference it") | Unconditional rule + exemption clauses |
+| Ends a step early, declares done prematurely | A checkable AND exhaustive completion criterion the agent can test its state against | Prose reminders ("don't stop early", "be thorough") |
 
 **Why prohibitions backfire on shaping problems:** under a competing incentive, an agent negotiates with "don't X" and often produces *more* of the unwanted content than no guidance at all. A recipe leaves nothing to negotiate: the output matches the stated shape or it does not. You MUST choose the form from the table above rather than reaching for a prohibition by default.
 
 Two rules apply whichever form you pick:
 - **No nuance clauses.** "Don't X unless it matters" reopens the negotiation. A real exception MUST be its own conditional keyed to an observable predicate.
 - **Exemption clauses don't scope.** "This limit doesn't apply to code blocks" still suppresses code blocks. If part of the output must be exempt, you MUST restructure so the rule cannot reach it.
+
+Four craft rules that raise any form's yield:
+- **Artifact gates beat confirm gates.** Phrase a phase gate as "produce/paste the artifact" (the failing output, the file, the diff), not "confirm that you did X" — a confirmation can be rationalized; an artifact either exists or does not.
+- **Lead with the positive model.** Open with one crisp definition of the desired end state before any MUST/MUST NOT machinery — walls to avoid without a model to aim at produce compliant-but-aimless output.
+- **Name the center of gravity.** When one step dominates outcome quality, say so explicitly ("this step IS the skill; the rest is mechanical") so effort lands where it pays.
+- **Upgrade SHOULDs to decidable tests.** For every SHOULD, attempt an operational test that would make it a checkable MUST (the deletion test, the zero-context test); a SHOULD that survives is genuine judgment — say why it varies.
+
+### Leading words
+
+Anchor each skill on ONE compact, pretrained concept word (its *leading word* — e.g. "reproduce", "depth", "intent") and repeat that exact token at every load-bearing point: the description, the Iron Law, the section names. A well-chosen leading word compresses the whole discipline into a term the model already understands, and its repetition is what anchors both triggering and execution. Within one skill, near-synonyms of the leading word MUST NOT be substituted for it — synonym drift dissolves the anchor (name the banned synonyms when drift is likely). Grade a candidate word with the micro-test protocol below, like any wording choice.
+
+### Pruning an existing skill
+
+When editing an existing skill you MUST also prune: delete any line the current model already does correctly without guidance (verify with a no-guidance control, not intuition); state each rule ONCE at its most load-bearing location within the skill (in-skill duplication is drift risk, not emphasis — cross-SKILL repetition remains required by self-containment); and treat sediment as the default fate of guidance — a rule written for last year's model failure MAY no longer pay its context cost.
 
 ## Bulletproofing Against Rationalization
 
@@ -312,6 +335,8 @@ The `description` is how a future agent decides whether to load the skill. You M
 You MUST NOT summarize the skill's workflow in the description. A description that summarizes the workflow creates a shortcut the agent takes *instead of* reading the skill body, and it will follow the summary and skip the actual steps. State only the triggering situation and the single core requirement; the body carries the process.
 
 You MUST seed the trigger with the terms a future agent would actually search — the symptoms, error phrases, and synonyms that signal the skill applies.
+
+Seeding has a pruning counterpart: keep **one trigger per distinct situation branch**, and collapse branches that merely restate each other in different words — synonym *seeds* for one branch stay ("bug, crash, regression"); whole restated *branches* go. Front-load the skill's leading word so the description anchors on it. When two adjacent skills are chronically confused, add an explicit anti-routing clause to both descriptions ("about to build → the brainstorming skill governs") — positive placement alone does not prevent mis-routing.
 
 ## The Bottom Line
 
