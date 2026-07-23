@@ -135,6 +135,8 @@ git merge <feature-branch>
 # do not delete the branch or the worktree.
 ```
 
+If the merge conflicts, you MUST resolve it via the `resolving-merge-conflicts` skill (per-hunk, by intent). You MUST NOT `git merge --abort` and report failure — an abort is the user's decision, not an escape from difficulty.
+
 After the merge succeeds AND tests on the merged result pass, in this order:
 1. Clean up the worktree (Phase 6).
 2. Delete the branch:
