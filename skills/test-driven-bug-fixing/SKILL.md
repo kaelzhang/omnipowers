@@ -183,6 +183,8 @@ A test that is painful to write is usually telling you something about the *code
 
 This does not waive the Iron Law — you still write the reproducing test. It tells you the fix may need a small structural change so that test (and the next one) is writable at all.
 
+When no correct seam exists for the regression test (the only way to test would couple to internals), that absence is itself a finding: you MUST record the seam gap and raise it with the user after the fix lands — it is a design defect awaiting its own task, not a reason to skip the test or to test through internals.
+
 ## The Only Exception — When You Cannot Reproduce It
 
 The reproducing test is REQUIRED. You MAY skip it ONLY when reproduction is genuinely impossible after real effort. When — and only when — that is the case, you MUST do all of the following before treating the fix as done:

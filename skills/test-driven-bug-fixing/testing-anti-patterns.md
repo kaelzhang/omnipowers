@@ -250,6 +250,46 @@ Reproduce-first cycle:
 4. THEN claim fixed
 ```
 
+## Anti-Pattern 6: Tautological Tests
+
+**The violation:**
+```typescript
+// production: total = items.reduce((a, i) => a + i.price * i.qty, 0)
+test('computes total', () => {
+  const expected = items.reduce((a, i) => a + i.price * i.qty, 0); // same formula!
+  expect(computeTotal(items)).toBe(expected);
+});
+```
+
+**Why this is wrong:**
+- The assertion recomputes the expected value the same way the code does — the test passes even when the formula itself is the bug
+- It verifies the code agrees with itself, not that it is correct
+
+**The fix:** the expected value MUST come from an independent source of truth — a hand-computed constant, the bug report's stated value, or a known-good fixture:
+```typescript
+test('computes total', () => {
+  // 2×$3.00 + 1×$4.50, computed by hand
+  expect(computeTotal(items)).toBe(10.50);
+});
+```
+
+## Anti-Pattern 7: Implementation-Coupled Tests
+
+**The violation:** a test that verifies HOW the code works instead of WHAT it does — asserting call counts, spying on internal collaborators, reading private state, or verifying through a side channel (e.g. checking `createUser` worked by inspecting the database row instead of calling `getUser`).
+
+**Why this is wrong:**
+- The tell: a refactor that preserves behavior breaks the test — the test is pinning the implementation, not the contract
+- Such tests block every improvement and prove nothing about user-visible behavior
+
+**The fix:** verify through the same public interface a real caller uses. If behavior cannot be observed through any public interface, that is a design smell to raise — not a license to test privates.
+
+## Where Mocking Is Permitted
+
+Mock at **system boundaries** you do not own or cannot run in a test:
+
+- **MAY mock:** network services, third-party APIs, clocks/timers, randomness, filesystem/OS calls, message queues — the process edge.
+- **MUST NOT mock:** your own internal collaborators (classes/functions/modules inside the codebase). Needing to mock an internal collaborator means the boundary is wrong — restructure (e.g. inject the dependency) instead of mocking around it.
+
 ## When Mocks Become Too Complex
 
 **Warning signs:**
@@ -281,6 +321,8 @@ When mock setup exceeds the test logic, you SHOULD prefer an integration test wi
 | Mock without understanding | Understand dependencies first, mock minimally |
 | Incomplete mocks | Mirror real API completely |
 | Fix without a reproducing test | Reproduce the bug first |
+| Tautological test | Expected value from an independent source of truth |
+| Implementation-coupled test | Verify through the public interface |
 | Over-complex mocks | Consider integration tests |
 
 ## Red Flags
@@ -291,6 +333,9 @@ When mock setup exceeds the test logic, you SHOULD prefer an integration test wi
 - Test fails when you remove mock
 - Can't explain why mock is needed
 - Mocking "just to be safe"
+- The assertion re-derives the expected value with the code's own formula
+- The test asserts call counts or inspects private/internal state
+- Mocking a collaborator that lives in this codebase
 
 ## The Bottom Line
 
