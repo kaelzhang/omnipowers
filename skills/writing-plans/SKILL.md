@@ -45,6 +45,10 @@ This structure informs task decomposition. Each task MUST produce self-contained
 
 A task is the smallest unit that carries its own test cycle and is worth a fresh reviewer's gate. When drawing task boundaries you MUST fold setup, configuration, scaffolding, and documentation steps into the task whose deliverable needs them. You MUST split two tasks apart only where a reviewer could meaningfully reject one while approving its neighbor. Each task MUST end with an independently testable deliverable.
 
+You SHOULD slice tasks vertically (tracer bullets): each task cuts end-to-end through the layers to produce observable behavior, rather than building one horizontal layer at a time — horizontal slices defer integration risk to the final task, where it is most expensive. Size each task so it fits ONE fresh context window (one implementer session can hold the brief, the touched files, and the tests at once); a task that cannot is two tasks. **Exception:** a wide mechanical refactor (a rename or API migration touching many files) breaks vertical slicing — read `@wide-refactors.md` and sequence it expand–contract instead.
+
+Every task MUST declare its dependency edges with a `Blocked by:` line (task numbers, or `none`). The plan's execution order MUST respect these edges, and a task claimed independent MUST list `Blocked by: none` — this makes the independence that parallel execution relies on a readable property of the plan instead of a re-derivation.
+
 ## Bite-Sized Task Granularity
 
 Each step MUST be a single concrete action — one test, one minimal implementation, one command, or one commit. A step that bundles multiple actions MUST be split, because a step the implementer cannot complete and check off in one motion hides progress and defeats the checkbox tracking. Steps SHOULD be small enough to finish in a few minutes; the exact size varies by action, so this is a guideline, not a hard threshold. A task's steps MUST follow the TDD cycle:
@@ -88,6 +92,8 @@ Every task MUST follow this structure:
 
 ````markdown
 ### Task N: [Component Name]
+
+**Blocked by:** [task numbers this task depends on, or `none`]
 
 **Files:**
 - Create: `exact/path/to/file.py`
