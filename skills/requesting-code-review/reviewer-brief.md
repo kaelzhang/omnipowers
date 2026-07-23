@@ -43,12 +43,18 @@ move HEAD on this checkout.
 
 ## What to Check
 
-Plan alignment:
-- Does the implementation match the plan / requirements?
-- Are deviations justified improvements, or problematic departures?
-- Is all planned functionality present?
+You review on TWO axes and report them separately. Do not re-rank a finding
+across axes: a spec gap is not excused by beautiful code, and a quality defect
+is not excused by spec conformance.
 
-Code quality:
+Axis 1 — Spec conformance (vs the Requirements / Plan above):
+- MISSING: required behavior absent or claimed-but-not-implemented
+- UNREQUESTED: behavior nobody asked for — scope creep, gold-plating
+- WRONG: the right feature built incorrectly, or the wrong problem solved
+For each spec finding, quote the requirement it violates.
+
+Axis 2 — Code quality (when judging quality, read the code-smells.md file
+alongside this brief for the smell baseline and its precedence rules):
 - Clean separation of concerns?
 - Proper error handling?
 - Type safety where applicable?
@@ -87,13 +93,18 @@ issues with the plan itself rather than the implementation, say so.
 ### Strengths
 [What's well done? Be specific.]
 
-### Issues
+### Spec Conformance
+[Missing / Unrequested / Wrong findings, each quoting the requirement,
+ordered by severity — Critical / Important / Minor. If no requirements
+source was provided, state "reviewed without a requirements source".]
+
+### Code Quality Issues
 
 #### Critical (Must Fix)
 [Bugs, security issues, data loss risks, broken functionality]
 
 #### Important (Should Fix)
-[Architecture problems, missing features, poor error handling, test gaps]
+[Architecture problems, poor error handling, test gaps]
 
 #### Minor (Nice to Have)
 [Code style, optimization opportunities, documentation polish]
@@ -127,6 +138,8 @@ DON'T:
 - Mark nitpicks as Critical
 - Give feedback on code you didn't actually read
 - Be vague ("improve error handling")
+- Flag anything the project's tooling already enforces (linter, formatter, type checker)
+- Re-rank a finding across the two axes
 - Avoid giving a clear verdict
 ```
 

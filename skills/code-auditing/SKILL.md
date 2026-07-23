@@ -46,7 +46,7 @@ You MUST cover every checklist item. Scope the depth to the target:
 
 For each item you check, you MUST: inspect the actual code (read it; do not assume); reach a verdict — **pass**, **fail**, **concern**, or **n/a** (with a one-line reason for n/a); and for every `fail` / `concern` record a concrete `file:line`, the evidence, a **severity** (`Critical` / `Important` / `Minor`), and a specific, actionable fix.
 
-Audit rigor — you MUST: verify each finding against the real code (raise no speculative finding you could not confirm; if you cannot verify, say so and mark it unverified); apply YAGNI and context (before flagging "missing X", confirm X is needed/used; before flagging a pattern, check for a legacy/compatibility/intentional reason); be specific and non-performative (state the issue and the fix; no praise or filler).
+Audit rigor — you MUST: verify each finding against the real code (raise no speculative finding you could not confirm; if you cannot verify, say so and mark it unverified); apply YAGNI and context (before flagging "missing X", confirm X is needed/used; before flagging a pattern, check for a legacy/compatibility/intentional reason); skip anything the project's tooling already enforces (linter, formatter, type checker — a finding the machine catches is noise); be specific and non-performative (state the issue and the fix; no praise or filler).
 
 ### Phase 2 — Record the audit
 

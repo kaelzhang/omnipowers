@@ -48,6 +48,10 @@ You MUST review a committed range. If the work is uncommitted, you MUST commit i
 
 A reviewer MUST receive a precisely scoped brief — the diff range, what was built, and what it was supposed to do — and nothing about how you arrived at the result.
 
+**Filling `{PLAN_OR_REQUIREMENTS}`** — discover the requirements source in this order: the current spec under `.omnipowers/specs/` → the task brief under `.omnipowers/sdd/` → the plan file → requirement references in the commit messages → ask the user. If none exists, you MUST state explicitly that the review ran without a requirements source (quality-axis only, degraded) rather than silently reviewing against nothing.
+
+**Findings are reported on two axes, separately: spec conformance and code quality.** A finding MUST NOT move axes or be re-ranked across them — a Critical spec gap is not downgraded because the code is beautiful, and a Critical quality defect is not excused because the spec is met. Each axis keeps its own severity ordering; step 3's gates apply per finding regardless of axis.
+
 **Primary path — dispatch a reviewer subagent.** If the host provides a subagent / task-dispatch capability, you MUST dispatch one independent reviewer agent using the brief in `@reviewer-brief.md`, with the placeholders filled in. The subagent MUST run read-only (see the brief).
 
 **Fallback path — review in a fresh independent pass yourself.** If the host provides no subagent capability, you MUST perform the review yourself as a deliberate, separate pass. To keep it independent you MUST:
