@@ -21,6 +21,13 @@ A collection of skills that improve coding effectiveness for AI coding agents.
 | [finishing-a-development-branch](skills/finishing-a-development-branch/SKILL.md) | Work complete and verified — verify tests, present structured merge/PR/keep/discard options, execute the choice, and clean up only what you created |
 | [writing-skills](skills/writing-skills/SKILL.md) | Creating or editing a skill — you MUST develop it test-first (watch an agent fail without it first); conforms to `AGENTS.md` |
 | [confirming-with-the-user](skills/confirming-with-the-user/SKILL.md) | Any decision or sign-off the user owns (a design, review proposals/findings, a trade-off) — present plain-language options with each option's impact and your recommendation, one decision at a time, in one language |
+| [stress-testing-a-plan](skills/stress-testing-a-plan/SKILL.md) | The user asks to have their plan interrogated ("poke holes", "grill me") — dependency-ordered questions, each with a recommended answer; no artifact; build intent hands off to brainstorming |
+| [domain-modeling](skills/domain-modeling/SKILL.md) | Building the project's language — a root `CONTEXT.md` glossary with banned synonyms, and ADRs gated by a three-part test; resolutions recorded the moment they land |
+| [designing-deep-modules](skills/designing-deep-modules/SKILL.md) | Designing a module or interface — depth as the target: the deletion test kills pass-throughs, the two-adapter rule kills speculative abstraction |
+| [prototyping](skills/prototyping/SKILL.md) | A design question only running code can answer — a throwaway artifact the user drives; the verdict is the user's observation, captured into the spec |
+| [researching](skills/researching/SKILL.md) | Answering a question by investigation — every claim traced to the primary source that owns it, delivered as a cited findings file |
+| [resolving-merge-conflicts](skills/resolving-merge-conflicts/SKILL.md) | An in-progress merge or rebase with conflicts — per-hunk intent archaeology; never invent behavior in a conflict hunk, never `--abort` to escape |
+| [writing-handoffs](skills/writing-handoffs/SKILL.md) | The user asks to hand off the session — compact it into an evidence-cited, pointer-not-copy document a zero-context agent can resume from |
 
 ## Install
 
@@ -84,7 +91,8 @@ knobs (model, gate, edit budget).
 ## Credits
 
 omnipowers is inspired by [Superpowers](https://github.com/obra/superpowers) by
-Jesse Vincent.
+Jesse Vincent, and absorbs ideas from [mattpocock/skills](https://github.com/mattpocock/skills)
+by Matt Pocock.
 
 ## License
 
