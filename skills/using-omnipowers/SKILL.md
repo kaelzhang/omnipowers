@@ -69,6 +69,8 @@ When a skill contains a checklist, you MUST track every item to completion and M
 
 Invoke the skill that governs your current step first, then the next. A skill that shapes HOW you work (a discipline or workflow) MUST run before one that only guides WHAT you produce. You MUST NOT skip a governing skill because a later one looks more specific.
 
+When you are unsure which skill governs — or two adjacent skills both look applicable — read `@skill-map.md`: it maps the collection into flows and states the boundary between each pair of commonly confused skills.
+
 ## Red flags — STOP, you are rationalizing
 
 Each of these thoughts means you MUST stop and check for an applicable skill first:

@@ -144,6 +144,7 @@ For each statement in a skill:
 
 - [ ] Normative? Then it carries a BCP 14 keyword.
 - [ ] Invocation surface classified: guardrail → model-invoked; heavyweight orchestrator / outward side effects → explicit-invocation-only description.
+- [ ] Skill map synced: adding, renaming, removing, or re-scoping a skill updates `skills/using-omnipowers/skill-map.md` in the same change — a map that lies mis-routes worse than no map.
 - [ ] Specific scenario + single correct answer → `MUST` / `MUST NOT`.
 - [ ] Genuine judgment / no standard answer → `SHOULD` / `MAY`, and say why it varies.
 - [ ] No softening of a real rule ("consider", "try to", "it's good practice").
