@@ -31,8 +31,29 @@ A collection of skills that improve coding effectiveness for AI coding agents.
 
 ## Install
 
-Install the skills into Claude Code and Codex. Skills are **symlinked**, so your
-edits auto-apply without reinstalling.
+### Quick install (no clone needed)
+
+Install straight from GitHub with the [skills.sh](https://skills.sh) installer —
+it auto-discovers every skill in this repo and installs into the agents you pick
+(Claude Code, Codex, Cursor, and more):
+
+```bash
+npx skills add kaelzhang/omnipowers
+```
+
+Useful variants:
+
+```bash
+npx skills add kaelzhang/omnipowers -g                       # user-level install
+npx skills add kaelzhang/omnipowers -a claude-code -a codex  # pick agents
+npx skills add kaelzhang/omnipowers --skill brainstorming    # pick skills
+npx skills update                                            # update later
+```
+
+### From a clone (development)
+
+For hacking on the skills themselves, clone this repo and install by **symlink**,
+so your edits auto-apply without reinstalling:
 
 ```bash
 make dev            # analyze Claude/Codex status, then install for both
