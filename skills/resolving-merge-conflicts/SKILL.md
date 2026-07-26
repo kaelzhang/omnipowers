@@ -1,6 +1,6 @@
 ---
 name: resolving-merge-conflicts
-description: Use when resolving conflicts in an in-progress git merge, rebase, or cherry-pick — conflict markers (<<<<<<<), "both modified" files, "fix conflicts and then run git rebase --continue", a merge or rebase that stopped partway — you MUST trace both sides of every hunk to their source commits and resolve by intent, never by text
+description: Use when resolving conflicts in an in-progress git merge, rebase, or cherry-pick — conflict markers in files, "both modified" status, "fix conflicts and then run git rebase --continue", a merge or rebase that stopped partway — you MUST trace both sides of every hunk to their source commits and resolve by intent, never by text
 ---
 
 # Resolving Merge Conflicts

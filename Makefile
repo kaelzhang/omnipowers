@@ -53,3 +53,9 @@ optimize-adopt: ## Apply one skill's staged proposal, with backup — SKILL=name
 
 optimize-list: ## List skills + whether each has an eval set / config / staged proposal
 	@$(OPTIMIZE) list $(if $(EVAL_ROOT),--eval-root $(EVAL_ROOT),)
+
+fitness-triggers: ## Trigger precision/recall for one skill via the skill-creator harness — SKILL= EVALSET= [MODEL=]
+	@$(if $(OMNIPOWERS_PY),$(OMNIPOWERS_PY),python3) scripts/fitness.py triggers --skill $(SKILL) $(if $(EVALSET),--eval-set $(EVALSET),) $(if $(MODEL),--model $(MODEL),)
+
+fitness-validate: ## Structural validation of every skill via the skill-creator harness
+	@$(if $(OMNIPOWERS_PY),$(OMNIPOWERS_PY),python3) scripts/fitness.py validate

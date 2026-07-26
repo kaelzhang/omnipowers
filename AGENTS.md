@@ -16,6 +16,7 @@ applies a skill at runtime, see `skills/using-omnipowers/SKILL.md`.
   `SKILL.md` by same-directory reference only (e.g. `@testing-anti-patterns.md`).
 - `README.md` — what the collection is and how to install it.
 - `Makefile`, `scripts/` — install / dev tooling.
+- `FITNESS.md` — the periodic skill-fitness review: measurements and keep/simplify/merge/retire rules.
 - `LICENSE` — MIT.
 
 ## Skill authoring standard
