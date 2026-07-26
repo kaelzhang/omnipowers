@@ -42,7 +42,8 @@ def harness_dir() -> str:
     return sc
 
 
-def _run_one_trigger(query: str, description: str, skill_name: str, timeout: int, model: str) -> bool:
+def _run_one_trigger(query: str, description: str, skill_name: str, timeout: int, model: str,
+                     fixture_dir: str = "") -> bool:
     """One clean-room trigger run: does the DESCRIPTION get the model to invoke
     the synthetic command for this query?
 
@@ -58,6 +59,15 @@ def _run_one_trigger(query: str, description: str, skill_name: str, timeout: int
     clean_name = f"{skill_name}-skill-{salt}"
     scratch = tempfile.mkdtemp(prefix="omnipowers_fitness_")
     try:
+        # v2: seed the scratch with a fixture project so repo-contextual queries
+        # are ecologically plausible ("add a toggle" needs a codebase to exist).
+        if fixture_dir:
+            shutil.copytree(fixture_dir, scratch, dirs_exist_ok=True)
+            setup = os.path.join(scratch, "setup.sh")
+            if os.path.isfile(setup):
+                subprocess.run(["bash", "setup.sh"], cwd=scratch,
+                               capture_output=True, timeout=30)
+                os.unlink(setup)
         cdir = os.path.join(scratch, ".claude", "commands")
         os.makedirs(cdir, exist_ok=True)
         # Plant the WHOLE collection's descriptions as synthetic commands, not
@@ -140,10 +150,19 @@ def cmd_triggers(args) -> int:
     with open(eval_set, encoding="utf-8") as f:
         cases = json.load(f)
 
+    fixtures_root = args.fixtures_root or os.path.join(
+        os.path.dirname(os.path.dirname(os.path.abspath(eval_set))), "fixtures"
+    )
+
     def eval_case(c):
+        fx = ""
+        if c.get("fixture"):
+            fx = os.path.join(fixtures_root, c["fixture"])
+            if not os.path.isdir(fx):
+                sys.exit(f"fitness.py: fixture not found: {fx}")
         hits = sum(
             1 for _ in range(args.runs)
-            if _run_one_trigger(c["query"], desc, args.skill, args.timeout, args.model)
+            if _run_one_trigger(c["query"], desc, args.skill, args.timeout, args.model, fx)
         )
         rate = hits / args.runs
         triggered = rate >= 0.5
@@ -195,8 +214,9 @@ def main() -> int:
     t.add_argument("--skill", required=True)
     t.add_argument("--eval-set", default="")
     t.add_argument("--runs", type=int, default=3)
-    t.add_argument("--timeout", type=int, default=60, help="seconds per run")
+    t.add_argument("--timeout", type=int, default=90, help="seconds per run")
     t.add_argument("--workers", type=int, default=4)
+    t.add_argument("--fixtures-root", default="", help="dir of fixture archetypes (default: <eval-set>/../../fixtures)")
     t.add_argument("--model", default="")
     v = sub.add_parser("validate", help="structural validation of all skills")
     args = p.parse_args()
