@@ -1,6 +1,6 @@
 ---
 name: prototyping
-description: Use when asked to prototype, spike, mock up, or run a throwaway experiment — sanity-checking whether a state model, data shape, or piece of logic feels right, or exploring what a page, screen, or layout should look like before committing to a design — you MUST write the design question down before any prototype code and let the user, not your own run, deliver the verdict
+description: Use when asked to prototype, spike, or mock up a throwaway experiment — testing a state model, data shape, or logic, or exploring a page or layout before committing to a design — you MUST write the design question down before any code and let the user deliver the verdict
 ---
 
 # Prototyping

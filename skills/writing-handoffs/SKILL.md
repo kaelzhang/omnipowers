@@ -1,6 +1,6 @@
 ---
 name: writing-handoffs
-description: Use only when the user explicitly asks to hand off — "hand off", "handoff", "compact this session for another agent", "write a continuation/resume doc", "summarize this session so a fresh agent can pick it up" — you MUST compact the session into a handoff document a zero-context agent can resume from, and MUST NOT trigger this skill without that explicit request
+description: Use only when the user explicitly asks to hand off or compact this session for another agent ("handoff", "continuation/resume doc") — you MUST produce a handoff document a zero-context agent can resume from, and MUST NOT fire without that explicit request
 ---
 
 # Writing Handoffs

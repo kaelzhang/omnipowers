@@ -1,6 +1,6 @@
 ---
 name: stress-testing-a-plan
-description: Use when the user asks to have their own plan, idea, or decision interrogated — "stress-test my plan", "poke holes in this", "grill me", "challenge this idea", "拷问我" — sustained questioning with no build necessarily intended (about to build → the brainstorming skill governs; presenting one decision for sign-off → the confirming-with-the-user skill governs); you MUST interrogate every branch of the user's plan, one dependency-ordered question at a time, each carrying your recommended answer, and produce no artifact
+description: Use when the user asks you to interrogate their plan, idea, or decision — "stress-test", "poke holes", "grill me", "拷问我" — with no build intended (building → brainstorming; one decision to sign off → confirming-with-the-user); you MUST question every branch, one dependency-ordered question at a time, and produce no artifact
 ---
 
 # Stress-Testing a Plan

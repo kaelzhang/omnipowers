@@ -1,6 +1,6 @@
 ---
 name: domain-modeling
-description: Use when building or sharpening a project's domain model — pinning down terminology, naming a concept, maintaining a ubiquitous language or glossary (CONTEXT.md), recording an architectural decision (ADR), or when discussion terms turn vague, drift, overload, or contradict the code — you MUST sharpen every ambiguous term to one canonical definition and record it in the glossary the moment it is resolved
+description: Use when building or sharpening a project's domain model — naming concepts, maintaining a glossary / ubiquitous language (CONTEXT.md), recording an ADR, or when terms drift, overload, or contradict the code — you MUST sharpen each ambiguous term to one canonical definition and record it the moment it lands
 ---
 
 # Domain Modeling

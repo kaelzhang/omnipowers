@@ -1,6 +1,6 @@
 ---
 name: brainstorming
-description: "Use when about to do any creative or implementation work — building a feature, adding functionality, modifying behavior, scaffolding a project, or even a quick tweak, a one-line change, or a task that feels too small or simple to design — you MUST first explore intent, requirements, and design and get the design approved before writing any code."
+description: "Use when about to do any creative or implementation work — building a feature, modifying behavior, scaffolding, even a quick tweak or one-line change that feels too small to design — you MUST explore intent and design and get the design approved before writing any code."
 ---
 
 # Brainstorming Ideas Into Designs
@@ -11,7 +11,7 @@ This skill is a pre-implementation gate. Before any creative or implementation w
 
 ## Iron Law
 
-YOU MUST NOT WRITE CODE, SCAFFOLD A PROJECT, INVOKE ANY IMPLEMENTATION SKILL, OR TAKE ANY IMPLEMENTATION ACTION UNTIL YOU HAVE WRITTEN AND COMMITTED A DESIGN SPEC AND THE USER HAS APPROVED THAT WRITTEN SPEC. Verbal approval of a design alone MUST NOT satisfy this gate.
+YOU MUST NOT WRITE CODE, SCAFFOLD A PROJECT, INVOKE ANY IMPLEMENTATION SKILL, OR TAKE ANY IMPLEMENTATION ACTION UNTIL YOU HAVE WRITTEN A DESIGN SPEC AND THE USER HAS APPROVED THAT WRITTEN SPEC. Verbal approval of a design alone MUST NOT satisfy this gate. The spec is a committed file by default; the single proportionate-ceremony escape (an inline written spec for a trivial, single-step, easily reversed change — see the Anti-Pattern section) scales the artifact, never the approval.
 
 This applies to EVERY task regardless of perceived simplicity. A todo list, a single-function utility, a one-line config change — all of them pass through this gate. If you catch yourself starting implementation before the written-spec approval, you MUST stop, revert any premature action, and return to this process.
 
@@ -20,6 +20,8 @@ This applies to EVERY task regardless of perceived simplicity. A todo list, a si
 ## Anti-Pattern: "This Is Too Simple To Need A Design"
 
 Every task goes through this process. "Simple" tasks are exactly where unexamined assumptions cause the most wasted work, because the gate gets skipped and the wrong thing gets built fast. The design MAY be short — a few sentences for a genuinely simple task — but you MUST present it and get approval. Brevity is permitted; skipping is not.
+
+**Proportionate ceremony — the one escape from the spec-file ritual.** The committed-spec-file ceremony MAY be replaced by an **inline written spec** ONLY when ALL of these hold: the change is a single step, easily reversed, and its full intent fits in a few sentences. Then you MUST still write those sentences out in the conversation (what will change, where, and the expected behavior) and obtain the user's explicit approval of that written text before any code. The approval gate never scales down — only the artifact does. Anything multi-step, hard to reverse, or wider than one obvious edit takes the full committed spec.
 
 ## Checklist
 

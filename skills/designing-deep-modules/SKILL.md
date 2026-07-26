@@ -1,6 +1,6 @@
 ---
 name: designing-deep-modules
-description: Use when designing or restructuring a module, interface, class, service, wrapper, helper, layer, abstraction, or API surface — including deciding where a seam goes, adding an interface "for testability" or "to keep it clean", or making code easier to test — you MUST make every module deep, substantial behavior behind a small fully-specified interface, with no pass-throughs and no single-implementation abstractions
+description: Use when designing or restructuring a module, interface, service, wrapper, layer, or API surface — placing a seam, or adding an abstraction "for testability" or "to keep it clean" — you MUST make every module deep: substantial behavior behind a small fully-specified interface, no pass-throughs, no single-implementation abstractions
 ---
 
 # Designing Deep Modules
