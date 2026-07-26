@@ -104,12 +104,17 @@ def _run_one_trigger(query: str, description: str, skill_name: str, timeout: int
                                 cwd=scratch, env=env, text=True)
         import time as _t
         deadline = _t.time() + timeout
+        saw_assistant = False
         try:
             for line in proc.stdout:
                 if _t.time() > deadline:
                     break
                 line = line.strip()
-                if not line or not any(n in line for n in accept_names):
+                if not line:
+                    continue
+                if '"type": "assistant"' in line or '"type":"assistant"' in line:
+                    saw_assistant = True
+                if not any(n in line for n in accept_names):
                     continue
                 # Both the init/system event AND an early user event list EVERY
                 # planted command — matching a listing would count as invocation.
@@ -120,7 +125,9 @@ def _run_one_trigger(query: str, description: str, skill_name: str, timeout: int
                     continue
                 if e.get("type") == "assistant" and '"tool_use"' in line:
                     return True
-            return False
+            # A run with NO assistant events at all is an errored run (auth/rate
+            # failure), not a non-trigger — report it as invalid, never as False.
+            return False if saw_assistant else None
         finally:
             proc.kill()
     finally:
@@ -164,26 +171,51 @@ def cmd_triggers(args) -> int:
             fx = os.path.join(fixtures_root, c["fixture"])
             if not os.path.isdir(fx):
                 sys.exit(f"fitness.py: fixture not found: {fx}")
-        hits = sum(
-            1 for _ in range(args.runs)
-            if _run_one_trigger(c["query"], desc, args.skill, args.timeout, args.model, fx,
-                                c.get("accept"))
-        )
-        rate = hits / args.runs
+        hits = valid = invalid = 0
+        for _ in range(args.runs):
+            r = _run_one_trigger(c["query"], desc, args.skill, args.timeout, args.model, fx,
+                                 c.get("accept"))
+            if r is None:  # errored run — retry once, then count as invalid
+                r = _run_one_trigger(c["query"], desc, args.skill, args.timeout, args.model, fx,
+                                     c.get("accept"))
+            if r is None:
+                invalid += 1
+                continue
+            valid += 1
+            hits += 1 if r else 0
+        if not valid:
+            return {"query": c["query"], "should_trigger": c["should_trigger"],
+                    "trigger_rate": None, "triggered": None, "pass": None,
+                    "invalid_runs": invalid}
+        rate = hits / valid
         triggered = rate >= 0.5
         return {"query": c["query"], "should_trigger": c["should_trigger"],
                 "trigger_rate": rate, "triggered": triggered,
-                "pass": triggered == c["should_trigger"]}
+                "pass": triggered == c["should_trigger"], "invalid_runs": invalid}
+
+    # Warmup: one serial call refreshes an expired OAuth token BEFORE the
+    # parallel batch — N workers racing a refresh invalidate each other and
+    # every later run errors out as a silent non-trigger.
+    subprocess.run(["claude", "-p", "Reply OK", "--output-format", "json"],
+                   capture_output=True, timeout=90,
+                   env={k: v for k, v in os.environ.items() if k != "CLAUDECODE"})
 
     with ThreadPoolExecutor(max_workers=args.workers) as ex:
         rows = list(ex.map(eval_case, cases))
 
     for r in rows:
-        mark = "PASS" if r["pass"] else "FAIL"
-        print(f"  [{mark}] rate={r['trigger_rate']:.2f} expected={r['should_trigger']}: {r['query']}")
-    tp = sum(1 for r in rows if r["should_trigger"] and r["triggered"])
-    fp = sum(1 for r in rows if not r["should_trigger"] and r["triggered"])
-    fn = sum(1 for r in rows if r["should_trigger"] and not r["triggered"])
+        mark = "PASS" if r["pass"] else ("FAIL" if r["pass"] is False else "INVALID")
+        rate = "n/a " if r["trigger_rate"] is None else f"{r['trigger_rate']:.2f}"
+        inv = f" invalid={r['invalid_runs']}" if r.get("invalid_runs") else ""
+        print(f"  [{mark}] rate={rate} expected={r['should_trigger']}{inv}: {r['query']}")
+    n_invalid = sum(1 for r in rows if r["pass"] is None)
+    if n_invalid:
+        print(f"\n[fitness] {args.skill}: {n_invalid} query(ies) INVALID (errored runs) — "
+              f"metrics below exclude them; rerun after checking CLI auth", file=sys.stderr)
+    rows_v = [r for r in rows if r["pass"] is not None]
+    tp = sum(1 for r in rows_v if r["should_trigger"] and r["triggered"])
+    fp = sum(1 for r in rows_v if not r["should_trigger"] and r["triggered"])
+    fn = sum(1 for r in rows_v if r["should_trigger"] and not r["triggered"])
     p = tp / (tp + fp) if tp + fp else 1.0
     rc = tp / (tp + fn) if tp + fn else 1.0
     print(f"\n[fitness] {args.skill}: trigger precision={p:.2f} recall={rc:.2f} (tp={tp} fp={fp} fn={fn})")
