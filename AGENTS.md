@@ -39,16 +39,24 @@ its output defeats it as surely as under-constraining its process.
 ### Classify every normative statement before writing it
 
 - **MANDATORY** → `MUST` / `MUST NOT` / `REQUIRED` / `SHALL` / `SHALL NOT`. Use
-  when the scenario is **specific** AND has **exactly one correct answer**.
+  when the operation is **fragile** — the scenario is specific, exactly one
+  answer is correct, and deviation causes concrete damage — AND the rule
+  corresponds to a **nameable failure mode**: one you observed, or one you can
+  concretely argue an agent commits under pressure.
 - **RECOMMENDATION** → `SHOULD` / `SHOULD NOT` / `RECOMMENDED`. Use when the
   principle applies but the right response **varies by situation**, or the domain
   has **no single standard answer**.
 - **DISCRETIONARY** → `MAY` / `OPTIONAL`. Genuinely free choice.
 
-**Default bias: MANDATORY.** When a statement meets "specific scenario + single
-correct answer", it MUST be written as `MUST` / `MUST NOT` and MUST NOT be
-softened to `SHOULD` / "consider" / "try to". Reserve `SHOULD` / `MAY` for real
-judgment, not politeness.
+**Bias: match force to fragility, and MUSTs are failure-driven.** Where an
+operation is fragile and one answer is correct, write `MUST` / `MUST NOT` and
+never soften it to "consider" / "try to". Where the model's own judgment is
+reliable — calibration, style, weighing context — leave freedom: a `MUST` with
+no nameable failure mode is a defect, not rigor. It spends the reader's limited
+compliance budget, fights the model's improving judgment, and trains the agent
+to rationalize around the MUSTs that matter. Instruction-following degrades
+measurably as the number of simultaneous hard constraints grows — every
+unearned MUST taxes every earned one.
 
 ### BCP 14 keyword convention
 
@@ -145,7 +153,8 @@ For each statement in a skill:
 - [ ] Normative? Then it carries a BCP 14 keyword.
 - [ ] Invocation surface classified: guardrail → model-invoked; heavyweight orchestrator / outward side effects → explicit-invocation-only description.
 - [ ] Skill map synced: adding, renaming, removing, or re-scoping a skill updates `skills/using-omnipowers/skill-map.md` in the same change — a map that lies mis-routes worse than no map.
-- [ ] Specific scenario + single correct answer → `MUST` / `MUST NOT`.
+- [ ] Fragile operation + single correct answer + nameable failure mode → `MUST` / `MUST NOT`.
+- [ ] Every `MUST` traces to a failure observed or concretely arguable; no nameable failure → downgrade to `SHOULD` or delete.
 - [ ] Genuine judgment / no standard answer → `SHOULD` / `MAY`, and say why it varies.
 - [ ] No softening of a real rule ("consider", "try to", "it's good practice").
 - [ ] Every MANDATORY rule states the consequence of violating it.
