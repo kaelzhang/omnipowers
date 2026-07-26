@@ -43,7 +43,7 @@ def harness_dir() -> str:
 
 
 def _run_one_trigger(query: str, description: str, skill_name: str, timeout: int, model: str,
-                     fixture_dir: str = "") -> bool:
+                     fixture_dir: str = "", accept: list | None = None) -> bool:
     """One clean-room trigger run: does the DESCRIPTION get the model to invoke
     the synthetic command for this query?
 
@@ -56,6 +56,10 @@ def _run_one_trigger(query: str, description: str, skill_name: str, timeout: int
     """
     import tempfile, shutil, uuid
     salt = uuid.uuid4().hex[:8]
+    # Chain-aware acceptance: a trigger counts when ANY accepted skill fires
+    # (default: only the skill under test). Lets a bug-phrased query legitimately
+    # route to the debugging sibling per the collection's own designed flow.
+    accept_names = [f"{s}-skill-{salt}" for s in (accept or [skill_name])]
     clean_name = f"{skill_name}-skill-{salt}"
     scratch = tempfile.mkdtemp(prefix="omnipowers_fitness_")
     try:
@@ -105,7 +109,7 @@ def _run_one_trigger(query: str, description: str, skill_name: str, timeout: int
                 if _t.time() > deadline:
                     break
                 line = line.strip()
-                if not line or clean_name not in line:
+                if not line or not any(n in line for n in accept_names):
                     continue
                 # Both the init/system event AND an early user event list EVERY
                 # planted command — matching a listing would count as invocation.
@@ -162,7 +166,8 @@ def cmd_triggers(args) -> int:
                 sys.exit(f"fitness.py: fixture not found: {fx}")
         hits = sum(
             1 for _ in range(args.runs)
-            if _run_one_trigger(c["query"], desc, args.skill, args.timeout, args.model, fx)
+            if _run_one_trigger(c["query"], desc, args.skill, args.timeout, args.model, fx,
+                                c.get("accept"))
         )
         rate = hits / args.runs
         triggered = rate >= 0.5
