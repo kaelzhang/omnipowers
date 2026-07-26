@@ -57,3 +57,12 @@ quarter may be default behavior now.
   tell). `make uninstall` before a trigger round, reinstall with `make dev`
   after; `fitness.py` already runs each eval from an empty scratch directory
   and warns if the skill is still installed.
+- **`fitness-triggers` is EXPERIMENTAL — known limits from the first shakedown.**
+  (1) The upstream harness's first-tool criterion miscounts: current models
+  explore (Bash/Read) before invoking a skill, so real triggers read as misses —
+  our runner scans the whole stream instead. (2) An *empty* scratch project
+  invalidates repo-contextual queries ("add a toggle" dead-ends with no codebase);
+  a valid v2 needs a minimal fixture repo per query. (3) The `using-omnipowers`
+  gateway absorbs the first Skill invocation by design — detection must follow
+  the chain past it (or exclude the gateway from planting). Uniform-zero or
+  uniform-one rounds mean the protocol, not the skills, needs debugging first.

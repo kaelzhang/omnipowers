@@ -42,8 +42,79 @@ def harness_dir() -> str:
     return sc
 
 
+def _run_one_trigger(query: str, description: str, skill_name: str, timeout: int, model: str) -> bool:
+    """One clean-room trigger run: does the DESCRIPTION get the model to invoke
+    the synthetic command for this query?
+
+    Protocol (adapted from the skill-creator harness): an empty scratch project
+    carries ONE synthetic command whose body is the description under test; we
+    run `claude -p <query>` and scan the WHOLE stream for a Skill/SlashCommand
+    tool_use naming it. We deliberately do NOT require the first tool to be
+    Skill — current models explore first (Bash/Read) and invoke the skill
+    after, which the harness's first-tool criterion miscounts as no-trigger.
+    """
+    import tempfile, shutil, uuid
+    salt = uuid.uuid4().hex[:8]
+    clean_name = f"{skill_name}-skill-{salt}"
+    scratch = tempfile.mkdtemp(prefix="omnipowers_fitness_")
+    try:
+        cdir = os.path.join(scratch, ".claude", "commands")
+        os.makedirs(cdir, exist_ok=True)
+        # Plant the WHOLE collection's descriptions as synthetic commands, not
+        # just the skill under test: with a single candidate, every query grabs
+        # the only tool available and precision reads falsely low. Competition
+        # lets negatives route to their true home.
+        for other in sorted(os.listdir(SKILLS_DIR)):
+            sk_md = os.path.join(SKILLS_DIR, other, "SKILL.md")
+            if not os.path.isfile(sk_md):
+                continue
+            d = ""
+            with open(sk_md, encoding="utf-8") as f:
+                for line in f:
+                    if line.startswith("description:"):
+                        d = line.split(":", 1)[1].strip().strip('"')
+                        break
+            if other == skill_name:
+                d = description  # allow --description-style overrides later
+            name = f"{other}-skill-{salt}"
+            indented = "\n  ".join(d.split("\n"))
+            with open(os.path.join(cdir, f"{name}.md"), "w", encoding="utf-8") as f:
+                f.write(f"---\ndescription: |\n  {indented}\n---\n\n# {other}\n\n"
+                        f"This skill handles: {d}\n")
+        cmd = ["claude", "-p", query, "--output-format", "stream-json",
+               "--verbose", "--include-partial-messages"]
+        if model:
+            cmd += ["--model", model]
+        env = {k: v for k, v in os.environ.items() if k != "CLAUDECODE"}
+        proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
+                                cwd=scratch, env=env, text=True)
+        import time as _t
+        deadline = _t.time() + timeout
+        try:
+            for line in proc.stdout:
+                if _t.time() > deadline:
+                    break
+                line = line.strip()
+                if not line or clean_name not in line:
+                    continue
+                # Both the init/system event AND an early user event list EVERY
+                # planted command — matching a listing would count as invocation.
+                # Only an assistant tool_use naming the command is a trigger.
+                try:
+                    e = json.loads(line)
+                except Exception:
+                    continue
+                if e.get("type") == "assistant" and '"tool_use"' in line:
+                    return True
+            return False
+        finally:
+            proc.kill()
+    finally:
+        shutil.rmtree(scratch, ignore_errors=True)
+
+
 def cmd_triggers(args) -> int:
-    sc = harness_dir()
+    from concurrent.futures import ThreadPoolExecutor
     skill_path = os.path.join(SKILLS_DIR, args.skill)
     if not os.path.isfile(os.path.join(skill_path, "SKILL.md")):
         sys.exit(f"fitness.py: no such skill: {args.skill}")
@@ -52,52 +123,47 @@ def cmd_triggers(args) -> int:
     )
     if not os.path.isfile(eval_set):
         sys.exit(f"fitness.py: eval set not found: {eval_set}")
-
-    cmd = [
-        sys.executable,
-        os.path.join(sc, "scripts", "run_eval.py"),
-        "--eval-set", os.path.abspath(eval_set),
-        "--skill-path", os.path.abspath(skill_path),
-        "--runs-per-query", str(args.runs),
-        "--verbose",
-    ]
-    if args.model:
-        cmd += ["--model", args.model]
-    env = dict(os.environ, PYTHONPATH=sc + os.pathsep + os.environ.get("PYTHONPATH", ""))
-    # CLEAN-ROOM: the harness tests whether the DESCRIPTION triggers, via a
-    # synthetic command. Two contaminants invalidate it: (1) the real skill
-    # installed globally shadows the synthetic command; (2) a real project cwd
-    # invites the model to just start working (first tool = Bash) instead of
-    # reaching for any skill. So run from an EMPTY scratch project dir — and
-    # uninstall the collection first (`make uninstall`), reinstall after.
-    import tempfile
-    scratch = tempfile.mkdtemp(prefix="omnipowers_fitness_")
-    os.makedirs(os.path.join(scratch, ".claude"), exist_ok=True)
     if os.path.isdir(os.path.expanduser("~/.claude/skills/" + args.skill)):
-        print(f"[fitness] WARNING: {args.skill} is still installed globally "
-              f"(~/.claude/skills) — it will shadow the synthetic command and "
-              f"zero the measurement. Run `make uninstall` first.", file=sys.stderr)
-    proc = subprocess.run(cmd, cwd=scratch, env=env, capture_output=True, text=True)
-    sys.stderr.write(proc.stderr)
-    out = proc.stdout.strip()
-    print(out)
-    if proc.returncode != 0:
-        return proc.returncode
+        print(f"[fitness] WARNING: {args.skill} is installed globally — it will "
+              f"shadow the synthetic command. Run `make uninstall` first.", file=sys.stderr)
 
-    # Defensive summary: precision/recall over the harness's per-query JSON.
-    try:
-        data = json.loads(out)
-        rows = data if isinstance(data, list) else data.get("results", [])
-        tp = sum(1 for r in rows if r.get("should_trigger") and r.get("triggered"))
-        fp = sum(1 for r in rows if not r.get("should_trigger") and r.get("triggered"))
-        fn = sum(1 for r in rows if r.get("should_trigger") and not r.get("triggered"))
-        if tp + fp + fn:
-            p = tp / (tp + fp) if tp + fp else 1.0
-            r = tp / (tp + fn) if tp + fn else 1.0
-            print(f"\n[fitness] {args.skill}: trigger precision={p:.2f} recall={r:.2f} "
-                  f"(tp={tp} fp={fp} fn={fn})", file=sys.stderr)
-    except Exception:
-        pass  # schema drift in the harness output — raw JSON above is authoritative
+    # description from frontmatter
+    desc = ""
+    with open(os.path.join(skill_path, "SKILL.md"), encoding="utf-8") as f:
+        for line in f:
+            if line.startswith("description:"):
+                desc = line.split(":", 1)[1].strip().strip('"')
+                break
+    if not desc:
+        sys.exit("fitness.py: no description frontmatter found")
+
+    with open(eval_set, encoding="utf-8") as f:
+        cases = json.load(f)
+
+    def eval_case(c):
+        hits = sum(
+            1 for _ in range(args.runs)
+            if _run_one_trigger(c["query"], desc, args.skill, args.timeout, args.model)
+        )
+        rate = hits / args.runs
+        triggered = rate >= 0.5
+        return {"query": c["query"], "should_trigger": c["should_trigger"],
+                "trigger_rate": rate, "triggered": triggered,
+                "pass": triggered == c["should_trigger"]}
+
+    with ThreadPoolExecutor(max_workers=args.workers) as ex:
+        rows = list(ex.map(eval_case, cases))
+
+    for r in rows:
+        mark = "PASS" if r["pass"] else "FAIL"
+        print(f"  [{mark}] rate={r['trigger_rate']:.2f} expected={r['should_trigger']}: {r['query']}")
+    tp = sum(1 for r in rows if r["should_trigger"] and r["triggered"])
+    fp = sum(1 for r in rows if not r["should_trigger"] and r["triggered"])
+    fn = sum(1 for r in rows if r["should_trigger"] and not r["triggered"])
+    p = tp / (tp + fp) if tp + fp else 1.0
+    rc = tp / (tp + fn) if tp + fn else 1.0
+    print(f"\n[fitness] {args.skill}: trigger precision={p:.2f} recall={rc:.2f} (tp={tp} fp={fp} fn={fn})")
+    print(json.dumps({"skill": args.skill, "results": rows}, ensure_ascii=False))
     return 0
 
 
@@ -129,6 +195,8 @@ def main() -> int:
     t.add_argument("--skill", required=True)
     t.add_argument("--eval-set", default="")
     t.add_argument("--runs", type=int, default=3)
+    t.add_argument("--timeout", type=int, default=60, help="seconds per run")
+    t.add_argument("--workers", type=int, default=4)
     t.add_argument("--model", default="")
     v = sub.add_parser("validate", help="structural validation of all skills")
     args = p.parse_args()
