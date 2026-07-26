@@ -57,12 +57,15 @@ quarter may be default behavior now.
   tell). `make uninstall` before a trigger round, reinstall with `make dev`
   after; `fitness.py` already runs each eval from an empty scratch directory
   and warns if the skill is still installed.
-- **`fitness-triggers` is EXPERIMENTAL — known limits from the first shakedown.**
-  (1) The upstream harness's first-tool criterion miscounts: current models
-  explore (Bash/Read) before invoking a skill, so real triggers read as misses —
-  our runner scans the whole stream instead. (2) An *empty* scratch project
-  invalidates repo-contextual queries ("add a toggle" dead-ends with no codebase);
-  a valid v2 needs a minimal fixture repo per query. (3) The `using-omnipowers`
-  gateway absorbs the first Skill invocation by design — detection must follow
-  the chain past it (or exclude the gateway from planting). Uniform-zero or
-  uniform-one rounds mean the protocol, not the skills, needs debugging first.
+- **Trigger protocol (v2, validated).** Each eval case names a small **fixture
+  repo** (copied into the scratch + `setup.sh` for git state) so repo-contextual
+  queries are ecologically plausible; all descriptions are planted competitively;
+  detection scans the whole stream for an assistant tool_use naming the target
+  (models explore before invoking — a first-tool criterion miscounts; listing
+  events are announcements, not invocations). Uniform-zero or uniform-one rounds
+  mean the protocol, not the skills, needs debugging first.
+- **Interpret low recall through the routing lens before touching a description.**
+  With competitive planting, a "missed" trigger often means the query correctly
+  routed to a sibling (a bug report routing to the debugging skill before the
+  fix-time skill is our own designed flow). Check WHICH skill fired before
+  condemning the description; the fix may be the eval label, not the skill.
