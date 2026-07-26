@@ -50,3 +50,10 @@ quarter may be default behavior now.
   [anthropics/skills](https://github.com/anthropics/skills) at
   `~/Sources/harness/anthropic-skills` (override with `SKILLCREATOR_HOME`). Its
   trigger evals shell out to an authenticated `claude` CLI.
+- **Trigger evals need a clean room.** The harness measures the description via a
+  synthetic command; a globally installed copy of the skill shadows it, and a
+  real project cwd makes the model start working instead of reaching for a
+  skill — both zero the measurement (uniform 0/N across all queries is the
+  tell). `make uninstall` before a trigger round, reinstall with `make dev`
+  after; `fitness.py` already runs each eval from an empty scratch directory
+  and warns if the skill is still installed.

@@ -64,8 +64,20 @@ def cmd_triggers(args) -> int:
     if args.model:
         cmd += ["--model", args.model]
     env = dict(os.environ, PYTHONPATH=sc + os.pathsep + os.environ.get("PYTHONPATH", ""))
-    # cwd = our repo so the harness's temporary .claude/commands lands here (gitignored)
-    proc = subprocess.run(cmd, cwd=REPO, env=env, capture_output=True, text=True)
+    # CLEAN-ROOM: the harness tests whether the DESCRIPTION triggers, via a
+    # synthetic command. Two contaminants invalidate it: (1) the real skill
+    # installed globally shadows the synthetic command; (2) a real project cwd
+    # invites the model to just start working (first tool = Bash) instead of
+    # reaching for any skill. So run from an EMPTY scratch project dir — and
+    # uninstall the collection first (`make uninstall`), reinstall after.
+    import tempfile
+    scratch = tempfile.mkdtemp(prefix="omnipowers_fitness_")
+    os.makedirs(os.path.join(scratch, ".claude"), exist_ok=True)
+    if os.path.isdir(os.path.expanduser("~/.claude/skills/" + args.skill)):
+        print(f"[fitness] WARNING: {args.skill} is still installed globally "
+              f"(~/.claude/skills) — it will shadow the synthetic command and "
+              f"zero the measurement. Run `make uninstall` first.", file=sys.stderr)
+    proc = subprocess.run(cmd, cwd=scratch, env=env, capture_output=True, text=True)
     sys.stderr.write(proc.stderr)
     out = proc.stdout.strip()
     print(out)
