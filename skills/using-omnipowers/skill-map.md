@@ -36,7 +36,7 @@ stress-testing-a-plan ─(build intent)→ brainstorming → writing-plans
 - **confirming-with-the-user** — HOW any single decision is put to the user (options, impacts, recommendation, prose). Every other skill's user-facing decisions ride on it.
 - **verification-before-completion** — evidence before any "done/fixed/passing" claim. Gates every completion claim in every flow.
 - **dispatching-parallel-agents** — 2+ genuinely independent tasks fan out; independence proven first. A mechanism other flows may use, not a flow itself.
-- **code-auditing / requesting-code-review** — code-auditing audits against the host's checklist (whole project or diff, compounding standard); requesting-code-review gets a fresh-eyes two-axis review of finished work against its requirements. Audit = your standard; review = this diff.
+- **code-auditing** — all code review and audit: a checkpoint review of finished work before it advances (merge-base range, reviewed against its requirements) OR a standards audit against the host's compounding checklist; Phase 1 routes between them, and both record + act on findings by severity.
 
 ## Crossing sessions
 
@@ -51,5 +51,5 @@ stress-testing-a-plan ─(build intent)→ brainstorming → writing-plans
 
 - Interrogating the user's plan (they answer) → **stress-testing-a-plan**; presenting them one decision (you propose) → **confirming-with-the-user**; about to build → **brainstorming**.
 - Finding a bug's cause → **systematic-debugging**; writing the fix → **test-driven-bug-fixing**.
-- Judging finished work → **requesting-code-review**; auditing code against the project standard → **code-auditing**.
+- Any code review or audit → **code-auditing** (it routes internally: checkpoint review vs standards audit).
 - Executing a plan with subagents per task → **subagent-driven-development**; parallel unrelated tasks → **dispatching-parallel-agents**.

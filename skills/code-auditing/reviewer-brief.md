@@ -1,8 +1,8 @@
-# Reviewer Brief — requesting-code-review
+# Reviewer Brief — code-auditing
 
 > Normative keywords — MUST, MUST NOT, REQUIRED, SHALL, SHALL NOT, SHOULD, SHOULD NOT, MAY — are used as defined in BCP 14 (RFC 2119, RFC 8174), and only when capitalized.
 
-Load this file at **step 2** of `requesting-code-review` — when you actually dispatch a reviewer subagent or run the fallback self-pass. It is the exact prompt to give the reviewer (or to apply to yourself), followed by a sample completed review. Fill every placeholder before use:
+Load this file at **Phase 1a** of `code-auditing` — when you dispatch a reviewer subagent or run the fallback self-pass for a checkpoint review. It is the exact prompt to give the reviewer (or to apply to yourself), followed by a sample completed review. Fill every placeholder before use:
 
 - `{DESCRIPTION}` — a brief summary of what was built.
 - `{PLAN_OR_REQUIREMENTS}` — what it was supposed to do (the plan text, task text, or requirements).
