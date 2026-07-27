@@ -17,6 +17,8 @@ MAXTASKS ?=
 LOOKBACK ?=
 SOURCE ?=
 POOL ?=
+SCENARIOS ?=
+RUNS ?=
 JOBS ?=
 TEST_ARGS ?=
 
@@ -59,3 +61,6 @@ fitness-triggers: ## Trigger precision/recall for one skill via the skill-creato
 
 fitness-validate: ## Structural validation of every skill via the skill-creator harness
 	@$(if $(OMNIPOWERS_PY),$(OMNIPOWERS_PY),python3) scripts/fitness.py validate
+
+fitness-compliance: ## Behavioral A/B (skill vs no-skill control) for one skill — SKILL= [SCENARIOS=] [RUNS=]
+	@$(if $(OMNIPOWERS_PY),$(OMNIPOWERS_PY),python3) scripts/compliance.py run --skill $(SKILL) $(if $(SCENARIOS),--scenarios $(SCENARIOS),) $(if $(RUNS),--runs $(RUNS),) $(if $(MODEL),--model $(MODEL),)
