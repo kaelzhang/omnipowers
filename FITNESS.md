@@ -67,6 +67,14 @@ quarter may be default behavior now.
   (models explore before invoking — a first-tool criterion miscounts; listing
   events are announcements, not invocations). Uniform-zero or uniform-one rounds
   mean the protocol, not the skills, needs debugging first.
+- **Read the two arms, never the delta alone.** The delta is a difference of two
+  noisy measurements: a control arm that moves between rounds (same scenario,
+  same expectations) shifts the delta without the skill changing at all. Before
+  concluding a skill got worse, check whether the SKILL arm fell or the CONTROL
+  arm rose — only the former is about the skill. One scenario × 3 runs cannot
+  resolve deltas below ~0.2; add scenarios before trusting a small number, and
+  run serially when the skill is large (a long injected skill times out under
+  worker contention and the run is discarded as invalid).
 - **A guardrail's trigger recall is not its fitness.** When an explicit request
   ("verify this before I ship") is one the model handles natively, the trigger
   eval reads low while the skill is doing its real job elsewhere — stopping an
