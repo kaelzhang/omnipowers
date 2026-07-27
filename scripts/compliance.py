@@ -177,7 +177,7 @@ def main() -> int:
     r.add_argument("--fixtures-root", default="")
     r.add_argument("--runs", type=int, default=2)
     r.add_argument("--workers", type=int, default=3)
-    r.add_argument("--timeout", type=int, default=180)
+    r.add_argument("--timeout", type=int, default=300)  # long skills need long turns
     r.add_argument("--model", default="")
     args = p.parse_args()
     return cmd_run(args) if args.cmd == "run" else 2
