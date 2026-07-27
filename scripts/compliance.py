@@ -112,8 +112,13 @@ def cmd_run(args) -> int:
         sys.exit(f"compliance.py: scenarios not found: {scen_file}")
     with open(scen_file, encoding="utf-8") as f:
         scenarios = json.load(f)
-    fixtures_root = args.fixtures_root or os.path.join(
-        os.path.dirname(os.path.dirname(os.path.abspath(scen_file))), "fixtures")
+    # Fixtures root: explicit flag → OMNIPOWERS_FITNESS_ROOT → beside the
+    # scenario file. Deriving only from the scenario path breaks the moment a
+    # scenario lives outside the fitness tree (e.g. a scratch file in /tmp).
+    fixtures_root = args.fixtures_root or (
+        os.path.join(os.environ["OMNIPOWERS_FITNESS_ROOT"], "fixtures")
+        if os.environ.get("OMNIPOWERS_FITNESS_ROOT") else
+        os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(scen_file))), "fixtures"))
     with open(skill_md, encoding="utf-8") as f:
         skill_text = f.read()
 
