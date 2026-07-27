@@ -114,6 +114,16 @@ def _run_one_trigger(query: str, description: str, skill_name: str, timeout: int
                     continue
                 if '"type": "assistant"' in line or '"type":"assistant"' in line:
                     saw_assistant = True
+                # A limit/error result poisons the run even when assistant events
+                # were emitted (usage-limit replies arrive AS assistant messages).
+                if '"type": "result"' in line or '"type":"result"' in line:
+                    try:
+                        res = json.loads(line)
+                        if res.get("is_error") or res.get("api_error_status") or \
+                           "limit" in str(res.get("result", "")).lower()[:200]:
+                            return None
+                    except Exception:
+                        pass
                 if not any(n in line for n in accept_names):
                     continue
                 # Both the init/system event AND an early user event list EVERY
@@ -128,6 +138,8 @@ def _run_one_trigger(query: str, description: str, skill_name: str, timeout: int
             # A run with NO assistant events at all is an errored run (auth/rate
             # failure), not a non-trigger — report it as invalid, never as False.
             return False if saw_assistant else None
+        except Exception:
+            return None
         finally:
             proc.kill()
     finally:
