@@ -17,10 +17,13 @@ quarter may be default behavior now.
    runs the official skill-creator harness over a labelled query set
    (`[{"query": …, "should_trigger": true|false}, …]`): does the description fire
    when it should and stay quiet when it shouldn't? Cheap (description-only runs).
-2. **Compliance delta vs a no-skill control** — the harness's benchmark flow
-   (grader/comparator agents, blind A/B with and without the skill) on ≥3
-   representative scenarios per skill. This is the skill's reason to exist,
-   measured.
+2. **Compliance delta vs a no-skill control** — `make fitness-compliance SKILL=<name>`
+   runs each scenario twice in an identical fixture (skill text injected vs not),
+   grades both transcripts blind against the scenario's expectations, and reports
+   `control → skill = DELTA`. **This is the skill's reason to exist, measured** —
+   and it is the ONLY measurement that can judge a guardrail skill, whose value
+   appears when nobody asked for it (a low trigger recall on an explicit "verify
+   this" request says nothing about that value).
 3. **Token cost** — resident description cost (all sessions) + body size ×
    activation frequency. `make fitness-validate` covers structure; body size is
    `wc -w`.
@@ -64,6 +67,11 @@ quarter may be default behavior now.
   (models explore before invoking — a first-tool criterion miscounts; listing
   events are announcements, not invocations). Uniform-zero or uniform-one rounds
   mean the protocol, not the skills, needs debugging first.
+- **A guardrail's trigger recall is not its fitness.** When an explicit request
+  ("verify this before I ship") is one the model handles natively, the trigger
+  eval reads low while the skill is doing its real job elsewhere — stopping an
+  unverified claim nobody asked it to check. Judge that class on compliance delta
+  alone; a low-recall/high-delta skill is a KEEP.
 - **Interpret low recall through the routing lens before touching a description.**
   With competitive planting, a "missed" trigger often means the query correctly
   routed to a sibling (a bug report routing to the debugging skill before the
