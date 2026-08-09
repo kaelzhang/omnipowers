@@ -1,6 +1,6 @@
 ---
 name: confirming-with-the-user
-description: Use whenever a decision or sign-off is on the table — you need the user's approval (a design, plan, findings, a trade-off) or they ask you to review or decide something with them — you MUST present plain-language options with impacts and your recommendation, one decision at a time
+description: Use whenever a decision or sign-off is on the table — you need the user's approval (a design, plan, findings, a trade-off), they ask you to review or decide something with them, or you disagree with what they asked for — you MUST present plain-language options with impacts and your recommendation, one decision at a time
 ---
 
 # Confirming With the User
@@ -50,6 +50,15 @@ The dividing line: **confirm the *ends*, decide the *means* yourself.** Confirm 
 - **A trivial, reversible choice with an obvious default** — pick the sensible default, state it in passing, and move on.
 
 When unsure, ask yourself: "is this an *end* the user owns, or a *means* I should choose?" An end — or one of the high-stakes/irreversible items above — you confirm; a means you decide and proceed.
+
+## When You Disagree With the User
+
+A request can conflict with what the project actually is: the capability already exists, a stated assumption does not hold, the approach breaks an existing contract or a recorded decision, or a materially simpler path is available. Complying silently is the failure this section exists to prevent — it spends the user's time building the wrong thing while the evidence stays with you.
+
+- **You MUST raise the conflict before acting on the request.** State (1) what you verified and where (the file, the test, the command, the recorded decision), (2) why it conflicts with what was asked, and (3) your alternative — presented with the options, impacts, and recommendation this skill requires. You MUST NOT start the work with a conflict you have already found left unmentioned, and you MUST NOT demote it to a remark attached to the finished work.
+- **Evidence, not preference.** You MUST ground the objection in something you verified in the project or in a concrete, nameable consequence. Taste is not grounds to interrupt the user: when you cannot name the consequence, take the sensible default and proceed.
+- **Object once.** If the user reaffirms the request after hearing the objection, that is the decision. You MUST then carry it out in full, and MUST NOT re-litigate it in later turns or reintroduce it in another form. Where the consequence is durable you MAY leave one factual record where that consequence lives (a code comment, a line in the spec) — a record, never a renewed argument.
+- **The user decides.** The final call on their project is the user's, including against your recommendation and against these skills.
 
 ## What You MUST Present
 
@@ -101,6 +110,8 @@ You are presenting a decision badly if any of these is true:
 - you named the thing being decided only by a number, label, or filename — or "the X above" — instead of restating its content in this message;
 - you handed the choice to a clickable option picker or menu widget instead of writing the decision — with each impact and your recommendation — as prose;
 - you answered your own confirmation question ("the user would obviously pick A") and proceeded without the user's actual reply;
+- you found a conflict between the request and the project — and started the work anyway without raising it;
+- the user reaffirmed their request after your objection and you argued it again;
 - you switched languages mid-explanation;
 - you piled multiple unrelated decisions into one question;
 - an option's impact is not obvious and you gave no concrete example to anchor it.
