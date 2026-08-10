@@ -62,5 +62,8 @@ fitness-triggers: ## Trigger precision/recall for one skill via the skill-creato
 fitness-validate: ## Structural validation of every skill via the skill-creator harness
 	@$(if $(OMNIPOWERS_PY),$(OMNIPOWERS_PY),python3) scripts/fitness.py validate
 
+fitness-round: ## A whole fitness review — preflight + triggers + A/B over every skill [SKILLS=] [PHASE=] [RUNS=]
+	@$(if $(OMNIPOWERS_PY),$(OMNIPOWERS_PY),python3) scripts/fitness.py round $(if $(SKILLS),--skills $(SKILLS),) $(if $(PHASE),--phase $(PHASE),) $(if $(RUNS),--runs $(RUNS),) $(if $(MODEL),--model $(MODEL),)
+
 fitness-compliance: ## Behavioral A/B (skill vs no-skill control) for one skill — SKILL= [SCENARIOS=] [RUNS=]
 	@$(if $(OMNIPOWERS_PY),$(OMNIPOWERS_PY),python3) scripts/compliance.py run --skill $(SKILL) $(if $(SCENARIOS),--scenarios $(SCENARIOS),) $(if $(RUNS),--runs $(RUNS),) $(if $(MODEL),--model $(MODEL),)

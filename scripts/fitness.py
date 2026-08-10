@@ -255,6 +255,119 @@ def cmd_validate(args) -> int:
     return rc
 
 
+def preflight_cli(model: str = "") -> tuple[bool, str]:
+    """One cheap `claude -p` call to prove the CLI can actually reach the API.
+
+    Without this, an expired OAuth token turns a whole review round into pages of
+    silently INVALID runs that look like a protocol bug. Returns (ok, detail).
+    """
+    import tempfile
+    scratch = tempfile.mkdtemp(prefix="omnipowers_preflight_")
+    cmd = ["claude", "-p", "reply with the single word ok",
+           "--output-format", "stream-json", "--verbose", "--include-partial-messages"]
+    if model:
+        cmd += ["--model", model]
+    env = {k: v for k, v in os.environ.items() if k != "CLAUDECODE"}
+    try:
+        proc = subprocess.run(cmd, cwd=scratch, env=env, capture_output=True,
+                              text=True, timeout=120)
+    except FileNotFoundError:
+        return False, "`claude` CLI not found on PATH"
+    except subprocess.TimeoutExpired:
+        return False, "`claude` CLI timed out on a trivial prompt"
+    for line in (proc.stdout or "").splitlines():
+        try:
+            e = json.loads(line)
+        except Exception:
+            continue
+        if e.get("type") == "result":
+            if e.get("is_error") or e.get("api_error_status"):
+                return False, str(e.get("result") or e.get("api_error_status"))
+            return True, "ok"
+        if e.get("error") == "authentication_failed":
+            return False, "authentication_failed — the CLI needs an interactive re-login"
+    return False, "no result event from the CLI"
+
+
+def _skills_installed() -> list:
+    root = os.path.expanduser("~/.claude/skills")
+    if not os.path.isdir(root):
+        return []
+    ours = {d for d in os.listdir(SKILLS_DIR)
+            if os.path.isfile(os.path.join(SKILLS_DIR, d, "SKILL.md"))}
+    return sorted(ours & set(os.listdir(root)))
+
+
+# A long injected skill times out under worker contention and its runs are
+# discarded from one arm only, which biases the delta. Run those serially.
+LARGE_SKILL_BYTES = 12000
+
+
+def cmd_round(args) -> int:
+    """Run a whole fitness review: preflight, trigger evals, behavioral A/B."""
+    root = args.fitness_root or os.environ.get("OMNIPOWERS_FITNESS_ROOT", "")
+    if not root or not os.path.isdir(root):
+        sys.exit("fitness.py: pass --fitness-root or set OMNIPOWERS_FITNESS_ROOT")
+    skills = ([s.strip() for s in args.skills.split(",") if s.strip()] if args.skills
+              else sorted(d for d in os.listdir(SKILLS_DIR)
+                          if os.path.isfile(os.path.join(SKILLS_DIR, d, "SKILL.md"))))
+
+    print("[round] preflight: checking the CLI can reach the API ...", flush=True)
+    ok, detail = preflight_cli(args.model)
+    if not ok:
+        sys.exit(f"[round] ABORT — the `claude` CLI cannot run: {detail}\n"
+                 f"        Every run would be scored INVALID. Re-authenticate "
+                 f"(run `claude` once interactively and sign in), then retry.")
+    print("[round] preflight ok", flush=True)
+
+    if args.phase in ("all", "triggers"):
+        installed = _skills_installed()
+        if installed:
+            sys.exit(f"[round] ABORT — these skills are installed globally and would "
+                     f"shadow the synthetic command, zeroing every trigger measurement: "
+                     f"{', '.join(installed)}\n        Run `make uninstall` first, and "
+                     f"`make dev` after the round.")
+
+    rc = 0
+    summary: list[str] = []
+    for skill in skills:
+        if args.phase in ("all", "triggers"):
+            es = os.path.join(root, skill, "triggers.json")
+            if os.path.isfile(es):
+                print(f"\n──── triggers: {skill} ────", flush=True)
+                targs = argparse.Namespace(skill=skill, eval_set=es, runs=args.runs,
+                                           timeout=args.timeout, workers=args.workers,
+                                           fixtures_root=os.path.join(root, "fixtures"),
+                                           model=args.model)
+                rc |= cmd_triggers(targs)
+            else:
+                summary.append(f"  {skill}: no trigger eval set — not measured")
+        if args.phase in ("all", "compliance"):
+            sc = os.path.join(root, skill, "compliance.json")
+            if not os.path.isfile(sc):
+                summary.append(f"  {skill}: no compliance scenarios — not measured")
+                continue
+            size = os.path.getsize(os.path.join(SKILLS_DIR, skill, "SKILL.md"))
+            workers = 1 if size >= LARGE_SKILL_BYTES else args.workers
+            print(f"\n──── compliance: {skill} "
+                  f"({'serial — large skill' if workers == 1 else f'{workers} workers'}) ────",
+                  flush=True)
+            proc = subprocess.run(
+                [sys.executable, os.path.join(REPO, "scripts", "compliance.py"), "run",
+                 "--skill", skill, "--scenarios", sc,
+                 "--fixtures-root", os.path.join(root, "fixtures"),
+                 "--runs", str(args.runs), "--workers", str(workers),
+                 "--timeout", str(args.compliance_timeout)]
+                + (["--model", args.model] if args.model else []))
+            rc |= proc.returncode
+
+    if summary:
+        print("\n[round] not measured:")
+        for line in summary:
+            print(line)
+    return rc
+
+
 def main() -> int:
     p = argparse.ArgumentParser(prog="fitness.py", description=__doc__,
                                 formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -268,11 +381,22 @@ def main() -> int:
     t.add_argument("--fixtures-root", default="", help="dir of fixture archetypes (default: <eval-set>/../../fixtures)")
     t.add_argument("--model", default="")
     v = sub.add_parser("validate", help="structural validation of all skills")
+    r = sub.add_parser("round", help="a whole fitness review: preflight + triggers + A/B")
+    r.add_argument("--skills", default="", help="comma-separated; default every skill")
+    r.add_argument("--phase", choices=["all", "triggers", "compliance"], default="all")
+    r.add_argument("--fitness-root", default="", help="dir holding <skill>/{triggers,compliance}.json + fixtures/")
+    r.add_argument("--runs", type=int, default=3)
+    r.add_argument("--timeout", type=int, default=90, help="seconds per trigger run")
+    r.add_argument("--compliance-timeout", type=int, default=300, help="seconds per A/B run")
+    r.add_argument("--workers", type=int, default=4)
+    r.add_argument("--model", default="")
     args = p.parse_args()
     if args.cmd == "triggers":
         return cmd_triggers(args)
     if args.cmd == "validate":
         return cmd_validate(args)
+    if args.cmd == "round":
+        return cmd_round(args)
     return 2
 
 
