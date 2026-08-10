@@ -38,7 +38,9 @@ Treat the plan as a decision tree: every choice it makes — or silently assumes
 
 The interrogation ends when the user confirms you have reached a shared understanding of the plan: its shape, its trade-offs, and the decision taken on each branch.
 
-This skill is stateless. You MUST NOT produce a spec, design document, plan file, notes file, or any other artifact — not even "a quick summary doc". Its entire output is the conversation itself. A request for a written spec or design is build intent — hand off, below.
+This skill is stateless. You MUST NOT produce a **new** spec, design document, plan file, notes file, or any other artifact — not even "a quick summary doc". Its entire output is the conversation itself. A request for a written spec or design is build intent — hand off, below.
+
+Stateless means this skill authors nothing; it does not mean the conclusions evaporate. Where the interrogation changed a decision the project already records — a plan the host keeps, a recorded design decision — that record MUST be updated once the interrogation ends, so the plan on disk stops contradicting the plan you just agreed to. Update it after the interrogation closes, never during: writing mid-flight turns an interrogation into a documentation exercise, which is the failure this rule exists to prevent.
 
 ## The Handoff — the Moment Build Intent Appears
 

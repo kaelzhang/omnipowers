@@ -86,7 +86,7 @@ You MUST discover the host project's own checks and run them in order — typech
 
 A resolved-but-uncommitted merge is not done — the repository is still in a special state and the next command anyone runs may destroy the work.
 
-- You MUST stage every resolved file and commit. For a merge, put the clause-2 sacrifice records in the merge commit message.
+- You MUST stage every resolved file and commit. For a merge, put the clause-2 sacrifice records in the merge commit message. Conclude with the operation's own continuation command (`git merge --continue`, `git cherry-pick --continue`) where one exists: mid-operation Git refuses a path-limited commit, so this commit takes the whole index. Before you run it you MUST check `git status` and leave unstaged — or stash — anything that is not part of the operation, including another agent's work in the same tree. A host convention that restricts how commits are staged still applies to everything except this one unavoidable whole-index commit.
 - For a rebase, `git rebase --continue` — and you MUST repeat this entire discipline for every subsequent commit that conflicts, until **all** commits are replayed. Stopping midway strands the branch half-rebased.
 
 **Completion checklist** — you MUST be able to check every box:

@@ -68,7 +68,9 @@ You MUST stop executing immediately when any of the following occurs:
 - The plan has a critical gap that prevents you from starting or continuing.
 - A verification fails repeatedly.
 
-When stopped, you MUST surface the blocker to the user using the `confirming-with-the-user` skill — state it in plain language with concrete options and your recommendation, get the decision, then resume continuous execution. You MUST NOT guess, fabricate a missing step, or force your way past a blocker. You MUST NOT silently downgrade a step to a weaker version that you can complete.
+Before you surface it, you MUST leave the work recoverable without this conversation: commit the coherent work already finished, and write the blocker — what is blocked, what you tried, what you need — into the host's work-state document if it keeps one, otherwise into the plan file beside the step that stalled. A blocker that exists only in the transcript is lost the moment the session ends, and the next agent restarts the step that already failed.
+
+Then you MUST surface the blocker to the user using the `confirming-with-the-user` skill — state it in plain language with concrete options and your recommendation, get the decision, then resume continuous execution. You MUST NOT guess, fabricate a missing step, or force your way past a blocker. You MUST NOT silently downgrade a step to a weaker version that you can complete.
 
 ## When to Revisit Earlier Steps
 

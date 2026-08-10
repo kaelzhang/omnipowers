@@ -23,6 +23,7 @@ Before dispatching anything, you MUST confirm ALL of the following hold for the 
 2. **No sequential dependency.** No task needs the output, side effect, or completion of another task. If task B can only be understood or started after task A finishes, they are NOT independent.
 3. **Self-contained comprehension.** Each task can be fully understood from its own scope without context from the others.
 4. **No interference.** Agents running concurrently cannot collide on locks, ports, build artifacts, or generated files.
+5. **No ownership boundary crossed.** Every task falls inside the area you are authorized to change. Where the host project assigns ownership of directories — to a team, a code owner, or another agent — a task landing outside yours is not yours to dispatch, however technically independent it is. You MUST route it to its owner through the host's own mechanism instead. Technical independence is not authority.
 
 If ANY of these fails, the tasks are related. You MUST NOT parallelize them. Investigate related tasks together first — fixing one may resolve or reshape the others.
 
@@ -61,7 +62,7 @@ digraph when_to_use {
 This skill is most efficient when the host environment provides a subagent / parallel-agent capability (a tool that spawns an isolated agent with its own context). Parallelism is an optimization; it is NOT a correctness requirement.
 
 - **If subagents are available:** You SHOULD dispatch one agent per independent domain so the domains run concurrently.
-- **If subagents are NOT available in the host environment:** You MUST NOT skip or abandon the work. You MUST instead process each independent domain sequentially yourself, applying the SAME focused-task discipline to each domain one at a time — fully scoping, solving, and summarizing one domain before starting the next. The independence analysis, the focused prompt structure, the per-domain constraints, and the integration review in this skill all apply identically; only the concurrency is dropped.
+- **If subagents are NOT available in the host environment:** You MUST NOT skip or abandon the work. Where the host provides its own way to hand a domain to whoever owns it, you MUST use that for any domain outside your own area. For the rest, you MUST process each independent domain sequentially yourself, applying the SAME focused-task discipline to each domain one at a time — fully scoping, solving, and summarizing one domain before starting the next. The independence analysis, the focused prompt structure, the per-domain constraints, and the integration review in this skill all apply identically; only the concurrency is dropped.
 
 Either way, the unit of work is one focused, self-contained task per independent domain.
 
