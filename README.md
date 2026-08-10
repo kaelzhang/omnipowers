@@ -73,15 +73,45 @@ reinstalling**: Claude Code hot-reloads it live in the session; Codex auto-detec
 the change (restart Codex if it does not show). Re-run `make dev` only when
 you add a new skill.
 
-## Project files (`.omnipowers/`)
+## Where skills put things
 
-Some skills keep per-project state in a `.omnipowers/` directory at the root of
-the project you run them in (not in this repo). For `code-auditing`:
+Skills produce files — a design, a plan, an audit report, a debug harness. Each
+one is filed under a **role**, and your project decides where that role lives:
 
-- `.omnipowers/rules/CODE_AUDITING.md` — the project's audit checklist; a durable,
-  reviewed quality standard. **Commit it** so the whole team shares one standard.
-- `.omnipowers/reviews/` — dated audit logs (`<date>-<time>-<target>.md`). A
-  running record; **gitignore it** if you do not want logs in version control.
+| role | what it holds |
+|---|---|
+| `design-docs` | approved designs, decision records, research worth keeping |
+| `work-state` | the plan, progress, blockers, next action, handoffs |
+| `records` | audit reports and other one-off write-ups |
+| `scratch` | debug harnesses, captured diffs, resume caches |
+| `standards` | your project's own review checklist / coding standards |
+
+Declare the mapping once, in the file your agents already read (`AGENTS.md` or
+`CLAUDE.md`). Every row is optional:
+
+```markdown
+## Omnipowers
+
+| role | location |
+|---|---|
+| design-docs | docs/design/ |
+| work-state  | docs/planning/ |
+| standards   | CONTRIBUTING.md |
+
+- write-authority: <who may write where; how to get authorization otherwise>
+- vcs: <your commit, staging, and message convention>
+- isolation: <branch or worktree; paths that stay on the mainline>
+```
+
+**Declare nothing and the skills still work.** They fall back to sensible
+defaults — durable documents to `docs/`, and in-flight or throwaway state to a
+`.omnipowers/` directory at your project root — and they confirm the location
+with you the first time they write each kind of file.
+
+`.omnipowers/` is a **workbench, not an archive**: only in-flight and throwaway
+state goes there, and `finishing-a-development-branch` empties it when the work
+lands — promoting anything durable into your design documents and deleting the
+rest. Gitignore it if you would rather it never enter version control.
 
 ## Developing skills
 

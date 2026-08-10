@@ -25,6 +25,21 @@ You MUST run Step 0 before creating anything. You MUST NOT skip straight to git 
 
 You MUST apply this skill when you begin feature work that needs isolation, or before you execute an implementation plan that will modify files.
 
+## The Host's Isolation Rules (REQUIRED before Step 0)
+
+The host project decides what an isolated workspace is and what may enter one. You MUST read its `Omnipowers` declaration — a section by that name in the host's `AGENTS.md` / `CLAUDE.md`, or in a document that file points to — and honor its `isolation` row where it has one:
+
+- **The declared unit governs.** If the host names its isolation unit (a worktree, a branch, or a shared checkout isolated only by explicit commit paths), you MUST use that unit and MUST NOT substitute another. A host that isolates by commit path is not asking for a worktree, and creating one there fragments work the host expects in one tree.
+- **Declared mainline-only paths MUST stay on the mainline.** A host MAY name paths that MUST NOT be copied into an isolated workspace — typically the files that coordinate work across agents or sessions: current status, the active plan, the task list, an inbox. Copying them forks them: you update your copy, the mainline receives changes you cannot see, and neither side knows until the merge. When such paths are declared you MUST read and write them in the mainline checkout, never in the worktree.
+- **Nothing declared → this skill's own rules apply**, and you proceed to Step 0.
+
+## Returning to the Mainline (MANDATORY)
+
+An isolated workspace is where work happens, never where it lives. Work left in a worktree is invisible to everyone outside it — the user browsing the project, the next session, another agent.
+
+- When the work is complete and verified, you MUST return it to the mainline — merged, or pushed and opened for review as the host requires. You MUST NOT report work as done while it sits only in an isolated workspace. The `finishing-a-development-branch` skill governs how; if it is not installed, follow the host's own branch-completion process.
+- **Before any handoff you MUST return to the mainline first.** Handing work to another agent, another session, or the user while it is stranded in a worktree hands them something they cannot see. Returning first is not optional and MUST NOT be deferred to the recipient.
+
 ## Step 0 — Detect Existing Isolation (REQUIRED first)
 
 Before creating anything, you MUST determine whether you are already in an isolated workspace.

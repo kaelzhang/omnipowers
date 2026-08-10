@@ -19,7 +19,7 @@ You MUST have a working loop before you form hypotheses. Work down this menu in 
 9. **Differential loop** — run the same input through the old and the new implementation (or two configs) and diff the outputs. Red = non-empty diff.
 10. **Human-in-the-loop script** — last resort; see below.
 
-Throwaway artifacts a loop needs (replay captures, harness scripts, the human-in-the-loop script) MUST live inside the host project — e.g. under `.omnipowers/debug/` — and MUST be deleted when debugging ends. A failing test (route 1) is not throwaway: it stays in the suite as the regression test.
+Throwaway artifacts a loop needs (replay captures, harness scripts, the human-in-the-loop script) are **scratch**: they MUST live inside the host project — where its `Omnipowers` declaration puts `scratch`, otherwise under `.omnipowers/debug/` — and MUST be deleted when debugging ends. A failing test (route 1) is not throwaway: it stays in the suite as the regression test.
 
 If you have exhausted every route, you MUST stop and tell the user so explicitly: list what you tried, and ask for an environment that reproduces the failure, a captured artifact (log dump, trace, recording), or permission to add temporary instrumentation. You MUST NOT proceed to hypotheses without a loop.
 

@@ -70,8 +70,9 @@ You MUST scan the material for secrets, credentials, API keys, tokens, connectio
 
 ## Location
 
-- Default path: `.omnipowers/handoffs/YYYY-MM-DD-<purpose>.md` in the host project, with `<purpose>` a short kebab-case slug. You MUST create the directory if it does not exist.
-- A location the user specifies overrides the default.
+- A handoff is **work state**. You MUST resolve where it goes in this order, stopping at the first that applies: (1) a location the user states in this session; (2) the host's `Omnipowers` declaration — a section by that name in the host's `AGENTS.md` / `CLAUDE.md`, or in a document that file points to — using its `work-state` row; (3) where the host already records progress, blockers, and the next action for work in progress, when that is unambiguous; (4) the fallback `.omnipowers/handoffs/YYYY-MM-DD-<purpose>.md`, with `<purpose>` a short kebab-case slug. Resolving to 3 or 4 MUST be confirmed with the user before the project's first handoff is written; resolving to 1 or 2 MUST NOT ask. You MUST create any missing parent directories.
+- **Where the host already keeps live work-state documents, you MUST update them and write the handoff as a pointer to them** — the current state, blockers, and next action stated once, in the host's documents, and referenced here. A handoff that copies them creates a second claim on the same facts, and the copy the successor reads is the one that has already gone stale.
+- If the host declares an `isolation` unit and the work is sitting inside one (a worktree, a branch checkout), you MUST return the work to the mainline before handing off — merged or pushed as the host requires. A successor handed work stranded in an isolated workspace cannot see it.
 - After writing, you MUST report the file's path to the user.
 
 ## Writing Rules

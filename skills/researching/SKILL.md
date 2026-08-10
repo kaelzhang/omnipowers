@@ -36,7 +36,7 @@ EVERY CLAIM TRACES TO THE PRIMARY SOURCE THAT OWNS IT
 
 ## Output Contract
 
-- Findings MUST land in a single Markdown file at `.omnipowers/research/YYYY-MM-DD-<topic>.md` in the host project. A location or format the user states overrides this default.
+- Findings MUST land in a single Markdown file. Research that settles a decision is a **durable design document**; you MUST resolve its location in this order, stopping at the first that applies: (1) a location or format the user states in this session; (2) the host's `Omnipowers` declaration — a section by that name in the host's `AGENTS.md` / `CLAUDE.md`, or in a document that file points to — using its `design-docs` row; (3) where the host already keeps design documents, when that is unambiguous; (4) the fallback `docs/research/YYYY-MM-DD-<topic>.md`. Resolving to 3 or 4 MUST be confirmed with the user before the first such file is written; resolving to 1 or 2 MUST NOT ask. If the host declares a `write-authority` model, you MUST obtain authorization through it before writing.
 - Every claim in the file MUST carry its citation inline: a link (with the version or retrieval date when the source is versioned or volatile), a `file:line` reference for source code, or the command and environment for a measurement you ran.
 - A claim without a citation is an unverifiable assertion. It MUST NOT be presented as a finding — either verify it, move it to the leads section explicitly marked unverified, or drop it.
 - The file MUST answer the pinned question directly, near the top, before the supporting detail.

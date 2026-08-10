@@ -123,19 +123,89 @@ on this repository or on its dev / test / optimize tooling (the `Makefile`, the
 install scripts, any eval or optimization harness, the test suite) or on any
 service outside the host project — that tooling exists only to author and improve
 the skills here and is not available downstream. Any state a skill needs MUST
-live inside the host project (under `.omnipowers/`), and any self-improvement loop
-a skill defines MUST be self-contained and gated by the host project's user.
-
-`.omnipowers/` holds the skill's own **runtime state**. A human-facing project
-document a skill creates for the host's team (a domain glossary, ADRs) MAY
-instead live at the host's conventional location (project root, `docs/`) — with
-the user's consent on first creation, since the skill is writing into space the
-user owns.
+live inside the host project, and any self-improvement loop a skill defines MUST
+be self-contained and gated by the host project's user.
 
 Host-artifact dependencies split hard vs soft: a skill whose output is
 **incorrect** without a host artifact MUST state how to bootstrap that artifact;
 a skill that merely **sharpens** with one MUST NOT carry a bootstrap pointer or
 nag about its absence — consumers proceed silently.
+
+### Host declaration — the skill decides what, the host decides where
+
+A skill MUST NOT hardcode where its output lives. The skill owns the artifact's
+**role**; the host project owns that role's **location**, its **write
+authority**, and its **version-control convention**. A hardcoded path is correct
+only in a project that has no conventions of its own; in every other project it
+silently creates a second home for something the host already files somewhere,
+and the two copies drift.
+
+**The five roles.** This list is closed. A skill MUST classify each artifact it
+produces as exactly one of these and MUST NOT invent a sixth:
+
+| role | what it holds | lifetime |
+|---|---|---|
+| `design-docs` | approved designs, decision records, prototype verdicts, research worth keeping | durable — outlives the work |
+| `work-state` | the plan, progress, blockers, next action, handoffs | in flight — dies with the work |
+| `records` | one-off write-ups: audit reports, research process logs | archival; not consulted while working |
+| `scratch` | throwaway: debug harnesses, captured diffs, resume caches | deleted when the work ends |
+| `standards` | the source of the project's own criteria (review checklist, coding standards) | maintained by the host, never by a skill |
+
+**Resolving a location.** Before writing any artifact a skill MUST resolve its
+location in this order, stopping at the first that applies:
+
+1. a location the user states in this session;
+2. the host's `Omnipowers` declaration — a section by that name in the host's
+   `AGENTS.md` / `CLAUDE.md`, or in a document that file points to — using the
+   row for this artifact's role;
+3. where the host already keeps documents of that role, when that is unambiguous;
+4. the fallback the skill states.
+
+Resolving to 3 or 4 MUST be confirmed with the user before the first write of
+that role in that project, and their answer governs from then on. Resolving to 1
+or 2 MUST NOT ask — the host has already answered.
+
+**The declaration.** The host writes it once, as Markdown, inside a file its
+agents already load. Never a new config file, and never a machine-readable
+format an agent has to parse — the reader is a model, not a parser:
+
+````markdown
+## Omnipowers
+
+| role | location |
+|---|---|
+| design-docs | docs/design/ |
+| work-state  | tasks/<id>/ |
+| records     | tasks/<id>/reviews/ |
+| scratch     | .omnipowers/ (not version-controlled) |
+| standards   | standards/ |
+
+- write-authority: <who may write where; how to get authorization otherwise>
+- vcs: <the host's commit, staging, and message convention>
+- isolation: <the host's isolation unit; paths that MUST stay on the mainline>
+````
+
+Every row is OPTIONAL, and a host that declares nothing gets the fallbacks.
+
+**The three policy axes** bind the same way, and a declared axis MUST override a
+skill's own default:
+
+- **write-authority** — the user's approval of an artifact's *content* is not by
+  itself authority to write it *where the host does not permit*. Where the host
+  declares an authority model, a skill MUST obtain authorization through it
+  rather than writing directly.
+- **vcs** — commit, staging, branch, and message conventions belong to the host.
+  Git commands shown inside a skill are illustrative; a declared convention
+  governs over them.
+- **isolation** — the host names the unit work happens in, and the paths that
+  MUST stay on the mainline instead of being copied into an isolated workspace.
+
+**`.omnipowers/` is a workbench, not an archive.** It is the fallback home for
+`work-state` and `scratch`, and nothing else. Durable artifacts MUST NOT
+accumulate there: an agent-only directory has no entry point in the host's
+documentation, so whatever is filed there is written and never read again.
+Everything a skill leaves in the workbench MUST be promoted to a durable role or
+deleted when the work finishes.
 
 ### Vocabulary
 
@@ -146,6 +216,9 @@ Use these terms exactly; the _Avoid_ list prevents synonym drift.
 - **host project** — the downstream project a skill is installed into. _Avoid_: client project, target repo, downstream (bare).
 - **collection** — this repository's shipped set of skills. _Avoid_: library, suite, framework.
 - **description** — the frontmatter trigger line. _Avoid_: summary, blurb.
+- **role** — one of the five artifact classes a skill's output is filed under. _Avoid_: kind, category, bucket.
+- **host declaration** — the host's `Omnipowers` section binding roles to locations and policy. _Avoid_: config, profile, manifest.
+- **workbench** — `.omnipowers/`, the fallback home for in-flight and throwaway artifacts. _Avoid_: state dir, cache, archive.
 
 ### Authoring & review checklist
 
@@ -162,4 +235,6 @@ For each statement in a skill:
 - [ ] Any exception uses the one-escape shape above.
 - [ ] Self-contained: carries the BCP 14 note; no reference outside this repo.
 - [ ] Progressive disclosure: every-invocation discipline stays inline; situational or heavy reference (>~100 lines, or used in a minority of runs) is a same-directory supporting file reached by a conditional `@`-pointer.
-- [ ] Portable at runtime: works in any host project; no dependency on this repo's tooling; runtime state stays under the host project's `.omnipowers/`.
+- [ ] Portable at runtime: works in any host project; no dependency on this repo's tooling; all state stays inside the host project.
+- [ ] No hardcoded home: every artifact declares one of the five roles and resolves its location through the host declaration, with the skill's own path stated only as the fallback.
+- [ ] Policy deferred: any commit form, branch/isolation assumption, or write into host-owned space yields to a declared `vcs` / `isolation` / `write-authority` axis.

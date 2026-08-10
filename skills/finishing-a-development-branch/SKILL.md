@@ -48,6 +48,16 @@ Integration is blocked until the suite is green.
 
 You MAY proceed to Phase 2 ONLY when the suite passes. If the project genuinely has no test suite, you MUST state that explicitly to the user and obtain their acknowledgement before continuing; "there are no tests" MUST NOT be inferred silently from a missing command.
 
+### Phase 1b — Empty the Workbench (REQUIRED)
+
+Work-in-flight artifacts do not outlive the work. Before integrating you MUST account for everything this work left in the host's workbench — the plan, progress ledgers, captured diffs, debug harnesses, handoffs — wherever the host puts in-flight and throwaway state, falling back to `.omnipowers/`:
+
+- **Promote what is durable.** A decision, a design conclusion, or a rule that outlives this branch MUST move into the host's durable design documents before you integrate, so it ships with the work. A conclusion that stays in a plan file or a scratch note dies with the branch, and the next reader finds the code with no record of why it is shaped that way.
+- **Delete the rest.** Once promoted, the in-flight artifacts for this work MUST be deleted. Left behind, they accumulate into a directory nobody reads and nobody dares delete, and a later reader cannot tell live state from residue.
+- **Say what you did** in the completion report: what you promoted and where, and what you deleted.
+
+This phase runs for the **Merge** and **PR** options, and for **Discard** (which deletes the workbench with the work it belonged to). The **Keep** option leaves the workbench alone — the work is not finishing.
+
 ### Phase 2 — Detect the Workspace
 
 You MUST determine the workspace shape before choosing a menu, because it dictates which options are valid and how cleanup works.
@@ -164,6 +174,8 @@ You MUST NOT push, merge, or remove anything. Report the state:
 ```
 Keeping branch <name>. Worktree preserved at <path> (if any).
 ```
+
+Keeping is a decision to leave the work where it is, not a way to finish it. You MUST NOT describe kept work as done or delivered, and if the work is later handed to another agent or session you MUST return it to the mainline first — work stranded in an isolated workspace is invisible to whoever receives it.
 
 #### Option: Discard (REQUIRED confirmation gate)
 

@@ -15,7 +15,7 @@ A code audit is a deep, evidence-based review of real code — never a one-shot 
 
 **Core principle:** A finding you did not verify in the actual code is not a finding.
 
-**Self-contained & portable:** This skill and everything it creates live inside the audited project, under `<project-root>/.omnipowers/`. It MUST NOT depend on any tool, service, or repository outside that project.
+**Self-contained & portable:** This skill and everything it creates live inside the audited project, in the locations that project declares (falling back to `<project-root>/.omnipowers/`). It MUST NOT depend on any tool, service, or repository outside that project.
 
 ## When to Use
 
@@ -50,7 +50,7 @@ HEAD_SHA=$(git rev-parse HEAD)
 
 Use `BASE_SHA=$(git rev-parse HEAD~1)` ONLY for a single-task checkpoint where exactly one commit is under review — scoping to one commit when the work spans several silently leaves most of the diff unreviewed. You MUST review a committed range: if the work is uncommitted, commit it (or stash and review the stash) so the diff is stable.
 
-**Find the requirements.** You MUST review the work against what it was supposed to do. Discover the requirements source in this order: the current spec under `.omnipowers/specs/` → the task brief under `.omnipowers/sdd/` → the plan file → requirement references in the commit messages → ask the user. If none exists, you MUST state explicitly that the review ran without a requirements source (quality-axis only, degraded) rather than silently reviewing against nothing.
+**Find the requirements.** You MUST review the work against what it was supposed to do. Discover the requirements source in this order: the design document this work implements, wherever the project keeps them → the task brief the implementer worked from → the plan file → requirement references in the commit messages → ask the user. If none exists, you MUST state explicitly that the review ran without a requirements source (quality-axis only, degraded) rather than silently reviewing against nothing.
 
 **Run an independent pass.** Read `@reviewer-brief.md` and apply it.
 - **With subagents:** you MUST dispatch one independent reviewer using that brief with the placeholders filled in; it MUST run read-only.
@@ -60,17 +60,24 @@ The fallback MUST NOT be a token gesture. A self-review that merely confirms you
 
 ### 1b. Standards audit
 
-You MUST ensure `<project-root>/.omnipowers/rules/CODE_AUDITING.md` exists (`<project-root>` is the repository root, or your working directory if it is not a repo).
+**First, find the criteria.** You MUST resolve where this project's audit criteria come from, stopping at the first that applies:
 
-**If it does NOT exist, you MUST generate it before auditing anything:**
+1. a source the user names in this session;
+2. the host's `Omnipowers` declaration — a section by that name in the host's `AGENTS.md` / `CLAUDE.md`, or in a document that file points to — using its `standards` row;
+3. a standards set the project already publishes and expects its contributors to follow (a standards directory, a contributor guide, a documented coding standard);
+4. none of the above — the project publishes no criteria.
+
+**When 1, 2, or 3 applies you MUST audit against that source, and you MUST NOT generate a checklist of your own.** A model-generated standard filed beside a maintained one competes with it, and the project is left with two answers to every question and no rule for which wins. Where the published source leaves one of the dimensions below uncovered, you MAY audit that dimension against the portable baseline in `@code-smells.md`, and you MUST say so in the report.
+
+**Only when 4 applies do you generate a checklist, and you MUST generate it before auditing anything:**
 
 1. **Survey the project.** Read enough of it to ground the checklist in THIS codebase: languages, frameworks, architecture and layering, the domain, the security/trust surface, the concurrency model, data and schema, build/release, the test setup, and the project's own conventions (`CLAUDE.md` / `AGENTS.md` / docs / linters).
 2. **Draft a multi-dimensional checklist.** It MUST cover at least these dimensions, each specialized to this project (drop one only if it genuinely cannot apply, and state why): correctness & logic; security & trust boundaries; error handling & failure modes; concurrency, ordering & resource lifecycle; performance & complexity; API / contract / backward compatibility; data, schema & migrations; tests & coverage (incl. a regression test for every fixed bug); readability, naming & maintainability; structure, layering & boundaries; dependencies & supply chain; documentation & comments. Each item MUST be a concrete, checkable question — not a vague "is it good?".
 3. **Optimize it by bounded iteration.** Apply at least three distinct improvement lenses — completeness / missing failure modes, project-fit / actionability, redundancy / granularity — each as its own round (a further round only if it still finds a real gap). Then **stop at the first round that produces no material change**, and MUST NOT exceed **5** rounds: beyond the cap, extra rounds invent unsupported items.
-4. **Write it** to `.omnipowers/rules/CODE_AUDITING.md` with a short header (project, generated date, dimension list) and items grouped by dimension.
-5. **Get approval before first use.** It becomes this project's durable standard, so you MUST present it and obtain approval (incorporating the user's edits) before auditing against it. You SHOULD treat it as a commit-worthy project artifact.
+4. **Write it** where the project keeps its criteria — the `standards` location resolved above, falling back to `<project-root>/.omnipowers/rules/CODE_AUDITING.md` when the project has none (`<project-root>` is the repository root, or your working directory if it is not a repo). Give it a short header (project, generated date, dimension list) and group items by dimension.
+5. **Get approval before first use.** It becomes this project's durable standard, so you MUST present it — with the location you resolved — and obtain approval (incorporating the user's edits) before auditing against it. You SHOULD treat it as a commit-worthy project artifact.
 
-**If it already exists, you MUST use it as-is for this audit.** Improvements go through Phase 5 (gated); you MUST NOT silently rewrite it mid-audit.
+**If a generated checklist already exists, you MUST use it as-is for this audit.** Improvements go through Phase 5 (gated); you MUST NOT silently rewrite it mid-audit.
 
 Scope the depth to the target: a **whole-project audit** checks every item against the whole codebase; a **change audit** still considers every item but focuses the deep checks on the **changed surface and its blast radius**, ordered by risk — you MUST NOT re-audit unrelated code line by line.
 
@@ -84,13 +91,13 @@ You MUST also: verify each finding against the real code (raise no speculative f
 
 ## Phase 3 — Record the audit
 
-You MUST create `.omnipowers/reviews/` if it does not exist, and write the full audit to:
+An audit report is a **record**. You MUST resolve where it goes in this order, stopping at the first that applies: (1) a location the user states in this session; (2) the host's `Omnipowers` declaration — a section by that name in the host's `AGENTS.md` / `CLAUDE.md`, or in a document that file points to — using its `records` row; (3) where the host already keeps review write-ups, when that is unambiguous; (4) the fallback:
 
 ```
 <project-root>/.omnipowers/reviews/<YYYY-MM-DD>-<HHMMSS>-<review-target>.md
 ```
 
-`<review-target>` is a short kebab-case slug of what was reviewed (e.g. `auth-refactor`, `pr-142`, `whole-project`). The file MUST contain: the target and scope (including the reviewed range for a checkpoint review), the requirements or checklist reference, every verdict, all findings (each with `file:line` + severity + fix), and the overall assessment.
+Resolving to 3 or 4 MUST be confirmed with the user before the project's first audit is recorded; resolving to 1 or 2 MUST NOT ask. You MUST create any missing parent directories. `<review-target>` is a short kebab-case slug of what was reviewed (e.g. `auth-refactor`, `pr-142`, `whole-project`). The file MUST contain: the target and scope (including the reviewed range for a checkpoint review), the requirements or checklist reference, every verdict, all findings (each with `file:line` + severity + fix), and the overall assessment.
 
 ## Phase 4 — Report and act
 

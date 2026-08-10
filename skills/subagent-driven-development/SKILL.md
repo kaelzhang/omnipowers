@@ -73,7 +73,7 @@ All task briefs, implementer reports, review packages, and the progress ledger l
 <repo-root>/.omnipowers/sdd/
 ```
 
-`<repo-root>` is the host project's repository root (or your working directory if it is not a repo). You MUST create this directory if it does not exist and write a self-ignoring `.gitignore` inside it (a single line containing `*`) so the scratch artifacts stay out of `git status` and out of accidental commits. These artifacts MUST live in the working tree, not under `.git/` — `.git/` is frequently a protected path that denies agent writes, which would block an implementer from writing its report.
+These are **scratch**: `<repo-root>` is the host project's repository root (or your working directory if it is not a repo), and where the host declares a `scratch` location — an `Omnipowers` section in its `AGENTS.md` / `CLAUDE.md`, or in a document that file points to — you MUST use that instead, keeping the same `sdd/` layout underneath it. You MUST create this directory if it does not exist and write a self-ignoring `.gitignore` inside it (a single line containing `*`) so the scratch artifacts stay out of `git status` and out of accidental commits. These artifacts MUST live in the working tree, not under `.git/` — `.git/` is frequently a protected path that denies agent writes, which would block an implementer from writing its report.
 
 You MUST NOT depend on any script, tool, or service outside the host project to run this skill. The git commands and file paths below are the entire mechanism.
 
@@ -202,6 +202,7 @@ Conversation memory does not survive compaction. A controller that loses its pla
   `Task N: complete (commits <base7>..<head7>, review clean)`.
 - The ledger is your recovery map: the commits it names exist in git even when your context no longer remembers creating them. After any compaction or resume you MUST trust the ledger and `git log` over your own recollection.
 - `git clean -fdx` destroys the ledger (it is git-ignored scratch); if that happens you MUST recover the state from `git log` before dispatching anything.
+- **The ledger is a cache, not the project's record of progress.** Where the host keeps its own work-state document — its own `Omnipowers` declaration names it under `work-state`, or the project plainly records progress, blockers, and the next action somewhere — you MUST update that document as each task completes, and it is authoritative if the two ever disagree. Left un-synced, the ledger becomes a second claim on the same facts that no one outside this skill reads, and it is the one that survives compaction while the project's own record silently goes stale.
 
 ## Implementer Prompt Template — `@implementer-prompt.md`
 

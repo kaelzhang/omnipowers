@@ -127,10 +127,10 @@ The terminal state is the user approving the written spec. You MUST NOT take any
 
 ### Documentation
 
-- You MUST write the validated design (the spec) under the host project at `.omnipowers/specs/YYYY-MM-DD-<topic>-design.md`, creating any missing parent directories first. If the user has stated a preference for spec location, that preference overrides this default.
+- The spec is a **durable design document**. You MUST resolve where it goes in this order, stopping at the first that applies: (1) a location the user states in this session; (2) the host's `Omnipowers` declaration — a section by that name in the host's `AGENTS.md` / `CLAUDE.md`, or in a document that file points to — using its `design-docs` row; (3) where the host already keeps design documents, when that is unambiguous; (4) the fallback `docs/design/YYYY-MM-DD-<topic>.md`. Resolving to 3 or 4 MUST be confirmed with the user before the project's first spec is written; resolving to 1 or 2 MUST NOT ask. You MUST create any missing parent directories.
 - The spec SHOULD follow the structure in `@spec-template.md` (read it when writing the spec); its **Out of Scope** section is REQUIRED — explicit exclusions are what prevent gold-plating.
 - A spec is a durable artifact: it MUST NOT embed file paths, line numbers, or code — those go stale while the spec sits, and the implementation plan carries them. A prototype-derived snippet MAY be embedded ONLY when the snippet itself is the recorded decision.
-- You MUST commit the design document to version control.
+- You MUST place the design document under version control, following the host's declared `vcs` convention where it has one and an ordinary commit otherwise. If the host declares a `write-authority` model, you MUST obtain authorization through it before writing — the user's approval of the design is not by itself authority to write where the host does not permit.
 
 ### Spec self-review
 

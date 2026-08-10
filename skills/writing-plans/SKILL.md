@@ -23,7 +23,9 @@ Every code step MUST contain the actual code. Every test step MUST contain the a
 
 ## Where to Save the Plan
 
-Plans MUST be saved under the host project at `.omnipowers/plans/YYYY-MM-DD-<feature-name>.md`. If the user specifies a different plan location, that preference overrides this default. You MUST create any missing parent directories before writing.
+A plan is **work state**: it governs the work in flight and stops mattering once the work lands. You MUST resolve where it goes in this order, stopping at the first that applies: (1) a location the user states in this session; (2) the host's `Omnipowers` declaration — a section by that name in the host's `AGENTS.md` / `CLAUDE.md`, or in a document that file points to — using its `work-state` row; (3) where the host already records the plan for work in progress, when that is unambiguous; (4) the fallback `.omnipowers/plans/YYYY-MM-DD-<feature-name>.md`. Resolving to 3 or 4 MUST be confirmed with the user before the project's first plan is written; resolving to 1 or 2 MUST NOT ask. You MUST create any missing parent directories.
+
+Where the host already keeps a plan document, you MUST write into it rather than beside it. A second plan file is not a second plan — it is one plan and one stale copy, and the copy the executing agent does not read is the one that goes wrong.
 
 ## Scope Check
 
@@ -35,7 +37,7 @@ Before defining any task, you MUST map out which files will be created or modifi
 
 - Each file MUST have one clear responsibility, with well-defined boundaries and interfaces.
 - You SHOULD prefer smaller, focused **code** files over large ones that do too much — reasoning and edits are more reliable when a file fits in context. Line count is a **smell, not a hard cap**: past a few hundred lines, check a code file's cohesion; past ~1000 it is a strong smell — but a genuinely single-responsibility file MAY exceed it, and the host codebase's own norms override any absolute number.
-- The length concern above applies to **code units judged by responsibility only**. It does NOT apply to **documentation** (Markdown / docs — judged by structure and navigability, not line count; a well-organized long document is fine, split only when length actually hurts navigation or it has grown to span separable topics, a looser ~2000-line reference) or to **data / generated / config files** (JSON/YAML data, fixtures, snapshots, lockfiles, migrations, large static maps — no line-count concern; you MUST NOT split them for length, they are data, not logic units).
+- The length concern above applies to **code units judged by responsibility only**. It does NOT apply to **documentation** (Markdown / docs — judged by structure and navigability, not line count; a well-organized long document is fine, split only when length actually hurts navigation or it has grown to span separable topics, a looser ~2000-line reference) or to **data / generated / config files** (JSON/YAML data, fixtures, snapshots, lockfiles, migrations, large static maps — no line-count concern; you SHOULD NOT split them for length, they are data, not logic units). A host project that declares a hard file-size policy overrides both exemptions: where it sets a threshold and names the file types it governs, that threshold wins over the judgment above, and a plan that ignores it produces work its own reviewers must reject.
 - Files that change together MUST live together. You MUST split by responsibility, not by technical layer.
 - In an existing codebase, you MUST follow established patterns. You MUST NOT unilaterally restructure a codebase that uses large files. If a file you are already modifying has grown unwieldy, you MAY include a split for that file in the plan — this is a judgment call because it depends on whether the split is incidental to the change or a separate refactor that belongs in its own plan.
 
@@ -141,6 +143,8 @@ git commit -m "feat: add specific feature"
 
 File paths MUST be exact. The `Interfaces` block MUST list exact signatures, because the implementer of a task sees only their own task and learns neighboring names and types from this block alone. The example language (pytest, Python) is illustrative — you MUST use the host project's actual test runner, language, and commands.
 
+The commit step is illustrative in the same way. Committing is the host's convention, not this skill's: where the host declares one — a `vcs` row in its `Omnipowers` section, a contributor guide, a commit standard — the commit step of every task MUST follow it, including how files are staged and how the message is formed. Writing the shape shown above into a plan for a project whose convention differs makes every task in that plan violate it.
+
 ## No Placeholders
 
 Every step MUST contain the actual content an engineer needs. The following are plan failures and you MUST NOT write them:
@@ -189,7 +193,7 @@ You MUST fix issues inline. If a fix adds or renames a task, step, type, or symb
 
 After saving the plan, you MUST report the saved path and present the execution options to the user, then wait for the user's choice. You MUST NOT begin executing the plan without the user's selection.
 
-**Report:** "Plan complete and saved to `.omnipowers/plans/<filename>.md`. Two execution options:"
+**Report:** "Plan complete and saved to `<the path you resolved>`. Two execution options:"
 
 1. **Per-task isolated execution** — implement one task at a time, each in a fresh context, with a review gate between tasks. If the host environment provides a mechanism for dispatching an isolated worker per task (for example, a subagent or parallel-agent facility), you MAY use it: one worker per task, with a review of each task's diff before the next task begins. If the host provides no such mechanism, you MUST degrade gracefully to the portable inline equivalent — implement each task to completion, run its tests, review its diff, and commit, before reading the next task; you MUST NOT read ahead into later tasks while implementing the current one, which preserves the zero-context-per-task discipline.
 2. **Inline batch execution** — implement the tasks in this session, pausing at checkpoints for review.

@@ -48,7 +48,7 @@ You MUST NOT declare the question answered from your own run. Your run proves th
 
 When the user delivers the verdict, you MUST capture it in two places:
 
-1. **The decision → the design spec.** Record the question, the verdict, and the rationale in the design spec being brainstormed — the document under the host project's `.omnipowers/specs/` produced by the brainstorming skill. A verdict that stays in the conversation is lost.
+1. **The decision → the design spec.** Record the question, the verdict, and the rationale in the design spec being brainstormed — the durable design document the brainstorming skill produced, wherever this host project keeps such documents. A verdict that stays in the conversation is lost. If no spec exists yet, the verdict still MUST be written into the host's design documents rather than left in the transcript.
 2. **The prototype → a throwaway branch.** Commit the prototype itself to a clearly-named throwaway branch (e.g. `prototype/<question-slug>`) as the primary source behind the decision. **Main stays clean**: no variants, switchers, or terminal shells reach the main branch. Prototype code left in main rots fast and misleads the next reader.
 
 ## Red Flags — STOP
