@@ -36,6 +36,7 @@ stress-testing-a-plan ─(build intent)→ brainstorming → writing-plans
 - **confirming-with-the-user** — HOW any single decision is put to the user (options, impacts, recommendation, prose). Every other skill's user-facing decisions ride on it.
 - **verification-before-completion** — evidence before any "done/fixed/passing" claim. Gates every completion claim in every flow.
 - **dispatching-parallel-agents** — 2+ genuinely independent tasks fan out; independence proven first. A mechanism other flows may use, not a flow itself.
+- **committing-work** — how each individual commit is formed: one coherent change, explicit paths, the smallest proving check, a standalone message. NOT integrating the branch afterwards (finishing-a-development-branch), NOT judging the code (code-auditing).
 - **code-auditing** — all code review and audit: a checkpoint review of finished work before it advances (merge-base range, reviewed against its requirements) OR a standards audit against the host's compounding checklist; Phase 1 routes between them, and both record + act on findings by severity.
 
 ## Crossing sessions
@@ -46,6 +47,7 @@ stress-testing-a-plan ─(build intent)→ brainstorming → writing-plans
 
 - **stress-testing-a-plan** — the user asks to have THEIR plan interrogated; zero artifacts; build intent hands off to brainstorming.
 - **writing-skills** — creating or editing any skill, test-first.
+- **writing-documentation** — durable project documentation: one entrypoint per set, task-signal routing to exact files, updated in the same change. NOT a skill (writing-skills), NOT a handoff (writing-handoffs), NOT the glossary or decision records themselves (domain-modeling).
 
 ## Boundary rules (the chronic confusions)
 
@@ -53,3 +55,5 @@ stress-testing-a-plan ─(build intent)→ brainstorming → writing-plans
 - Finding a bug's cause → **systematic-debugging**; writing the fix → **test-driven-bug-fixing**.
 - Any code review or audit → **code-auditing** (it routes internally: checkpoint review vs standards audit).
 - Executing a plan with subagents per task → **subagent-driven-development**; parallel unrelated tasks → **dispatching-parallel-agents**.
+- Making a commit → **committing-work**; merging, pushing, or opening the PR afterwards → **finishing-a-development-branch**. "Commit and push" splits across both.
+- Writing a project document → **writing-documentation**; writing a `SKILL.md` → **writing-skills**. What a term means or whether a decision is worth recording → **domain-modeling**; how it is reached and structured → **writing-documentation**.

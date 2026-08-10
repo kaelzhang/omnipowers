@@ -27,6 +27,8 @@ A collection of skills that improve coding effectiveness for AI coding agents.
 | [researching](skills/researching/SKILL.md) | Answering a question by investigation — every claim traced to the primary source that owns it, delivered as a cited findings file |
 | [resolving-merge-conflicts](skills/resolving-merge-conflicts/SKILL.md) | An in-progress merge or rebase with conflicts — per-hunk intent archaeology; never invent behavior in a conflict hunk, never `--abort` to escape |
 | [writing-handoffs](skills/writing-handoffs/SKILL.md) | The user asks to hand off the session — compact it into an evidence-cited, pointer-not-copy document a zero-context agent can resume from |
+| [committing-work](skills/committing-work/SKILL.md) | Forming each commit — one coherent logical change, staged path by path, proven by the smallest sufficient check, with a message that stands alone and credits no tool |
+| [writing-documentation](skills/writing-documentation/SKILL.md) | Creating or restructuring durable documentation — one entrypoint per set that routes a reader by task to exact files, updated in the same change |
 
 ## Install
 
