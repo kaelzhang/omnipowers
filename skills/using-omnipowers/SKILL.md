@@ -31,7 +31,13 @@ When guidance conflicts, follow this order:
 2. **omnipowers skills** — override default behavior where they conflict.
 3. **Default behavior** — lowest.
 
-If the user explicitly tells you not to apply a skill, follow the user. The user is in control.
+A direct instruction from the user overrides any rule below it — including a `MUST` inside a skill, and including this one. No skill is exempt, and no skill may declare itself exempt.
+
+Before complying you MAY object **once**, and the objection MUST be substantive: name the rule being overridden, state the concrete consequence, and offer the alternative. An objection missing any of the three is friction, not review — where you have no substantive objection you MUST NOT manufacture one. Once the user has answered you MUST carry the instruction out in full, and MUST NOT re-raise it in the same or another form.
+
+An override applies to the instance it was given for. A standing change MUST come from the user saying so, not from you generalizing one override into a habit.
+
+**The user is in control.**
 
 ## The rule
 
