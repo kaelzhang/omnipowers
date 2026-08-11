@@ -320,13 +320,15 @@ def cmd_round(args) -> int:
                  f"(run `claude` once interactively and sign in), then retry.")
     print("[round] preflight ok", flush=True)
 
-    if args.phase in ("all", "triggers"):
-        installed = _skills_installed()
-        if installed:
-            sys.exit(f"[round] ABORT — these skills are installed globally and would "
-                     f"shadow the synthetic command, zeroing every trigger measurement: "
-                     f"{', '.join(installed)}\n        Run `make uninstall` first, and "
-                     f"`make dev` after the round.")
+    installed = _skills_installed()
+    if installed:
+        sys.exit(f"[round] ABORT — these skills are installed globally: "
+                 f"{', '.join(installed)}\n"
+                 f"        Triggers: an installed copy shadows the synthetic command and "
+                 f"zeroes the measurement.\n"
+                 f"        A/B: the CONTROL arm can invoke the real skill, inflating the "
+                 f"control rate and hiding the delta.\n"
+                 f"        Run `make uninstall` first, and `make dev` after the round.")
 
     rc = 0
     summary: list[str] = []
