@@ -1,6 +1,6 @@
 ---
 name: committing-work
-description: Use when about to stage or commit anything — "commit this", "git commit", "save my work", "commit and push", splitting edits into commits, or ending a round with a dirty tree — you MUST make each commit one coherent logical change staged path by path (never `git add -A`/`.`/`-u`, never `git commit -a`, never hunk staging), read the diff you are committing, run the smallest check that proves it coheres, and write a standalone message with no tool attribution trailer
+description: Use when about to stage or commit anything — "commit this", "git commit", "save my work", "commit and push", splitting edits into commits, or ending a round with a dirty tree — you MUST make each commit one coherent logical change staged path by path (never `git add -A`/`.`/`-u`, never `git commit -a`, never hunk staging), read the diff you are committing, run the smallest check that proves it coheres, write a standalone message with no tool attribution trailer, and push the branch when the round ends rather than asking whether to
 ---
 
 # Committing Work
@@ -134,9 +134,9 @@ Follow the convention resolved above. Whatever its form, these hold, because the
 
 **Tool attribution is prohibited.** Commit messages MUST NOT credit a model, assistant, agent, CLI, harness, or runtime configuration — `Co-Authored-By:` naming a model or tool, `Generated-by:`, or any variant. You MUST NOT add yourself, your model name, your tool name, or your configuration to a commit message, and where your harness appends such a trailer by default you MUST remove it before committing. It misattributes authorship of the change and turns history into an attribution log for tooling that will outlive none of it; author and committer metadata already record provenance. Where such a trailer has already been written and the commit is **not yet published**, you MUST amend it away. Trailers crediting *people* — a human co-author, reviewer, or reporter — are the host's convention to require or forbid, and are unaffected by this rule.
 
-## 7. End the round committed
+## 7. End the round committed and pushed
 
-A round of work that changes files MUST end with those changes committed before your final response, unless the user or the host's declared convention says otherwise. Keep working until the round is coherent, verified, and committed. Coherent work left uncommitted is work the next session inherits as an unexplained dirty tree — and routinely loses. If you do not commit, you MUST state exactly what is left uncommitted and why; if nothing changed, you MUST say that explicitly rather than leave it ambiguous.
+A round of work that changes files MUST end with those changes committed **and pushed** before your final response, unless the user or the host's declared convention says otherwise. Keep working until the round is coherent, verified, and committed. Coherent work left uncommitted is work the next session inherits as an unexplained dirty tree — and routinely loses. If you do not commit, you MUST state exactly what is left uncommitted and why; if nothing changed, you MUST say that explicitly rather than leave it ambiguous.
 
 **Commit-readiness is coherence, not completion.** An unmet quality bar — coverage below the host's target, a benchmark not yet met, a follow-up case not handled, a known blocker — MUST NOT be used as a reason to withhold the round's commits. Withholding turns the round into all-or-nothing and puts real work one crash away from gone. Instead, commit the coherent checkpoint and record the gap where it will be looked for:
 
@@ -145,6 +145,16 @@ A round of work that changes files MUST end with those changes committed before 
 3. in the host's `work-state` — the location its `Omnipowers` declaration names, otherwise wherever it already keeps plans and progress, otherwise `.omnipowers/` — so the next session sees it without reading history. When you resolve that location by the host's existing habit or by the fallback rather than from the user or a declaration, confirm it with the user before the first such write in that project.
 
 Committing a checkpoint is never a claim that the work is complete. If a blocker remains, commit first, then report the blocker and ask for direction — you MUST NOT present blocked work as finished.
+
+**Push is part of ending the round, not a separate decision.** Once the round's commits exist you MUST push the current branch to its remote, and you MUST NOT ask whether to push or offer it as an option. A commit that lives only in one working copy is one disk failure from gone and invisible to everyone else. Concretely:
+
+- Push the **current branch** to its configured upstream. If it has none, set one to the default remote under the same branch name (`git push -u origin <branch>`). You MUST NOT push a branch other than the one you worked on.
+- Where the host declares a `vcs` convention covering when or where work is published, that convention governs over this rule.
+- If there is no remote at all, the round ends committed, and you MUST say so rather than reporting it as pushed.
+- If the push is rejected (the remote moved ahead), you MUST integrate and retry rather than leaving the round half-published — and you MUST NOT reach for `--force` to resolve it (see History integrity).
+- Report what landed: the branch, the remote, and the commits. A round reported as done with commits sitting unpushed is a false completion claim.
+
+Pushing publishes: it makes the commits visible to everyone with access to that remote, and on a public repository that is everyone. That is the intended effect of this rule, and it is why the message and staging discipline above is not optional — what you push is what the world reads.
 
 ## History integrity
 
@@ -165,6 +175,7 @@ Any of these means you are about to violate the Iron Law:
 - a rename/format/generated-file diff with a behavior change tucked inside it
 - committing without running any check because "it's just a small change"
 - about to amend or force-push something already published
+- ending the round with commits sitting unpushed, or asking the user whether to push them
 - a model, agent, or tool attribution trailer in the message you are about to write
 - the round is ending and coherent changes are still uncommitted
 
@@ -200,11 +211,13 @@ You MUST be able to check every box:
 - [ ] The subject names what changed; a body covers gap, solution, and verification where the change is non-obvious
 - [ ] Breaking changes are marked
 - [ ] No model, agent, or tool attribution trailer
+- [ ] At the end of the round, the branch is pushed — and what landed was reported
 - [ ] Nothing already published is being rewritten
 
 ## The Bottom Line
 
 ```
-Decide the change → name the paths → read the diff → prove it coheres → commit by pathspec
+Decide the change → name the paths → read the diff → prove it coheres → commit by pathspec → push
 Anything that arrives in a commit because it was lying around is a defect
+A round that ends with commits still only on your disk is a round that did not end
 ```

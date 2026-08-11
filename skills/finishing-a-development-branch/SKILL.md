@@ -1,6 +1,6 @@
 ---
 name: finishing-a-development-branch
-description: Use when a feature branch's work is done and verified and you're ready to wrap it up — merge it, open a PR, ship it, keep it, or discard it (incl. cleaning up the worktree/branch) — you MUST verify tests pass, then present the integration options and let the user choose before any merge, push, or deletion
+description: Use when a feature branch's work is done and verified and you're ready to wrap it up — merge it, open a PR, ship it, keep it, or discard it (incl. cleaning up the worktree/branch) — you MUST verify tests pass, then present the integration options and let the user choose before any merge or deletion
 ---
 
 # Finishing a Development Branch
@@ -21,7 +21,9 @@ You MUST NOT decide the integration path on the user's behalf. The choice betwee
 NO INTEGRATION WITHOUT GREEN TESTS, AND NO DESTRUCTIVE ACTION WITHOUT EXPLICIT USER CHOICE
 ```
 
-You MUST NOT merge, push, delete a branch, or remove a worktree until the test suite passes in this session and the user has chosen the action. You MUST NOT collapse the menu to a single assumed answer.
+You MUST NOT merge, delete a branch, or remove a worktree until the test suite passes in this session and the user has chosen the action. You MUST NOT collapse the menu to a single assumed answer.
+
+Publishing the feature branch itself is **not** one of these gated actions: the branch is pushed as ordinary work-in-progress, and this skill decides only what becomes of it — merged, opened for review, kept, or discarded. What needs the user's word is the step that changes the base branch or destroys work.
 
 ## The Process
 
@@ -169,7 +171,7 @@ You MUST NOT clean up the worktree for this option — the user needs it alive t
 
 #### Option: Keep As-Is
 
-You MUST NOT push, merge, or remove anything. Report the state:
+You MUST NOT merge or remove anything. The branch stays where it is — already pushed as ordinary work in progress, but not integrated. Report the state:
 
 ```
 Keeping branch <name>. Worktree preserved at <path> (if any).
