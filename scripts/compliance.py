@@ -59,6 +59,60 @@ def _claude(prompt: str, cwd: str, timeout: int, model: str = "") -> tuple[str, 
     return text, True
 
 
+def _claude_traced(prompt: str, cwd: str, timeout: int, model: str = "") -> tuple[str, bool]:
+    """Run one turn and return the ACTIONS the agent took, then its final answer.
+
+    Grading only the final message measures what the agent *says*. Every
+    process discipline — write the failing test first, read the diff before
+    committing, find the cause before the fix — lives in the ORDER of its tool
+    calls, which the final message does not contain and often misreports. So the
+    graded artifact is the ordered tool trace plus the answer.
+    """
+    cmd = ["claude", "-p", prompt, "--output-format", "stream-json",
+           "--verbose", "--include-partial-messages"]
+    if model:
+        cmd += ["--model", model]
+    try:
+        p = subprocess.run(cmd, cwd=cwd, env=_env(), capture_output=True,
+                           text=True, timeout=timeout)
+    except Exception:
+        return "", False
+    steps: list[str] = []
+    final = ""
+    for line in (p.stdout or "").splitlines():
+        try:
+            e = json.loads(line)
+        except Exception:
+            continue
+        if e.get("type") == "assistant":
+            for block in (e.get("message") or {}).get("content") or []:
+                if block.get("type") == "tool_use":
+                    inp = block.get("input") or {}
+                    detail = (inp.get("command") or inp.get("file_path")
+                              or inp.get("pattern") or inp.get("path") or "")
+                    steps.append(f"{block.get('name')}: {str(detail)[:300]}")
+                elif block.get("type") == "text" and block.get("text", "").strip():
+                    steps.append(f"SAYS: {block['text'].strip()[:300]}")
+        elif e.get("type") == "user":
+            for block in (e.get("message") or {}).get("content") or []:
+                if block.get("type") == "tool_result":
+                    c = block.get("content")
+                    if isinstance(c, list):
+                        c = " ".join(x.get("text", "") for x in c if isinstance(x, dict))
+                    out = str(c or "").strip().replace("\n", " ")
+                    if out:
+                        steps.append(f"  -> {out[:300]}")
+        elif e.get("type") == "result":
+            if e.get("is_error") or e.get("api_error_status"):
+                return "", False
+            final = str(e.get("result", ""))
+    if not final.strip() or re.search(r"usage limit|rate limit", final[:300], re.I):
+        return "", False
+    trace = "\n".join(f"{i+1}. {s}" for i, s in enumerate(steps))
+    return (f"--- ACTIONS TAKEN, IN ORDER ---\n{trace}\n\n"
+            f"--- FINAL ANSWER ---\n{final}"), True
+
+
 def _fixture_scratch(fixtures_root: str, fixture: str) -> str:
     scratch = tempfile.mkdtemp(prefix="omnipowers_compliance_")
     if fixture:
@@ -77,12 +131,16 @@ def _grade(transcript: str, expectations: list[str], timeout: int, model: str) -
     """Blind grade: how many expectations does this transcript satisfy?"""
     exp = "\n".join(f"{i+1}. {e}" for i, e in enumerate(expectations))
     prompt = (
-        "You are grading an AI assistant's response against explicit expectations. "
-        "Be STRICT: an expectation passes only if the response actually demonstrates it — "
-        "mentioning the idea is not doing it. You do not know how the response was produced; "
-        "judge only what is written.\n\n"
+        "You are grading what an AI coding agent DID against explicit expectations. "
+        "Below is the ordered list of actions it took (tool calls, their results, and what "
+        "it said along the way), followed by its final answer.\n\n"
+        "Be STRICT: an expectation passes only if the actions or the answer actually "
+        "demonstrate it — announcing an intention is not doing it. Expectations about "
+        "ORDER ('X before any edit to Y') are judged against the numbered action list: "
+        "find both events and compare their positions. You do not know which of two "
+        "variants produced this; judge only what is here.\n\n"
         f"--- EXPECTATIONS ---\n{exp}\n\n"
-        f"--- RESPONSE ---\n{transcript[:12000]}\n--- END ---\n\n"
+        f"--- RUN ---\n{transcript[:24000]}\n--- END ---\n\n"
         'Reply with ONLY JSON: {"passed": [<numbers of satisfied expectations>], '
         '"reason": "<one sentence>"}'
     )
@@ -136,7 +194,7 @@ def cmd_run(args) -> int:
                 "A skill governs how you must handle this kind of request. Follow it exactly.\n\n"
                 f"--- SKILL ---\n{skill_text}\n--- END SKILL ---\n\n{sc['prompt']}"
             )
-            text, valid = _claude(prompt, scratch, args.timeout, args.model)
+            text, valid = _claude_traced(prompt, scratch, args.timeout, args.model)
             if not valid:
                 return 0, 0, False
             n, _ = _grade(text, sc["expectations"], args.timeout, args.model)
