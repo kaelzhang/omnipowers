@@ -49,6 +49,33 @@ skill_names() {
 
 cli_path() { command -v "$1" 2>/dev/null || true; }
 
+# Names of links in a target dir that WE installed but that are no longer skills
+# here — the skill was retired, renamed, or merged away. Everything else in the
+# dir belongs to someone else and is never touched. Without this, a retired
+# skill's link outlives the skill: it dangles (or, after a rename, points at a
+# stale directory) and stays in every session's skill list indefinitely.
+retired_links() { # dir
+  local dir="$1" link name target
+  [ -d "$dir" ] || return 0
+  for link in "$dir"/*; do
+    [ -L "$link" ] || continue
+    name="$(basename "$link")"
+    target="$(readlink "$link")"
+    case "$target" in "$SKILLS_DIR"/*) ;; *) continue ;; esac
+    [ -f "$target/SKILL.md" ] && continue
+    printf '%s\n' "$name"
+  done
+}
+
+prune_retired() { # dir label
+  local dir="$1" label="$2" name
+  while IFS= read -r name; do
+    [ -n "$name" ] || continue
+    rm -f "$dir/$name"
+    warn "$label: $name (removed — retired from this repo)"
+  done < <(retired_links "$dir")
+}
+
 status_target() { # label dir
   local label="$1" dir="$2" name link
   info "  ${C}$label${N}  →  $dir"
@@ -67,6 +94,10 @@ status_target() { # label dir
       info "    $name (not installed)"
     fi
   done < <(skill_names)
+  while IFS= read -r name; do
+    [ -n "$name" ] || continue
+    err "    $name (RETIRED from this repo but still installed — run 'make dev' to prune)"
+  done < <(retired_links "$dir")
 }
 
 print_status() {
@@ -113,6 +144,8 @@ link_one() { # name dir label
 
 do_install() {
   info "${B}Installing omnipowers skills${N} (FORCE=$FORCE)"
+  prune_retired "$CLAUDE_DIR" "Claude"
+  prune_retired "$CODEX_DIR"  "Codex "
   local any=0 name
   while IFS= read -r name; do
     any=1
@@ -129,6 +162,8 @@ do_install() {
 
 do_uninstall() {
   info "${B}Uninstalling omnipowers skills${N}"
+  prune_retired "$CLAUDE_DIR" "Claude"
+  prune_retired "$CODEX_DIR"  "Codex "
   local dir name link
   for dir in "$CLAUDE_DIR" "$CODEX_DIR"; do
     while IFS= read -r name; do
