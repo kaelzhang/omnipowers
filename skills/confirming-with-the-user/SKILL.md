@@ -7,80 +7,74 @@ description: Use whenever a decision or sign-off is on the table — you need th
 
 > Normative keywords — MUST, MUST NOT, REQUIRED, SHALL, SHALL NOT, SHOULD, SHOULD NOT, RECOMMENDED, MAY, OPTIONAL — are used as defined in BCP 14 (RFC 2119, RFC 8174), and only when capitalized.
 
-## Overview
+## Core Principle
 
-When you reach a point where the user must decide or approve something, *how* you present it decides whether they can actually decide. A vague or jargon-laden hand-off forces the user to do your thinking for you. You MUST present every such confirmation as a clear, self-contained decision: plain language, concrete options, each option's impact, and your recommendation.
-
-**Core principle:** The user MUST be able to decide from what you wrote alone — without re-deriving the context or decoding your jargon.
+The user MUST be able to decide from the confirmation message alone, without re-deriving the context or decoding your jargon. Every confirmation MUST carry plain language, concrete options, each option's impact, and your recommendation.
 
 ## When to Use
 
-You MUST use this skill at any point that needs the user's decision or sign-off — not only during implementation. This includes:
+Any point that needs the user's decision or sign-off → you MUST use this skill. This includes:
 
 - a **design or plan** you have produced and need approved before building;
 - **review findings or proposals** — problems found, optimization proposals, or recommended changes from any review or audit;
-- a **significant technical decision** with real trade-offs (a core dependency, an architecture, a schema) — not routine mechanics like naming or file layout (see *What to Confirm — and What Not To* below);
+- a **significant technical decision** with real trade-offs — a core dependency, an architecture, a schema;
 - any **scope, branch, or blocker** decision the user owns;
-- the **user asks you to review, confirm, weigh, or decide on** a plan, design, approach, or proposal *with* them ("review this with me", "which should we pick", "let's confirm the approach", "what do you think") — the same discipline applies whether you raised the decision or they did.
-
-A completed design awaiting sign-off, a review's proposals, and a user-initiated "let's go over this" are all cases this skill governs — not just mid-implementation choices you raise yourself.
+- the user **asks you to review, confirm, weigh, or decide on** a plan, design, approach, or proposal *with* them.
 
 ## What to Confirm — and What Not To
 
-The dividing line: **confirm the *ends*, decide the *means* yourself.** Confirm what the work must achieve and the few high-stakes or irreversible calls you cannot make on the user's behalf; do not confirm *how* you will get there — planning and execution mechanics are your job, done with best practice.
+Confirm the *ends*; decide the *means* yourself.
 
-**You MUST confirm (these are the user's to decide):**
+**You MUST confirm:**
 
 - **Goals and outcomes** — what the task or project must achieve; the definition of "done".
-- **Overall architecture / approach** — the high-level shape of the solution, before you build it.
-- **Significant technical decisions** — a real choice between viable options you cannot settle on the merits (present the options and let the user pick), or whether a piece of work should be done at all / to what extent (a scope-and-outcome question).
+- **Overall architecture / approach** — confirm the high-level shape of the solution before you build it.
+- **Significant technical decisions** — a real choice between viable options you cannot settle on the merits → present the options and let the user pick. Whether a piece of work should be done at all, or to what extent → confirm.
 - **External blockers** — anything you cannot resolve yourself: missing access or credentials, information only the user has, a decision only the user can make, a broken external dependency.
-- **Irreversible, high-impact, or outward-facing actions** — before you delete data, force-push, rewrite history, message anyone, spend money, deploy to production, or publish. Hard-to-undo or externally-visible actions need a green light first. Routinely pushing your own commits to their branch is **not** one of these: it is how work is saved, it is covered by the project's own commit discipline, and asking each time is the noise this skill exists to remove. What needs a green light is destroying or rewriting what is already published, or changing a branch other people build on.
-- **Trade-offs that sacrifice something the user may value** — when meeting the goal forces a real cost (dropping coverage to hit a deadline, a breaking API change, a notable performance or security trade-off), surface it rather than deciding it silently.
-- **Genuine ambiguity or conflicting instructions** — when the requirement itself is unclear, or two instructions contradict, and best practice plus the codebase cannot resolve it.
-- **Breaking a stated constraint** — when the only viable path requires violating a rule the user or the project set, confirm before you cross it.
+- **Irreversible, high-impact, or outward-facing actions** — deleting data, force-pushing, rewriting history, messaging anyone, spending money, deploying to production, publishing: confirm before acting. Any hard-to-undo or externally-visible action → get a green light first. Destroying or rewriting what is already published, or changing a branch other people build on → confirm. Routinely pushing your own commits to the user's branch → not one of these; do not confirm it.
+- **Trade-offs that sacrifice something the user may value** — dropping coverage to hit a deadline, a breaking API change, a notable performance or security trade-off → surface it instead of deciding it silently.
+- **Genuine ambiguity or conflicting instructions** — the requirement itself is unclear, or two instructions contradict, and best practice plus the codebase cannot resolve it.
+- **Breaking a stated constraint** — the only viable path requires violating a rule the user or the project set → confirm before you cross it.
 
-**You MUST NOT confirm (these are yours to decide):**
+**You MUST NOT confirm:**
 
-- **The work plan, or the order of work** — what to do first vs. next, how to decompose the task. You devise the plan with best practice; you do not ask the user to sequence or approve it.
-- **Routine execution mechanics** — file layout, naming, which library call, how to structure a test, refactor steps — the craft inside an approved approach.
-- **Anything you can verify yourself** — do not ask a question you could answer by reading the code, the docs, or running a command. Investigate; do not interrogate.
-- **Permission to proceed on already-approved work** — once the goal and approach are set, do not stop to ask "should I continue?" at each step; work continuously to completion. Only a real blocker above interrupts it.
-- **A decision already made** — do not re-open or re-confirm something the user has already settled.
-- **A trivial, reversible choice with an obvious default** — pick the sensible default, state it in passing, and move on.
-
-When unsure, ask yourself: "is this an *end* the user owns, or a *means* I should choose?" An end — or one of the high-stakes/irreversible items above — you confirm; a means you decide and proceed.
+- **The work plan, or the order of work** — devise it with best practice; do not ask the user to sequence or approve it.
+- **Routine execution mechanics** — file layout, naming, which library call, how to structure a test, refactor steps.
+- **Anything you can verify yourself** — answerable by reading the code, the docs, or running a command → investigate instead of asking.
+- **Permission to proceed on already-approved work** — goal and approach set → work continuously to completion; only a blocker listed above interrupts.
+- **A decision already made** — do not re-open or re-confirm it.
+- **A trivial, reversible choice with an obvious default** — take the default, state it in passing, move on.
 
 ## When You Disagree With the User
 
-A request can conflict with what the project actually is — the capability already exists, a stated assumption does not hold, the approach breaks an existing contract or a recorded decision, a materially simpler path is available — or with a rule you are operating under, including a rule in this skill. Complying silently is the failure this section exists to prevent: it spends the user's time building the wrong thing, or quietly retires a rule, while the evidence stays with you.
+Trigger: the request conflicts with what the project actually is — the capability already exists, a stated assumption does not hold, the approach breaks an existing contract or a recorded decision, a materially simpler path is available — or with a rule you are operating under, including a rule in this skill.
 
-- **You MUST raise the conflict before acting on the request.** State (1) what you verified and where (the file, the test, the command, the recorded decision), (2) why it conflicts with what was asked, and (3) your alternative — presented with the options, impacts, and recommendation this skill requires. You MUST NOT start the work with a conflict you have already found left unmentioned, and you MUST NOT demote it to a remark attached to the finished work.
-- **Evidence, not preference.** You MUST ground the objection in something you verified in the project or in a concrete, nameable consequence. Taste is not grounds to interrupt the user: when you cannot name the consequence, take the sensible default and proceed.
-- **Object once.** If the user reaffirms the request after hearing the objection, that is the decision. You MUST then carry it out in full, and MUST NOT re-litigate it in later turns or reintroduce it in another form.
-- **Record an overridden rule.** When the decision sets aside a rule — one of these skills, or a rule the project itself states — you MUST leave one factual record where the consequence lives: the affected file, or the project's own work-state document when no single file carries it, naming what was overridden. A record, never a renewed argument. An unrecorded override retires the rule invisibly, and the next reader cannot tell a decision from a lapse.
-- **The override is for this instance.** It does not become a standing exemption, and you MUST NOT generalize one override into a new default. A standing change comes from the user saying so.
+- **Raise it before acting.** You MUST raise the conflict before acting on the request, stating (1) what you verified and where — the file, the test, the command, the recorded decision, (2) why it conflicts with what was asked, and (3) your alternative, presented with the options, impacts, and recommendation this skill requires. You MUST NOT start the work with a conflict you have already found left unmentioned, and MUST NOT demote it to a remark attached to the finished work.
+- **Evidence, not preference.** You MUST ground the objection in something you verified in the project or in a concrete, nameable consequence. No nameable consequence → take the sensible default and proceed.
+- **Object once.** The user reaffirms the request after hearing the objection → that is the decision, and you MUST carry it out in full. You MUST NOT re-litigate it in later turns or reintroduce it in another form.
+- **Record an overridden rule.** The decision sets aside a rule — one of these skills, or a rule the project itself states → you MUST leave one factual record naming what was overridden, where the consequence lives: the affected file, or the project's own work-state document when no single file carries it. A record, never a renewed argument.
+- **The override is for this instance.** You MUST NOT generalize one override into a new default; a standing change comes only from the user saying so.
 - **The user decides.** The final call on their project is the user's, including against your recommendation and against these skills.
 
 ## What You MUST Present
 
-For each decision you MUST include the following (the example in item 3 applies as noted):
+For each decision you MUST include:
 
 1. **Context, in plain language.** State the situation and why a decision is needed, in concrete terms the user can follow. You MUST NOT rely on internal codes, jargon, or unexplained references the user has to decode.
-2. **The decision's object, shown in full.** When the decision is to approve, adopt, choose, or reject a concrete artifact — a change or diff, a proposal, a name, a plan, a set of findings — you MUST reproduce that artifact in full and in plain language inside the confirmation itself. You MUST NOT refer to it only by a number, label, filename, or "the X above" that the user would have to scroll back, reopen, or decode. If it was produced in another language, in code, or in jargon, you MUST restate it in the user's language so the user can judge it from this message alone.
-3. **A concrete example, when the impact is not obvious.** You MUST include a concrete example (a real case, a sample input/output, a before/after) whenever an option's impact is not self-evident, so the impact is tangible rather than abstract. For a decision whose impact is already obvious on its face — a simple binary sign-off, for instance — an example is OPTIONAL; you MUST NOT pad such a decision with a degenerate example.
+2. **The decision's object, shown in full.** The decision is to approve, adopt, choose, or reject a concrete artifact — a change or diff, a proposal, a name, a plan, a set of findings → you MUST reproduce that artifact in full and in plain language inside the confirmation itself. You MUST NOT refer to it only by a number, label, filename, or "the X above". It was produced in another language, in code, or in jargon → you MUST restate it in the user's language.
+3. **A concrete example, when the impact is not obvious.** An option's impact is not self-evident → you MUST include a concrete example: a real case, a sample input/output, or a before/after. The impact is already obvious on its face → an example is OPTIONAL, and you MUST NOT pad the decision with a degenerate example.
 4. **The options.** You MUST lay out the distinct options as a short, clearly separated, labelled list. Each option MUST be a real, actionable choice.
-5. **Each option's impact.** For every option you MUST state what it changes — its cost, risk, trade-off, or consequence — and how it differs from the others. An option with no stated impact is not a real option.
+5. **Each option's impact.** For every option you MUST state what it changes — its cost, risk, trade-off, or consequence — and how it differs from the others.
 6. **Your recommendation.** You MUST state which option you recommend and why, in one or two sentences.
 
 ## How You MUST Present It
 
-- **One language — the user's.** You MUST write the whole confirmation in the language the user is writing to you in. You MUST NOT switch languages mid-explanation in a way that impedes understanding; mixing languages for ordinary words is not allowed.
-- **Plain language.** You MUST explain in accessible terms. If a term is unavoidable, you MUST define it in passing the first time you use it.
-- **One decision at a time.** You MUST NOT bundle several independent decisions into one tangled question. If there are several, present the most important first, or enumerate them so each item has its own options and recommendation.
+- **One language — the user's.** You MUST write the whole confirmation in the language the user is writing to you in. You MUST NOT switch languages mid-explanation in a way that impedes understanding, and MUST NOT mix languages for ordinary words.
+- **Plain language.** You MUST explain in accessible terms. A term is unavoidable → you MUST define it in passing the first time you use it.
+- **One decision at a time.** You MUST NOT bundle several independent decisions into one tangled question. There are several → present the most important first, or enumerate them so each item has its own options and recommendation.
 - **Make responding trivial.** You MUST label the options (A / B / C or 1 / 2 / 3) so the user can answer with a single word or short phrase.
-- **The user answers, not you.** You MUST NOT answer your own confirmation question and proceed as if the decision were made. "The user would obviously pick A" is not an answer — a confirmation you resolved yourself is a decision taken without the user, which is exactly what this skill exists to prevent. You MUST wait for the user's actual reply.
-- **Conversational prose, not an interactive picker.** You MUST present the whole decision as prose in your message — the background, the options, each option's impact, and your recommendation — and let the user reply in natural language. You MUST NOT hand the choice off to an **interactive option picker**: a host UI that pops up selectable/clickable options for the user to tick (for example a plan-mode prompt, a multiple-choice tool, or a menu widget). A picker reduces the choice to bare labels and strips the context and recommendation this skill requires, so it defeats the skill's purpose. If the host offers such a picker, the full decision MUST still live in your prose; a picker MAY mirror it but MUST NOT replace it.
+- **The user answers, not you.** You MUST NOT answer your own confirmation question and proceed as if the decision were made. You MUST wait for the user's actual reply.
+- **Conversational prose, not an interactive picker.** You MUST present the whole decision as prose in your message — the background, the options, each option's impact, and your recommendation — and let the user reply in natural language. You MUST NOT hand the choice off to an **interactive option picker**: a host UI that pops up selectable or clickable options for the user to tick, including a plan-mode prompt, a multiple-choice tool, or a menu widget. The host offers such a picker → the full decision MUST still live in your prose; the picker MAY mirror it but MUST NOT replace it.
 
 ## Template
 
@@ -103,21 +97,17 @@ Recommendation: <which one, and why, in 1-2 sentences>
 
 ## Red Flags — STOP
 
-You are presenting a decision badly if any of these is true:
+Any of these true of the confirmation you are about to send → rewrite it before sending:
 
-- you ask "what do you want?" with no options and no recommendation;
+- it asks "what do you want?" with no options and no recommendation;
 - an option has no stated impact;
-- you give a recommendation with no options, or options with no recommendation;
-- the user would have to re-read earlier context, open files, or decode jargon/codes to understand the choice;
-- you named the thing being decided only by a number, label, or filename — or "the X above" — instead of restating its content in this message;
-- you handed the choice to a clickable option picker or menu widget instead of writing the decision — with each impact and your recommendation — as prose;
-- you answered your own confirmation question ("the user would obviously pick A") and proceeded without the user's actual reply;
-- you found a conflict between the request and the project — and started the work anyway without raising it;
+- it gives a recommendation with no options, or options with no recommendation;
+- the user would have to re-read earlier context, open files, or decode jargon or codes to understand the choice;
+- the thing being decided is named only by a number, label, or filename — or "the X above" — instead of restated in this message;
+- the choice is handed to a clickable option picker or menu widget instead of written as prose;
+- you answered your own confirmation question and proceeded without the user's actual reply;
+- you found a conflict between the request and the project and started the work without raising it;
 - the user reaffirmed their request after your objection and you argued it again;
-- you switched languages mid-explanation;
-- you piled multiple unrelated decisions into one question;
-- an option's impact is not obvious and you gave no concrete example to anchor it.
-
-## The Bottom Line
-
-A confirmation that omits any element required above forces the user to do your work — re-deriving context, decoding jargon, or inventing the options you failed to lay out.
+- it switches languages mid-explanation;
+- it piles multiple unrelated decisions into one question;
+- an option's impact is not obvious and no concrete example anchors it.

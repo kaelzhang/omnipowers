@@ -7,30 +7,25 @@ description: Use when about to claim work is complete, fixed, passing, or ready 
 
 > Normative keywords — MUST, MUST NOT, REQUIRED, SHALL, SHALL NOT, SHOULD, SHOULD NOT, MAY — are used as defined in BCP 14 (RFC 2119, RFC 8174), and only when capitalized.
 
-## Overview
-
-Claiming work is done without verifying it is dishonesty, not efficiency.
-
-**Core principle:** Evidence before claims, always. You MUST NOT state that something passes, is fixed, or is complete until you have run the check and read its output in the current session.
-
 ## The Iron Law
 
 ```
 NO COMPLETION CLAIM WITHOUT FRESH VERIFICATION EVIDENCE
 ```
 
-If you have not run the verifying command in this session and read its output, you MUST NOT claim the thing it would prove.
+- Verifying command not run in this session, or its output not read → MUST NOT state that the thing it would prove passes, is fixed, or is complete.
+- The Iron Law has no exception.
 
 ## The Gate (MANDATORY before any success claim)
 
-Before you state any status — or express satisfaction — you MUST:
+About to state any status, or express satisfaction → MUST, in order:
 
 1. **Identify** the command or check that would prove the claim.
-2. **Run** it fresh and in full, not a partial or remembered run.
-3. **Read** the full output — the exit code and the actual pass/fail counts.
-4. **Compare** the output to the claim. If it does not confirm the claim, you MUST state the actual status with the evidence. If it does, state the claim WITH the evidence.
+2. **Run** it fresh and in full — never a partial run, never a remembered one.
+3. **Read** the full output: the exit code and the actual pass/fail counts.
+4. **Compare** the output to the claim. Output confirms the claim → state the claim WITH the evidence. Output does not confirm it → state the actual status with the evidence.
 
-Skipping any step is claiming without proof; you MUST NOT do it.
+MUST NOT skip a step.
 
 ## What Each Claim Requires
 
@@ -46,33 +41,17 @@ Skipping any step is claiming without proof; you MUST NOT do it.
 
 ## Red Flags — STOP
 
-You MUST stop and verify if you notice:
+Notice any of these → MUST stop and verify:
 
 - "should", "probably", or "seems to" about the result
+- confidence in the result standing in for a fresh run
 - expressing satisfaction before verifying ("Great!", "Perfect!", "Done!")
 - about to commit, push, or open a PR without a fresh check
 - trusting a reported success instead of checking the artifacts yourself
-- relying on a partial check
+- relying on a partial check, or on a passing linter as proof of the build or the tests
 - "just this once", or being tired and wanting it over
-- ANY wording that implies success when you have not run the check
-
-## Rationalizations — rejected
-
-| Excuse | Reality |
-|--------|---------|
-| "Should work now" | Run the check. |
-| "I'm confident" | Confidence is not evidence. |
-| "Just this once" | No exceptions. |
-| "The linter passed" | The linter is not the compiler or the tests. |
-| "It was reported as success" | Verify it independently against the artifacts. |
-| "I'm tired" | Exhaustion is not an exemption. |
-| "A partial check is enough" | Partial proves nothing about the whole. |
-| "Different words, so the rule doesn't apply" | Spirit over letter — any implication of success counts. |
+- ANY wording that implies success when the check has not been run
 
 ## Scope
 
-This applies before ANY claim or implication of success, completion, or correctness — exact phrases, paraphrases, synonyms, and implications alike — and before committing, opening a PR, marking a task done, or moving to the next task.
-
-## The Bottom Line
-
-Run the command. Read the output. THEN state the result. No shortcuts; this is non-negotiable.
+The Gate applies before ANY claim or implication of success, completion, or correctness — exact phrases, paraphrases, synonyms, and implications alike — and before committing, opening a PR, marking a task done, or moving to the next task.
