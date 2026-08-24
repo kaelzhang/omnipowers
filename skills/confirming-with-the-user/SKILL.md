@@ -28,10 +28,10 @@ Confirm the *ends*; decide the *means* yourself.
 **You MUST confirm:**
 
 - **Goals and outcomes** — what the task or project must achieve; the definition of "done".
-- **Overall architecture / approach** — confirm the high-level shape of the solution before you build it.
+- **Overall architecture / approach** — the high-level shape of the solution, before you build it.
 - **Significant technical decisions** — a real choice between viable options you cannot settle on the merits → present the options and let the user pick. Whether a piece of work should be done at all, or to what extent → confirm.
 - **External blockers** — anything you cannot resolve yourself: missing access or credentials, information only the user has, a decision only the user can make, a broken external dependency.
-- **Irreversible, high-impact, or outward-facing actions** — deleting data, force-pushing, rewriting history, messaging anyone, spending money, deploying to production, publishing: confirm before acting. Any hard-to-undo or externally-visible action → get a green light first. Destroying or rewriting what is already published, or changing a branch other people build on → confirm. Routinely pushing your own commits to the user's branch → not one of these; do not confirm it.
+- **Irreversible, high-impact, or outward-facing actions** — any hard-to-undo or externally-visible action: deleting data, force-pushing, rewriting history, messaging anyone, spending money, deploying to production, publishing. Routinely pushing your own commits to the user's branch → not one of these; do not confirm it. Destroying or rewriting what is already published, or changing a branch other people build on → confirm.
 - **Trade-offs that sacrifice something the user may value** — dropping coverage to hit a deadline, a breaking API change, a notable performance or security trade-off → surface it instead of deciding it silently.
 - **Genuine ambiguity or conflicting instructions** — the requirement itself is unclear, or two instructions contradict, and best practice plus the codebase cannot resolve it.
 - **Breaking a stated constraint** — the only viable path requires violating a rule the user or the project set → confirm before you cross it.

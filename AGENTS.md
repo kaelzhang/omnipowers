@@ -200,6 +200,7 @@ format an agent has to parse — the reader is a model, not a parser:
 - write-authority: <who may write where; how to get authorization otherwise>
 - vcs: <the host's commit, staging, and message convention>
 - isolation: <the host's isolation unit; paths that MUST stay on the mainline>
+- continuation: <the host's mechanism for work that outlives one round>
 ````
 
 Every row is OPTIONAL, and a host that declares nothing gets the fallbacks.
@@ -216,6 +217,13 @@ skill's own default:
   governs over them.
 - **isolation** — the host names the unit work happens in, and the paths that
   MUST stay on the mainline instead of being copied into an isolated workspace.
+- **continuation** — the host names the mechanism that carries work past the end
+  of a round: a recurring re-invocation, a persistent goal, a scheduled task. A
+  skill MUST NOT name one; it states the condition that calls for continuation
+  and uses whatever the host declares. No mechanism is declared → the next step
+  goes into the host's `work-state` and the round ends stated, not continued.
+  Continuation carries out an objective the user already approved; it MUST NOT be
+  used to proceed past a decision this collection requires the user to make.
 
 **`.omnipowers/` is a workbench, not an archive.** It is the fallback home for
 `work-state` and `scratch`, and nothing else. Durable artifacts MUST NOT

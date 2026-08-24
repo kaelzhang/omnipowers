@@ -20,7 +20,7 @@ Everything this skill creates MUST live inside the audited project, in the locat
 You MUST use this skill when:
 
 - a discrete task in a plan, a major feature, or a complex bug fix is complete;
-- work is about to be merged, opened as a pull request, released, or taken into a refactor;
+- work is about to be merged, opened as a pull request, released, handed over, depended on, or taken into a refactor;
 - you are asked to audit or assess a codebase, a PR, a diff, or a commit range;
 - you are stuck and a fresh perspective would help.
 
@@ -113,7 +113,7 @@ An audit report is a **record**. You MUST resolve where it goes in this order, s
 <project-root>/.omnipowers/reviews/<YYYY-MM-DD>-<HHMMSS>-<review-target>.md
 ```
 
-`<review-target>` is a short kebab-case slug of what was reviewed (`auth-refactor`, `pr-142`, `whole-project`).
+`<review-target>` is a short kebab-case slug of what was reviewed.
 
 - Resolved to 3 or 4 → you MUST confirm the location with the user before the project's first audit is recorded.
 - Resolved to 1 or 2 → you MUST NOT ask.

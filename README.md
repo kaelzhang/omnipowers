@@ -15,7 +15,7 @@ A collection of skills that improve coding effectiveness for AI coding agents.
 | [writing-plans](skills/writing-plans/SKILL.md) | Turning a spec into a multi-step task — you MUST produce a complete, self-contained, bite-sized plan with zero placeholders before coding |
 | [executing-plans](skills/executing-plans/SKILL.md) | Executing a written plan — you MUST review it critically, then run each step in order and verify at every checkpoint |
 | [subagent-driven-development](skills/subagent-driven-development/SKILL.md) | Executing a plan of mostly-independent tasks — one task at a time, reviewing spec + quality of each before the next, with a broad whole-branch review at the end |
-| [dispatching-parallel-agents](skills/dispatching-parallel-agents/SKILL.md) | 2+ genuinely independent tasks — verify independence, then one focused agent per domain (or sequential inline where subagents are unavailable) |
+| [keeping-work-in-flight](skills/keeping-work-in-flight/SKILL.md) | Every agent return and every round end — count what is running, dispatch one tracked call per idle scope before reading, and never leave work whose completion cannot wake you |
 | [using-git-worktrees](skills/using-git-worktrees/SKILL.md) | Feature work needing isolation — you MUST ensure an isolated workspace via the host's native worktree tool or a `git worktree` fallback |
 | [finishing-a-development-branch](skills/finishing-a-development-branch/SKILL.md) | Work complete and verified — verify tests, present structured merge/PR/keep/discard options, execute the choice, and clean up only what you created |
 | [writing-skills](skills/writing-skills/SKILL.md) | Creating or editing a skill — you MUST develop it test-first (watch an agent fail without it first); conforms to `AGENTS.md` |
@@ -103,6 +103,7 @@ Declare the mapping once, in the file your agents already read (`AGENTS.md` or
 - write-authority: <who may write where; how to get authorization otherwise>
 - vcs: <your commit, staging, and message convention>
 - isolation: <branch or worktree; paths that stay on the mainline>
+- continuation: <how work that outlives one round is carried on>
 ```
 
 **Declare nothing and the skills still work.** They fall back to sensible
