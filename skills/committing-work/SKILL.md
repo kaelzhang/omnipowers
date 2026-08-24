@@ -42,7 +42,7 @@ Every git command shown here is illustrative. The host project's version-control
 3. what the host already does: its contributor guide, commit template, commit-lint configuration, or the consistent shape of its recent history;
 4. the fallback stated in this skill.
 
-A declared convention overrides this skill's defaults. When step 3 yields no message convention either, read @message-convention.md and apply it as the fallback.
+A declared convention overrides this skill's defaults. When step 3 yields no message convention either, the fallback subject is `type(scope): imperative summary` — imperative, naming what changed, no trailing period. That line covers most commits without another read. When you need the full fallback — the closed list of allowed types, how to pick or omit a scope, the body's required content, or the breaking-change markers — read `@message-convention.md` and apply it.
 
 What the host governs is *form*. It does not relax the Iron Law, and a convention that merely says nothing about attribution does not authorize the trailers prohibited below.
 
@@ -115,13 +115,7 @@ A pathspec commit records the **working-tree** content of the named paths, not w
 
 An amend that changes only the message names no paths because it commits no file content. An amend that changes file content MUST carry a pathspec like any other commit, and both remain subject to History integrity below.
 
-**The one exception.** You MAY omit the pathspec ONLY when Git itself refuses one — the concluding commit of an in-progress merge, rebase, cherry-pick, or revert (`fatal: cannot do a partial commit during a merge`). That commit takes the **whole index**, so before making it you MUST:
-
-1. run `git status --short` and identify every entry that is not part of the operation;
-2. stash or unstage each of them;
-3. use the operation's own continuation command where one exists (`git merge --continue`, `git rebase --continue`, `git cherry-pick --continue`).
-
-Skipping this checklist commits whatever else was in the tree into someone else's merge, where nobody will ever look for it.
+**The one exception.** Git itself refuses a pathspec while a merge, rebase, cherry-pick, or revert is in progress (`fatal: cannot do a partial commit during a merge`). When you are concluding one of those, read `@mid-operation-commit.md` and follow its checklist before committing — that commit takes the whole index, so what else is in the tree matters.
 
 ## 6. Write the message
 

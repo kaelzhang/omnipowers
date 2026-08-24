@@ -54,23 +54,6 @@ When a skill's trigger genuinely half-fits, load it and read its own scope secti
 
 Immediately after invoking a skill and before acting on it, you MUST announce `Using <skill> to <purpose>` so the user can see which skill is governing the step; without that announcement the skill governs the work invisibly and the user cannot tell which discipline is in force.
 
-```dot
-digraph omnipowers_skill_flow {
-    "Message received" [shape=doublecircle];
-    "Does a skill govern this?" [shape=diamond];
-    "Invoke the skill" [shape=box];
-    "Announce: 'Using <skill> to <purpose>'" [shape=box];
-    "Follow the skill exactly" [shape=box];
-    "Respond (including clarifications)" [shape=doublecircle];
-
-    "Message received" -> "Does a skill govern this?";
-    "Does a skill govern this?" -> "Invoke the skill" [label="yes"];
-    "Does a skill govern this?" -> "Respond (including clarifications)" [label="no"];
-    "Invoke the skill" -> "Announce: 'Using <skill> to <purpose>'";
-    "Announce: 'Using <skill> to <purpose>'" -> "Follow the skill exactly";
-    "Follow the skill exactly" -> "Respond (including clarifications)";
-}
-```
 
 When a skill contains a checklist, you MUST track every item to completion and MUST NOT report the work done while any item is unchecked.
 
@@ -86,29 +69,6 @@ Invoke the skill that governs your current step first, then the next. A skill th
 
 When you are unsure which skill governs — or two adjacent skills both look applicable — read `@skill-map.md`: it maps the collection into flows and states the boundary between each pair of commonly confused skills.
 
-## Red flags — STOP, you are rationalizing
+## When you are about to talk yourself into or out of a skill
 
-Each of these thoughts means you MUST stop and check for an applicable skill first:
-
-| Thought | Reality |
-|---------|---------|
-| "This is just a simple question" | Questions are tasks. Check for a skill. |
-| "I need more context first" | The skill check comes BEFORE clarifying questions. |
-| "Let me look at the code first" | A skill may tell you HOW to look. Check first. |
-| "This is too small to need a skill" | Small tasks grow. If a skill applies, use it. |
-| "I already know this" | Knowing the idea is not following the skill. Invoke it. |
-| "I'll just do this one thing first" | Check BEFORE doing anything. |
-| "The skill is overkill here" | If it applies, it applies. Use it. |
-
-The table above is the under-firing failure. The over-firing failure is just as real, and these thoughts mean you are about to spend the user's budget on ceremony:
-
-| Thought | Reality |
-|---------|---------|
-| "It's adjacent, I'd better load it too" | Adjacent is not governing. Read the trigger; if it does not name this situation, do not invoke it. |
-| "I'll run the design step even though they specified exactly what to change" | They already made the decision. Re-opening it hands their own instruction back to them as a question. |
-| "Better review it as well, just to be safe" | An unasked review on a change nobody is about to depend on is cost with no reader. |
-| "I'll load a few skills up front so I have them" | Every body you load is paid for before you know it applies. Check first, load what governs. |
-
-## User instructions say WHAT, not HOW
-
-"Fix this bug" or "add X" states the goal, not permission to skip the applicable skill. You MUST apply the skill unless the user explicitly tells you not to.
+The two failures above have well-worn excuses on both sides — "it's too small to need a skill", "I'll check after I look at the code", "it's adjacent so I'd better load it too", "better review it as well, just to be safe". The moment you notice yourself reasoning toward using a skill you have not matched to the task, or toward skipping one you have, read `@rationalizing.md` and check your thought against it before you act.
