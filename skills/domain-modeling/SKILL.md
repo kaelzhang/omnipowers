@@ -9,78 +9,67 @@ description: Use when building or sharpening a project's domain model — naming
 
 ## Overview
 
-A modeled domain is one where every concept has exactly one name, every name has exactly one meaning, the code agrees with the model, and the decisions that shaped it are written where the next human will look. This skill is the *active* discipline that produces that state: challenging terms, probing edges, and writing resolutions down as they land.
-
-**Core principle:** An ambiguity you let pass today is a bug report in six months, filed in two vocabularies.
-
-Merely *reading* the glossary to use its vocabulary is not this skill — any task can do that in passing. This skill governs **changing the model**: resolving terms, reshaping relationships, recording decisions.
+- Reading the glossary to use its vocabulary → not this skill; any task does that in passing.
+- Changing the model — resolving terms, reshaping relationships, recording decisions → this skill.
 
 ## The Four Actions
 
-While designing or discussing the domain, you MUST perform each of these whenever its trigger appears. Skipping one silently ratifies a broken model.
+While designing or discussing the domain, you MUST perform each of these whenever its trigger appears.
 
-1. **Challenge drift against the glossary.** When a term is used in a way that conflicts with its glossary definition, you MUST call it out immediately: "The glossary defines *cancellation* as X, but here it means Y — which is it?" Unchallenged drift forks the language.
-2. **Sharpen ambiguity to one canonical term.** When a word is vague or overloaded ("account", "job", "sync"), you MUST propose one precise canonical term and name the alternatives it displaces. Two near-synonyms today become two concepts tomorrow.
-3. **Stress-test with edge-case scenarios.** When a definition or relationship is proposed, you MUST invent concrete scenarios that probe its boundaries ("a customer cancels half an order — is that a *cancellation*?"). A term that survives no edge case defines nothing.
-4. **Cross-check the model against the real code.** When a claim is made about how the domain works, you MUST check whether the code agrees, and surface any contradiction: "The code cancels whole Orders, but you said partial cancellation exists — which is right?" A model the code ignores is fiction.
+1. **Challenge drift against the glossary.** A term is used in a way that conflicts with its glossary definition → you MUST call it out immediately.
+2. **Sharpen ambiguity to one canonical term.** A word is vague or overloaded → you MUST propose one precise canonical term and name the alternatives it displaces.
+3. **Stress-test with edge-case scenarios.** A definition or relationship is proposed → you MUST invent concrete scenarios that probe its boundaries.
+4. **Cross-check the model against the real code.** A claim is made about how the domain works → you MUST check whether the code agrees, and surface any contradiction.
 
 ## Record the Moment It Lands
 
-- You MUST update the glossary **the moment** a term is resolved. You MUST NOT batch updates to the end of the session — sessions end early, context truncates, and batched resolutions are lost exactly when they mattered.
-- When writing or updating the glossary, read `@context-format.md` and follow it.
-- When a decision passes the ADR gate below, read `@adr-format.md` and follow it.
+- A term is resolved → you MUST update the glossary **in that moment**. You MUST NOT batch updates to the end of the session.
+- Writing or updating the glossary → read `@context-format.md` and follow it.
+- A decision passes the ADR gate below → read `@adr-format.md` and follow it.
 
 ## ADRs — the Three-Gate Test
 
 You MUST NOT create an ADR unless **all three** hold:
 
 1. **Hard to reverse** — changing the decision later carries real cost.
-2. **Surprising without context** — a future reader would ask "why on earth is it this way?"
+2. **Surprising without context** — a future reader would ask why it is this way.
 3. **A real trade-off was weighed** — genuine alternatives existed and one was chosen for specific reasons.
 
-If any gate fails, no ADR: easily reversed decisions will simply be reversed; unsurprising ones raise no question; no-alternative ones record only "we did the obvious thing". ADRs written past the gate bury the ones that matter.
+Any gate fails → no ADR.
 
 ## Artifact Locations
 
-- Both artifacts are **durable design documents** for humans, not skill state, so they MUST NOT be tucked under `.omnipowers/` or any other agent-only directory — a directory the project's documentation never points at is one nobody reads.
-- You MUST resolve their location in this order, stopping at the first that applies: (1) a location the user states in this session; (2) the host's `Omnipowers` declaration — a section by that name in the host's `AGENTS.md` / `CLAUDE.md`, or in a document that file points to — using its `design-docs` row; (3) where the host already keeps design documents, when that is unambiguous; (4) the fallback — the glossary at the **host project root** as `CONTEXT.md`, ADRs in `docs/adr/`, both industry-standard, human-discoverable locations.
+- Both artifacts are durable design documents for humans, not skill state → they MUST NOT be placed under `.omnipowers/` or any other agent-only directory.
+- You MUST resolve their location in this order, stopping at the first that applies: (1) a location the user states in this session; (2) the host's `Omnipowers` declaration — a section by that name in the host's `AGENTS.md` / `CLAUDE.md`, or in a document that file points to — using its `design-docs` row; (3) where the host already keeps design documents, when that is unambiguous; (4) the fallback — the glossary at the **host project root** as `CONTEXT.md`, ADRs in `docs/adr/`.
 - Resolving to 3 or 4 MUST be confirmed with the user before the **first creation** of either artifact in a host project; resolving to 1 or 2 MUST NOT ask. A location the user states governs permanently for that project.
 
 ## Lazy Creation
 
-- You MUST NOT scaffold artifacts ahead of need: no empty `CONTEXT.md`, no empty `docs/adr/`. Create `CONTEXT.md` when the first term is resolved; create `docs/adr/` when the first ADR passes the gate. Empty scaffolds are noise that trains readers to ignore the real thing.
-- You MUST NOT nag about absent artifacts. A task that would merely *consume* the glossary and finds none proceeds silently — absence is a fact, not a defect to report.
+- You MUST NOT scaffold artifacts ahead of need: no empty `CONTEXT.md`, no empty `docs/adr/`. Create `CONTEXT.md` when the first term is resolved; create `docs/adr/` when the first ADR passes the gate.
+- You MUST NOT nag about absent artifacts. A task that would merely *consume* the glossary and finds none proceeds silently.
 
 ## Red Flags — STOP
 
-If any of these is true, stop and correct course:
+Any of these is true → stop and correct course:
 
 - Glossary updates queued up "for the end of the session"
 - An empty `CONTEXT.md` or `docs/adr/` created "so the structure is ready"
 - An ADR written for a decision that fails any of the three gates
-- A vague or overloaded term ("account", "job", "process") accepted without proposing a canonical term
+- A vague or overloaded term accepted without proposing a canonical term
 - A claim about domain behavior accepted without checking the code
-- "You don't have a CONTEXT.md yet" raised during work that wasn't resolving a term
+- The absence of a `CONTEXT.md` raised during work that wasn't resolving a term
 - A first `CONTEXT.md` or ADR written without confirming the location with the user
 - Specs, history, or implementation notes drafted into the glossary
 
-## Rationalizations — Rejected
+## Rationalizations — rejected
 
-| Excuse | Reality |
-|--------|---------|
-| "I'll write the glossary entries once the design settles" | Sessions end mid-design. Resolved now means written now; unwritten resolutions evaporate. |
-| "This decision feels important — ADR it" | *Important* is not the test. Run the three gates; most important decisions fail at least one. |
-| "Recording it can't hurt" | It can: ADR noise buries the ADRs that matter, and readers stop opening the directory. |
-| "I'll create the files up front so they exist" | Artifacts earn existence with content. An empty file is a promise nobody made. |
-| "The term is close enough, everyone understands" | Everyone understands differently. That is precisely the failure this skill exists to stop. |
-| "The user said the code works that way" | The code is the ground truth for what the code does. Check it. |
-| "The default location is standard, no need to ask" | First creation writes to the host's root. The user owns their root; confirm once. |
-| "That edge case is too contrived" | Contrived scenarios are cheap; production incidents are not. Probe the boundary anyway. |
-
-## The Bottom Line
-
-```
-Term resolved   → glossary updated in the same breath
-Decision passes → all three gates, then a short ADR
-Neither         → keep the discussion sharp and write nothing
-```
+| Thought | What to do instead |
+|---|---|
+| "I'll write the glossary entries once the design settles" | Write the entry the moment the term resolves. |
+| "This decision feels important — ADR it" | Run the three gates; importance is not one of them. |
+| "Recording it can't hurt" | A gate fails → write no ADR. |
+| "I'll create the files up front so they exist" | Create each artifact when its first content exists. |
+| "The term is close enough, everyone understands" | Propose one canonical term. |
+| "The user said the code works that way" | Check the code before accepting the claim. |
+| "The default location is standard, no need to ask" | The default is case 3 or 4 → confirm it before the first creation. |
+| "That edge case is too contrived" | Probe the boundary anyway. |
