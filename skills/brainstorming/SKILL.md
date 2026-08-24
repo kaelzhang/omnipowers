@@ -1,6 +1,6 @@
 ---
 name: brainstorming
-description: "Use when about to do any creative or implementation work — building a feature, modifying behavior, scaffolding, even a quick tweak or one-line change that feels too small to design — you MUST explore intent and design and get the design approved before writing any code."
+description: "Use when about to do creative or implementation work with an unsettled design — building a feature, changing behavior, scaffolding, or any request where a real design question exists — you MUST explore intent and design and get it approved before writing code; a request that already names the change, its site, and the expected outcome is its own spec and is NOT a design round."
 ---
 
 # Brainstorming Ideas Into Designs
@@ -13,13 +13,24 @@ This skill is a pre-implementation gate. Before any creative or implementation w
 
 YOU MUST NOT WRITE CODE, SCAFFOLD A PROJECT, INVOKE ANY IMPLEMENTATION SKILL, OR TAKE ANY IMPLEMENTATION ACTION UNTIL YOU HAVE WRITTEN A DESIGN SPEC AND THE USER HAS APPROVED THAT WRITTEN SPEC. Verbal approval of a design alone MUST NOT satisfy this gate. The spec is a committed file by default; the single proportionate-ceremony escape (an inline written spec for a trivial, single-step, easily reversed change — see the Anti-Pattern section) scales the artifact, never the approval.
 
-This applies to EVERY task regardless of perceived simplicity. A todo list, a single-function utility, a one-line config change — all of them pass through this gate. If you catch yourself starting implementation before the written-spec approval, you MUST stop, revert any premature action, and return to this process.
+This applies regardless of perceived simplicity: a todo list, a single-function utility, and a one-line config change all pass through this gate when a design question exists. The one thing that does lift it is the absence of a question to ask — see "The floor" below, which is about what the request already settled, never about how small it looks. If you catch yourself starting implementation before the written-spec approval, you MUST stop, revert any premature action, and return to this process.
 
 **The one code-shaped exception:** a design question that reasoning and research cannot settle MAY be answered during the design phase with a throwaway prototype built under the `prototyping` skill's full rule-set — such code does not violate this gate, and its verdict MUST feed the spec. Anything not built under that skill's rules is implementation and stays forbidden.
 
 ## Anti-Pattern: "This Is Too Simple To Need A Design"
 
-Every task goes through this process. "Simple" tasks are exactly where unexamined assumptions cause the most wasted work, because the gate gets skipped and the wrong thing gets built fast. The design MAY be short — a few sentences for a genuinely simple task — but you MUST present it and get approval. Brevity is permitted; skipping is not.
+Every task with a design question goes through this process. "Simple" tasks are exactly where unexamined assumptions cause the most wasted work, because the gate gets skipped and the wrong thing gets built fast. Size is never the reason to skip; the only reason is that the request left no question to ask. The design MAY be short — a few sentences for a genuinely simple task — but you MUST present it and get approval. Brevity is permitted; skipping is not.
+
+**The floor — a request that is already its own spec.** This gate exists to surface intent the request left unstated. Where the request states it completely, the design is already written *and* approved: it is the user's own instruction. Asking them to approve it hands their instruction back as a question, costs a round trip, and delivers nothing — the user asked for work and received a form.
+
+You MAY proceed without a design round ONLY when ALL of these hold:
+
+1. the user named **what** changes and **where** — you are not choosing the site;
+2. the expected outcome is stated or unambiguous;
+3. you can name **no** design question worth putting to them — try to write one in a single line; if you cannot, there is none;
+4. nothing beyond the named change is needed to make it work.
+
+If any of the four fails, the gate applies in full. "It's small", "it's obvious", and "it's one line" are **not** among the four: a one-line change carrying a real design question still takes the gate, and a large change whose spec the user wrote out completely does not. When you do proceed under this floor, you MUST say so in one line ("proceeding on your spec as stated") so the skip is visible and the user can stop you.
 
 **Proportionate ceremony — the one escape from the spec-file ritual.** The committed-spec-file ceremony MAY be replaced by an **inline written spec** ONLY when ALL of these hold: the change is a single step, easily reversed, and its full intent fits in a few sentences. Then you MUST still write those sentences out in the conversation (what will change, where, and the expected behavior) and obtain the user's explicit approval of that written text before any code. The approval gate never scales down — only the artifact does. Anything multi-step, hard to reverse, or wider than one obvious edit takes the full committed spec.
 

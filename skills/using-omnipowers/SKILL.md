@@ -10,9 +10,9 @@ If you were dispatched as a subagent to execute one specific task, skip this ski
 </SUBAGENT-STOP>
 
 <EXTREMELY-IMPORTANT>
-If there is even a 1% chance an omnipowers skill applies to what you are doing, you MUST invoke that skill before you respond or act.
+Before you respond or act, you MUST check whether a skill governs what you are about to do. The check itself is never optional.
 
-When a skill applies, using it is not optional. You MUST NOT rationalize your way out of it.
+Where a skill governs, using it is not optional and you MUST NOT rationalize your way out of it. Where none governs, you MUST NOT invoke one anyway.
 </EXTREMELY-IMPORTANT>
 
 ## What omnipowers skills are
@@ -41,22 +41,31 @@ An override applies to the instance it was given for. A standing change MUST com
 
 ## The rule
 
-You MUST check for an applicable skill BEFORE any response or action — including before asking a clarifying question or reading the codebase. Even a 1% chance that a skill applies means you MUST invoke it and check. If, once loaded, the skill does not fit, you MAY set it aside.
+You MUST run the check BEFORE any response or action — including before asking a clarifying question or reading the codebase. The check costs one thought; skipping it is how a discipline gets missed entirely.
+
+**A skill governs when its trigger describes what you are actually about to do** — not when the subject matter is merely adjacent to it. Read the description and ask: is this the situation it names? If yes, invoke it and follow it exactly. If no, proceed with the work; having checked is enough, and you MUST NOT announce a skill you did not invoke.
+
+Both failures are real, and they cost in opposite directions:
+
+- **Skipping a skill that governs** loses the discipline the user installed it for, and the excuses are always the same — "it's small", "it's obvious", "just this once". You MUST NOT accept any of them.
+- **Invoking a skill that does not govern** spends the user's time and tokens on ceremony they did not ask for, and — worse — can convert a fully-specified instruction into a question back to them. Loading a skill "just in case" is not caution; it is the same defect pointed the other way, and it MUST NOT be done.
+
+When a skill's trigger genuinely half-fits, load it and read its own scope section: a well-written skill states where it does not apply. If it says it does not apply, set it aside and say nothing further about it.
 
 Immediately after invoking a skill and before acting on it, you MUST announce `Using <skill> to <purpose>` so the user can see which skill is governing the step; without that announcement the skill governs the work invisibly and the user cannot tell which discipline is in force.
 
 ```dot
 digraph omnipowers_skill_flow {
     "Message received" [shape=doublecircle];
-    "Might any skill apply?" [shape=diamond];
+    "Does a skill govern this?" [shape=diamond];
     "Invoke the skill" [shape=box];
     "Announce: 'Using <skill> to <purpose>'" [shape=box];
     "Follow the skill exactly" [shape=box];
     "Respond (including clarifications)" [shape=doublecircle];
 
-    "Message received" -> "Might any skill apply?";
-    "Might any skill apply?" -> "Invoke the skill" [label="yes, even 1%"];
-    "Might any skill apply?" -> "Respond (including clarifications)" [label="definitely not"];
+    "Message received" -> "Does a skill govern this?";
+    "Does a skill govern this?" -> "Invoke the skill" [label="yes"];
+    "Does a skill govern this?" -> "Respond (including clarifications)" [label="no"];
     "Invoke the skill" -> "Announce: 'Using <skill> to <purpose>'";
     "Announce: 'Using <skill> to <purpose>'" -> "Follow the skill exactly";
     "Follow the skill exactly" -> "Respond (including clarifications)";
@@ -90,6 +99,15 @@ Each of these thoughts means you MUST stop and check for an applicable skill fir
 | "I already know this" | Knowing the idea is not following the skill. Invoke it. |
 | "I'll just do this one thing first" | Check BEFORE doing anything. |
 | "The skill is overkill here" | If it applies, it applies. Use it. |
+
+The table above is the under-firing failure. The over-firing failure is just as real, and these thoughts mean you are about to spend the user's budget on ceremony:
+
+| Thought | Reality |
+|---------|---------|
+| "It's adjacent, I'd better load it too" | Adjacent is not governing. Read the trigger; if it does not name this situation, do not invoke it. |
+| "I'll run the design step even though they specified exactly what to change" | They already made the decision. Re-opening it hands their own instruction back to them as a question. |
+| "Better review it as well, just to be safe" | An unasked review on a change nobody is about to depend on is cost with no reader. |
+| "I'll load a few skills up front so I have them" | Every body you load is paid for before you know it applies. Check first, load what governs. |
 
 ## User instructions say WHAT, not HOW
 

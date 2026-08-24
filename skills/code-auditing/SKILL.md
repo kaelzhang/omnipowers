@@ -1,6 +1,6 @@
 ---
 name: code-auditing
-description: Use when reviewing, auditing, or assessing code — a diff, a branch, a commit range, a pull request, a file, a feature, or the whole project; before a merge, commit, push, or refactor; after finishing work or a complex bug fix — you MUST review the real code with evidence, report findings by severity, and act on every Critical and Important one before proceeding
+description: Use when reviewing, auditing, or assessing code — a diff, a branch, a commit range, a pull request, a file, a feature, or the whole project — or when finished work is about to advance — before a merge, a pull request, a release, or a handover — you MUST review the real code with evidence, report findings by severity, and act on every Critical and Important one before proceeding; an ordinary commit is not a review trigger
 ---
 
 # Code Auditing
@@ -22,11 +22,13 @@ A code audit is a deep, evidence-based review of real code — never a one-shot 
 You MUST use this skill whenever code is to be reviewed, audited, or assessed:
 
 - After completing a discrete task in a plan, a major feature, or a complex bug fix.
-- Before merging, committing, pushing, or starting a refactor (a pre-refactor review sets the baseline).
+- Before merging, opening a pull request, releasing, or starting a refactor (a pre-refactor review sets the baseline).
 - When asked to audit or assess a codebase, a PR, a diff, or a commit range.
 - When stuck and a fresh perspective would help.
 
-You MUST NOT skip review because the change "is simple," "is small," or "obviously works." Those are exactly the changes where a self-audit misses the most.
+**What triggers a review is the work advancing, not a keystroke.** This skill governs code that is about to be merged, released, handed over, or depended on — plus any review the user asks for. An ordinary commit on your own branch is not one of those: auditing every commit turns review into a toll paid per keystroke, trains the reader to skim the report, and is how a real finding gets missed. Work committed onto a branch you will review as a range gets reviewed **then, once, against the whole range**.
+
+Once a review is warranted, you MUST NOT skip or shallow it because the change "is simple," "is small," or "obviously works." Those are exactly the changes where a self-audit misses the most. Size never lifts the review; only the absence of anything about to advance does.
 
 ## Phase 1 — Route: checkpoint review or standards audit
 
@@ -34,7 +36,7 @@ Determine the mode from the target, then follow that branch. Both modes share Ph
 
 | The target is… | Mode | What governs the checks |
 |---|---|---|
-| Finished work advancing to the next step (a branch, a plan task, a feature, a PR, a diff before merge/commit/push/refactor) | **Checkpoint review** | The work's own requirements + the reviewer brief |
+| Finished work advancing to the next step (a branch, a plan task, a feature, a PR, a diff before merge or refactor) | **Checkpoint review** | The work's own requirements + the reviewer brief |
 | The codebase, a subsystem, or a change being assessed against the project's standard | **Standards audit** | The project checklist (generated on first use) |
 
 When both apply — a finished branch in a project that has a checklist — you MUST run the checkpoint review and use the checklist as an additional lens.
@@ -91,7 +93,9 @@ You MUST also: verify each finding against the real code (raise no speculative f
 
 ## Phase 3 — Record the audit
 
-An audit report is a **record**. You MUST resolve where it goes in this order, stopping at the first that applies: (1) a location the user states in this session; (2) the host's `Omnipowers` declaration — a section by that name in the host's `AGENTS.md` / `CLAUDE.md`, or in a document that file points to — using its `records` row; (3) where the host already keeps review write-ups, when that is unambiguous; (4) the fallback:
+**Scale the record to the audit.** A written file is REQUIRED for an audit the project will refer back to — a standards audit, a whole-project or subsystem assessment, a pre-release review, or any audit the user asked to have on file. For a checkpoint review of a change about to merge, reporting the findings in your reply is sufficient and the file is OPTIONAL: the findings are acted on in Phase 4 within the same session, and a file nobody opens again is paperwork, not a record. Either way the content below is what the report MUST contain.
+
+When you do write it, an audit report is a **record**. You MUST resolve where it goes in this order, stopping at the first that applies: (1) a location the user states in this session; (2) the host's `Omnipowers` declaration — a section by that name in the host's `AGENTS.md` / `CLAUDE.md`, or in a document that file points to — using its `records` row; (3) where the host already keeps review write-ups, when that is unambiguous; (4) the fallback:
 
 ```
 <project-root>/.omnipowers/reviews/<YYYY-MM-DD>-<HHMMSS>-<review-target>.md
