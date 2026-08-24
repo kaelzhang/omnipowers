@@ -59,6 +59,22 @@ to rationalize around the MUSTs that matter. Instruction-following degrades
 measurably as the number of simultaneous hard constraints grows — every
 unearned MUST taxes every earned one.
 
+### Style: condition + command
+
+Write rules, not arguments. Each normative statement MUST be a condition and the
+command it triggers, and nothing else.
+
+- MUST NOT: persuasion, justification, or any clause explaining why the rule is
+  right ("because…", "this is how…", "which is why…").
+- MUST NOT: illustrative examples, worked scenarios, or sample dialogue. A format
+  the reader must reproduce exactly MAY be shown as a template.
+- MUST NOT: restating a rule for emphasis.
+- MAY: one clause naming the consequence, only where the consequence changes what
+  the reader does. Where it only motivates, cut it.
+
+The reader is an agent that will comply once instructed. Prose spent convincing
+it is paid for on every invocation and buys nothing.
+
 ### BCP 14 keyword convention
 
 Every skill MUST express normative force with the BCP 14 keywords, and MUST carry
@@ -95,10 +111,11 @@ by **load frequency**:
 
 - **Inline in `SKILL.md`** — everything the agent needs on **every** invocation:
   the rules (`MUST` / `MUST NOT`), the Iron Law, the core workflow, the triggers,
-  the rationalization and red-flag tables. Load-bearing discipline MUST stay
+  and the red-flag conditions. Load-bearing discipline MUST stay
   inline — it MUST NOT be hidden behind a reference an agent could skip.
 - **Move to a same-directory supporting file** — content needed only in a
-  **specific sub-case**, or **heavy reference**: a deep technique used in a
+  **specific sub-case**, or **heavy reference**, including a table that merely
+  elaborates a red-flag condition already stated inline: a deep technique used in a
   minority of runs, a long worked example, a large lookup table, a reusable
   tool/script. Reference it at the relevant point with a **conditional pointer**
   ("when `<situation>`, read `@<file>.md` and apply it") so the agent loads it
@@ -231,7 +248,7 @@ For each statement in a skill:
 - [ ] Every `MUST` traces to a failure observed or concretely arguable; no nameable failure → downgrade to `SHOULD` or delete.
 - [ ] Genuine judgment / no standard answer → `SHOULD` / `MAY`, and say why it varies.
 - [ ] No softening of a real rule ("consider", "try to", "it's good practice").
-- [ ] Every MANDATORY rule states the consequence of violating it.
+- [ ] Condition + command only: no persuasion, no justification, no illustrative examples; a consequence appears only where it changes what the reader does.
 - [ ] Any exception uses the one-escape shape above.
 - [ ] Self-contained: carries the BCP 14 note; no reference outside this repo.
 - [ ] Progressive disclosure: every-invocation discipline stays inline; situational or heavy reference (>~100 lines, or used in a minority of runs) is a same-directory supporting file reached by a conditional `@`-pointer.
