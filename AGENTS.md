@@ -72,6 +72,13 @@ command it triggers, and nothing else.
 - MAY: one clause naming the consequence, only where the consequence changes what
   the reader does. Where it only motivates, cut it.
 
+Rewriting an existing skill into this style changes wording, never force. Every
+obligation in the result MUST trace to a capitalized keyword in the source.
+Promoting unmarked prose to a keyword, capitalizing a lowercase modal, or adding
+a keyword to a table header invents a rule — the header case invents one per row
+at once — and an invented MUST taxes every earned one exactly as an unearned one
+does. Dropping a keyword demotes a rule the same way. Check both directions.
+
 The reader is an agent that will comply once instructed. Prose spent convincing
 it is paid for on every invocation and buys nothing.
 

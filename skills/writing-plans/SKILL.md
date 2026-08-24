@@ -9,57 +9,76 @@ description: Use when asked to plan, break down, or decompose a multi-step featu
 
 ## Overview
 
-A plan is written for an implementer who has zero context for this codebase and questionable taste. The plan MUST document everything that implementer needs: which files to touch for each task, the actual code, the actual tests, the docs to check, and how to verify. The whole feature MUST be decomposed into bite-sized tasks. DRY, YAGNI, TDD, and frequent commits are REQUIRED throughout.
-
-The implementer MUST be assumed to be a skilled developer who knows almost nothing about this toolset or problem domain, and who does not know good test design well. The plan therefore MUST supply, not assume, that knowledge.
-
-At the start of plan-writing, you MUST announce: "I'm using the writing-plans skill to create the implementation plan."
+- You MUST write the plan for an implementer assumed to be a skilled developer with zero context for this codebase, questionable taste, near-zero knowledge of this toolset and problem domain, and no command of good test design. The plan MUST supply that knowledge, never assume it.
+- The plan MUST document everything that implementer needs, for every task: which files to touch, the actual code, the actual tests, the docs to check, and how to verify.
+- You MUST decompose the whole feature into bite-sized tasks.
+- DRY, YAGNI, TDD, and frequent commits are REQUIRED throughout.
+- At the start of plan-writing you MUST announce: "I'm using the writing-plans skill to create the implementation plan."
 
 ## Iron Law
 
 **A PLAN STEP THAT DESCRIBES WHAT TO DO WITHOUT SHOWING HOW IS A PLAN FAILURE.**
 
-Every code step MUST contain the actual code. Every test step MUST contain the actual test. Every command step MUST contain the exact command and its expected output. If you cannot write the concrete content for a step, you MUST resolve the unknown before writing the step — you MUST NOT defer it into the plan as a placeholder.
+- Every code step MUST contain the actual code.
+- Every test step MUST contain the actual test.
+- Every command step MUST contain the exact command and its expected output.
+- You cannot write the concrete content for a step → you MUST resolve the unknown before writing that step, and you MUST NOT defer it into the plan as a placeholder.
 
 ## Where to Save the Plan
 
-A plan is **work state**: it governs the work in flight and stops mattering once the work lands. You MUST resolve where it goes in this order, stopping at the first that applies: (1) a location the user states in this session; (2) the host's `Omnipowers` declaration — a section by that name in the host's `AGENTS.md` / `CLAUDE.md`, or in a document that file points to — using its `work-state` row; (3) where the host already records the plan for work in progress, when that is unambiguous; (4) the fallback `.omnipowers/plans/YYYY-MM-DD-<feature-name>.md`. Resolving to 3 or 4 MUST be confirmed with the user before the project's first plan is written; resolving to 1 or 2 MUST NOT ask. You MUST create any missing parent directories.
+A plan is **work state**. You MUST resolve its location in this order, stopping at the first that applies:
 
-Where the host already keeps a plan document, you MUST write into it rather than beside it. A second plan file is not a second plan — it is one plan and one stale copy, and the copy the executing agent does not read is the one that goes wrong.
+1. a location the user states in this session;
+2. the host's `Omnipowers` declaration — a section by that name in the host's `AGENTS.md` / `CLAUDE.md`, or in a document that file points to — using its `work-state` row;
+3. where the host already records the plan for work in progress, when that is unambiguous;
+4. the fallback `.omnipowers/plans/YYYY-MM-DD-<feature-name>.md`.
+
+- Resolved to 3 or 4 → you MUST confirm with the user before the project's first plan is written.
+- Resolved to 1 or 2 → you MUST NOT ask.
+- Parent directories missing → you MUST create them.
+- The host already keeps a plan document → you MUST write into it rather than beside it.
 
 ## Scope Check
 
-If the spec covers multiple independent subsystems, you MUST split it into separate plans — one per subsystem — and state this to the user. Each plan MUST produce working, testable software on its own. You MUST NOT bundle independent subsystems into a single plan.
+The spec covers multiple independent subsystems → you MUST split it into separate plans, one per subsystem, and MUST state this to the user. Each plan MUST produce working, testable software on its own. You MUST NOT bundle independent subsystems into a single plan.
 
 ## File Structure
 
 Before defining any task, you MUST map out which files will be created or modified and what each is responsible for. Decomposition decisions are locked in here.
 
 - Each file MUST have one clear responsibility, with well-defined boundaries and interfaces.
-- You SHOULD prefer smaller, focused **code** files over large ones that do too much — reasoning and edits are more reliable when a file fits in context. Line count is a **smell, not a hard cap**: past a few hundred lines, check a code file's cohesion; past ~1000 it is a strong smell — but a genuinely single-responsibility file MAY exceed it, and the host codebase's own norms override any absolute number.
-- The length concern above applies to **code units judged by responsibility only**. It does NOT apply to **documentation** (Markdown / docs — judged by structure and navigability, not line count; a well-organized long document is fine, split only when length actually hurts navigation or it has grown to span separable topics, a looser ~2000-line reference) or to **data / generated / config files** (JSON/YAML data, fixtures, snapshots, lockfiles, migrations, large static maps — no line-count concern; you SHOULD NOT split them for length, they are data, not logic units). A host project that declares a hard file-size policy overrides both exemptions: where it sets a threshold and names the file types it governs, that threshold wins over the judgment above, and a plan that ignores it produces work its own reviewers must reject.
+- You SHOULD prefer smaller, focused **code** files over large ones that do too much. Line count is a **smell, not a hard cap**: past a few hundred lines, check a code file's cohesion; past ~1000 it is a strong smell — a genuinely single-responsibility file MAY exceed it, and the host codebase's own norms override any absolute number.
+- The length concern applies to **code units judged by responsibility only**. It does NOT apply to **documentation** (Markdown / docs — judged by structure and navigability; split only when length hurts navigation or the document has grown to span separable topics, a looser ~2000-line reference) or to **data / generated / config files** (JSON/YAML data, fixtures, snapshots, lockfiles, migrations, large static maps — you SHOULD NOT split them for length).
+- The host project declares a hard file-size policy → that threshold overrides both exemptions for the file types it names.
 - Files that change together MUST live together. You MUST split by responsibility, not by technical layer.
-- In an existing codebase, you MUST follow established patterns. You MUST NOT unilaterally restructure a codebase that uses large files. If a file you are already modifying has grown unwieldy, you MAY include a split for that file in the plan — this is a judgment call because it depends on whether the split is incidental to the change or a separate refactor that belongs in its own plan.
+- In an existing codebase you MUST follow established patterns, and MUST NOT unilaterally restructure a codebase that uses large files.
+- A file you are already modifying has grown unwieldy → you MAY include a split for it in the plan; the split is a separate refactor rather than incidental to the change → it belongs in its own plan.
 
-This structure informs task decomposition. Each task MUST produce self-contained changes that make sense independently.
+Each task MUST produce self-contained changes that make sense independently.
 
 ## Task Right-Sizing
 
-A task is the smallest unit that carries its own test cycle and is worth a fresh reviewer's gate. When drawing task boundaries you MUST fold setup, configuration, scaffolding, and documentation steps into the task whose deliverable needs them. You MUST split two tasks apart only where a reviewer could meaningfully reject one while approving its neighbor. Each task MUST end with an independently testable deliverable.
+A task is the smallest unit that carries its own test cycle and is worth a fresh reviewer's gate.
 
-You SHOULD slice tasks vertically (tracer bullets): each task cuts end-to-end through the layers to produce observable behavior, rather than building one horizontal layer at a time — horizontal slices defer integration risk to the final task, where it is most expensive. Size each task so it fits ONE fresh context window (one implementer session can hold the brief, the touched files, and the tests at once); a task that cannot is two tasks. **Exception:** a wide mechanical refactor (a rename or API migration touching many files) breaks vertical slicing — read `@wide-refactors.md` and sequence it expand–contract instead.
-
-Every task MUST declare its dependency edges with a `Blocked by:` line (task numbers, or `none`). The plan's execution order MUST respect these edges, and a task claimed independent MUST list `Blocked by: none` — this makes the independence that parallel execution relies on a readable property of the plan instead of a re-derivation.
+- You MUST fold setup, configuration, scaffolding, and documentation steps into the task whose deliverable needs them.
+- You MUST split two tasks apart only where a reviewer could meaningfully reject one while approving its neighbor.
+- Each task MUST end with an independently testable deliverable.
+- You SHOULD slice tasks vertically (tracer bullets): each task cuts end-to-end through the layers to produce observable behavior, rather than building one horizontal layer at a time.
+- You MUST size each task to fit ONE fresh context window — one implementer session holding the brief, the touched files, and the tests at once; a task that cannot is two tasks.
+- The work is a wide mechanical refactor (a rename or API migration touching many files) → vertical slicing does not apply; read `@wide-refactors.md` and sequence it expand–contract instead.
+- Every task MUST declare its dependency edges with a `Blocked by:` line (task numbers, or `none`). The plan's execution order MUST respect these edges, and a task claimed independent MUST list `Blocked by: none`.
 
 ## Bite-Sized Task Granularity
 
-Each step MUST be a single concrete action — one test, one minimal implementation, one command, or one commit. A step that bundles multiple actions MUST be split, because a step the implementer cannot complete and check off in one motion hides progress and defeats the checkbox tracking. Steps SHOULD be small enough to finish in a few minutes; the exact size varies by action, so this is a guideline, not a hard threshold. A task's steps MUST follow the TDD cycle:
-
-- "Write the failing test" — one step
-- "Run it to confirm it fails" — one step
-- "Implement the minimal code to make the test pass" — one step
-- "Run the tests and confirm they pass" — one step
-- "Commit" — one step
+- Each step MUST be a single concrete action — one test, one minimal implementation, one command, or one commit.
+- A step that bundles multiple actions MUST be split.
+- Steps SHOULD be small enough to finish in a few minutes; exact size varies by action.
+- A task's steps MUST follow the TDD cycle, one step each:
+  - "Write the failing test"
+  - "Run it to confirm it fails"
+  - "Implement the minimal code to make the test pass"
+  - "Run the tests and confirm they pass"
+  - "Commit"
 
 ## Plan Document Header
 
@@ -105,8 +124,7 @@ Every task MUST follow this structure:
 **Interfaces:**
 - Consumes: [what this task uses from earlier tasks — exact signatures]
 - Produces: [what later tasks rely on — exact function names, parameter
-  and return types. A task's implementer sees only their own task; this
-  block is how they learn the names and types neighboring tasks use.]
+  and return types]
 
 - [ ] **Step 1: Write the failing test**
 
@@ -141,53 +159,38 @@ git commit -m "feat: add specific feature"
 ```
 ````
 
-File paths MUST be exact. The `Interfaces` block MUST list exact signatures, because the implementer of a task sees only their own task and learns neighboring names and types from this block alone. The example language (pytest, Python) is illustrative — you MUST use the host project's actual test runner, language, and commands.
-
-The commit step is illustrative in the same way. Committing is the host's convention, not this skill's: where the host declares one — a `vcs` row in its `Omnipowers` section, a contributor guide, a commit standard — the commit step of every task MUST follow it, including how files are staged and how the message is formed. Writing the shape shown above into a plan for a project whose convention differs makes every task in that plan violate it.
-
-## No Placeholders
-
-Every step MUST contain the actual content an engineer needs. The following are plan failures and you MUST NOT write them:
-
-- "TBD", "TODO", "implement later", "fill in details"
-- "Add appropriate error handling" / "add validation" / "handle edge cases" — the specific handling MUST be shown
-- "Write tests for the above" without the actual test code
-- "Similar to Task N" — the code MUST be repeated, because the implementer may read tasks out of order
-- A step that describes what to do without showing how — code steps MUST include the code block
-- A reference to any type, function, or method not defined in any task
+- File paths MUST be exact.
+- The `Interfaces` block MUST list exact signatures.
+- The language and runner shown (pytest, Python) are illustrative → you MUST use the host project's actual test runner, language, and commands.
+- The commit shape shown is illustrative: committing is the host's convention, not this skill's.
+- The host declares a `vcs` convention — a row in its `Omnipowers` section, a contributor guide, a commit standard → every task's commit step MUST follow it, including how files are staged and how the message is formed.
 
 ## Red Flags — STOP if you write any of these
 
-| Red flag in your plan | Why it fails | Required fix |
-|---|---|---|
-| "TBD" / "TODO" / "fill in later" | The implementer cannot execute an unknown | Resolve it now; write the concrete content |
-| "Add appropriate error handling" | "Appropriate" is undefined to a zero-context implementer | Show the exact error-handling code |
-| "Similar to Task N" | Tasks may be read out of order | Repeat the full code |
-| Function used in a later task, defined nowhere | Implementer hits an undefined symbol | Define it in an earlier task's `Produces` and body |
-| Name differs between tasks (`clearLayers` vs `clearFullLayers`) | Silent integration bug | Make the names identical everywhere |
-| Step says what but not how | Not executable without invention | Add the code block or exact command |
-| Multiple independent subsystems in one plan | No single working deliverable | Split into one plan per subsystem |
+Every step MUST contain the actual content an engineer needs. Each pattern below is a plan failure and you MUST NOT write it:
 
-## Rationalizations — all are forbidden
-
-| Rationalization | Reality |
+| Red flag in your plan | Required fix |
 |---|---|
-| "The implementer can figure out the error handling" | The implementer has zero context and questionable taste by assumption — they cannot. Show it. |
-| "I'll just write 'similar to Task 3' to save space" | Tasks are read out of order. Repeat the code. |
-| "This step is obvious, no command needed" | If it is obvious, writing the command costs nothing. Write it. |
-| "I can leave the exact path vague" | Vague paths produce wrong edits. Every path MUST be exact. |
-| "It's one big task, splitting is overhead" | A task that cannot be reviewed independently hides defects. Right-size it. |
-| "I'll resolve this unknown during implementation" | Unknowns resolved mid-implementation derail the TDD cycle. Resolve before writing the step. |
+| "TBD" / "TODO" / "implement later" / "fill in details" | Resolve it now; write the concrete content |
+| "Add appropriate error handling" / "add validation" / "handle edge cases" | Show the exact handling code |
+| "Write tests for the above" without the actual test code | Write the actual test code |
+| "Similar to Task N" | Repeat the full code |
+| Step says what but not how | Add the code block or exact command |
+| A type, function, or method referenced but defined in no task | Define it in an earlier task's `Produces` and body |
+| Name differs between tasks (`clearLayers` vs `clearFullLayers`) | Make the names identical everywhere |
+| A vague file path | Write the exact path |
+| A task too large to review independently | Right-size it |
+| Multiple independent subsystems in one plan | Split into one plan per subsystem |
 
 ## Self-Review
 
-After writing the complete plan, you MUST review it against the spec with fresh eyes. This is a checklist you run yourself.
+After writing the complete plan, you MUST review it against the spec with fresh eyes, running this checklist yourself:
 
-1. **Spec coverage:** For each section or requirement in the spec, you MUST point to a task that implements it. You MUST list and close any gap by adding the missing task.
-2. **Placeholder scan:** You MUST search the plan for every pattern in "No Placeholders" and the Red Flags table, and fix each occurrence.
-3. **Type consistency:** The types, method signatures, and property names used in later tasks MUST match those defined in earlier tasks. A function named `clearLayers()` in one task and `clearFullLayers()` in another is a bug and MUST be reconciled.
+1. **Spec coverage:** For each section or requirement in the spec, you MUST point to a task that implements it, and MUST list and close any gap by adding the missing task.
+2. **Placeholder scan:** You MUST search the plan for every pattern in the Red Flags table and fix each occurrence.
+3. **Type consistency:** The types, method signatures, and property names used in later tasks MUST match those defined in earlier tasks, and any mismatch MUST be reconciled.
 
-You MUST fix issues inline. If a fix adds or renames a task, step, type, or symbol, you MUST re-run checks 2 and 3 over the changed material, because a fix can itself introduce a new placeholder or a new name mismatch that a single pass will not catch.
+You MUST fix issues inline. A fix adds or renames a task, step, type, or symbol → you MUST re-run checks 2 and 3 over the changed material.
 
 ## Execution Handoff
 
@@ -195,7 +198,7 @@ After saving the plan, you MUST report the saved path and present the execution 
 
 **Report:** "Plan complete and saved to `<the path you resolved>`. Two execution options:"
 
-1. **Per-task isolated execution** — implement one task at a time, each in a fresh context, with a review gate between tasks. If the host environment provides a mechanism for dispatching an isolated worker per task (for example, a subagent or parallel-agent facility), you MAY use it: one worker per task, with a review of each task's diff before the next task begins. If the host provides no such mechanism, you MUST degrade gracefully to the portable inline equivalent — implement each task to completion, run its tests, review its diff, and commit, before reading the next task; you MUST NOT read ahead into later tasks while implementing the current one, which preserves the zero-context-per-task discipline.
+1. **Per-task isolated execution** — implement one task at a time, each in a fresh context, with a review gate between tasks. The host environment provides a mechanism for dispatching an isolated worker per task (a subagent or parallel-agent facility) → you MAY use it: one worker per task, with a review of each task's diff before the next task begins. The host provides no such mechanism → you MUST degrade to the portable inline equivalent: implement each task to completion, run its tests, review its diff, and commit before reading the next task; you MUST NOT read ahead into later tasks while implementing the current one.
 2. **Inline batch execution** — implement the tasks in this session, pausing at checkpoints for review.
 
 Whichever option is chosen, the implementer MUST execute strictly task-by-task in order, MUST complete the TDD cycle for each task, and MUST commit before moving on.
