@@ -15,7 +15,7 @@ YOU MUST NOT WRITE CODE, SCAFFOLD A PROJECT, INVOKE ANY IMPLEMENTATION SKILL, OR
 
 - Verbal approval of a design alone MUST NOT satisfy this gate.
 - The spec is a committed file by default; the inline-spec escape below scales the artifact, never the approval.
-- You catch yourself having started implementation before the written-spec approval → STOP, revert the premature action, return to this process.
+- You catch yourself having started implementation before the written-spec approval → you MUST stop, revert the premature action, and return to this process.
 - A design question that reasoning and research cannot settle MAY be answered during the design phase with a throwaway prototype built under the `prototyping` skill's full rule-set; that prototype's verdict MUST feed the spec. Code not built under that skill's rules is implementation and stays forbidden.
 
 ## The Gate
@@ -45,7 +45,7 @@ You MUST complete these items in order. You MUST NOT skip an item because the ta
 5. **Present the design** — in sections scaled to complexity; get approval after each section; not approved → revise and re-present.
 6. **Write the design doc** — save the agreed spec and commit it.
 7. **Spec self-review** — inline check for placeholders, contradictions, ambiguity, and scope.
-8. **User reviews the written spec** — changes requested → return to step 6.
+8. **User reviews the written spec** — ask the user to review the spec file before proceeding; changes requested → return to step 6.
 9. **Transition to implementation** — only after the user approves the written spec.
 
 ## The Process
