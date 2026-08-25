@@ -1,6 +1,6 @@
 ---
 name: writing-documentation
-description: Use when creating or changing durable documentation — "write a README", "document this module", "reorganize the docs", "our docs are a mess", "nobody can find the right doc" — or when adding, removing, splitting, or renaming any long-lived Markdown (README, architecture doc, contributor/agent entrypoint, a docs tree) — you MUST give the set one entrypoint that routes a reader by task to the exact files they need, update that entrypoint in the same change, and keep one source per rule
+description: Use when creating or changing durable documentation — "write a README", "document this module", "reorganize the docs", "our docs are a mess", "nobody can find the right doc" — or when adding, removing, splitting, or renaming any long-lived Markdown (README, architecture doc, contributor/agent entrypoint, a docs tree) — you MUST keep the set reachable from one entrypoint.
 ---
 
 # Writing Documentation

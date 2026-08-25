@@ -1,6 +1,6 @@
 ---
 name: committing-work
-description: Use when about to stage or commit anything — "commit this", "git commit", "save my work", "commit and push", splitting edits into commits, or ending a round with a dirty tree — you MUST make each commit one coherent logical change staged path by path (never `git add -A`/`.`/`-u`, never `git commit -a`, never hunk staging), read the diff you are committing, run the smallest check that proves it coheres, write a standalone message with no tool attribution trailer, and push the branch when the round ends rather than asking whether to
+description: Use when about to stage or commit anything — "commit this", "git commit", "save my work", "commit and push", splitting edits into commits, or ending a round with a dirty tree — you MUST form each commit deliberately and end the round committed and pushed.
 ---
 
 # Committing Work
@@ -27,30 +27,18 @@ This skill governs forming **each individual commit**: what goes in it, how it i
 
 ## The host owns the commands; this skill owns the discipline
 
-Every git command shown here is illustrative. Resolve the concrete staging mechanics, the message form, and which files are tracked at all in this order, stopping at the first that applies:
+Every git command shown here is illustrative. A convention the host declares governs *form* — staging mechanics, message shape, what is tracked — and MUST NOT be read as relaxing the Iron Law.
 
-1. what the user states in this session;
-2. the host's `Omnipowers` declaration — a section by that name in its `AGENTS.md` / `CLAUDE.md`, or in a document that file points to — its `vcs` row;
-3. what the host already does: its contributor guide, commit template, commit-lint configuration, or the consistent shape of its recent history;
-4. the fallback stated in this skill.
+You have not yet resolved this project's convention → read `@host-convention.md` and apply it before your first commit here.
 
-- A declared convention overrides this skill's defaults. It governs *form* only; it does not relax the Iron Law.
-- A convention that says nothing about attribution → does not authorize the trailers prohibited in step 6.
-- Step 3 yields no message convention → fallback subject is `type(scope): imperative summary`, imperative, naming what changed, no trailing period.
-- Need the full fallback — the closed list of allowed types, how to pick or omit a scope, the body's required content, the breaking-change markers → read `@message-convention.md` and apply it.
 
 ## 1. Decide the commit unit
 
 - Each commit MUST represent one coherent logical change.
 - Code, tests, docs, configuration, schema, and fixtures that complete the *same* change MAY travel in one commit.
 - Tests and documentation MUST NOT be split from the implementation they describe.
-- The round touches units that can be reviewed and verified independently — separate services, packages, modules, layers, migration phases → you MUST split the commits by unit or phase. Separate unless review or verification genuinely cannot proceed independently:
-  - one component vs. another that does not depend on it;
-  - a shared contract or interface change vs. each consumer's adoption of it;
-  - schema migration scaffolding vs. the behavior that uses it;
-  - regenerated artifacts vs. the handwritten source that generates them;
-  - housekeeping (ignore rules, formatting, file moves) vs. product behavior.
-- Several valid splits exist → pick the one that simplifies review, rollback, and recovery. That choice is judgment; the requirement to split is not.
+- The round touched more than one independently reviewable unit → read `@splitting-a-round.md` and split the commits by unit or phase before committing.
+
 - Pure renames, formatting-only passes, generated-artifact refreshes, dependency-lock refreshes, and large mechanical refactors MUST be committed separately from behavior changes, unless they cannot be verified independently.
 - A mechanical commit MUST NOT hide a behavior change inside it.
 - You MUST NOT include unrelated changes or pre-existing dirty work — your own earlier scratch edits, work another process or session left in the tree, a drive-by fix you noticed. Leave them alone and say so in your final response.
@@ -80,7 +68,7 @@ Before every commit you MUST:
 
 ## 4. Prove the commit coheres
 
-Before each commit you MUST run the smallest check that proves this commit's contents hold together, and you MUST read its output. Smallest means smallest *sufficient*, scaled to what changed and to the host's tooling:
+Before each commit you MUST run the smallest check that proves this commit's contents hold together, and you MUST read its output. Running it and reading it is the `verification-before-completion` gate; one run satisfies both when you commit and claim in the same step. Smallest means smallest *sufficient*, scaled to what changed and to the host's tooling:
 
 - prose or docs only — a whitespace/conflict-marker check (e.g. `git diff --check`) and a read of the result;
 - code — the relevant tests, plus whatever type, lint, or build check the host requires for that area;
@@ -158,22 +146,9 @@ Any of these → stop; you are about to violate the Iron Law.
 - a model, agent, or tool attribution trailer in the message you are about to write
 - the round is ending and coherent changes are still uncommitted
 
-## Rationalizations — rejected
+## Rationalizations
 
-| Excuse | Do this instead |
-|---|---|
-| "`git add .` is faster, the tree is clean" | A tree you did not inspect is not known clean. Stage by path. |
-| "It's all one feature, one commit is fine" | Two parts reviewable or revertable independently are two commits. Split them. |
-| "I'll add the tests in a follow-up commit" | Put the tests in this commit. |
-| "The rename is trivial, I'll fold it in" | Commit the rename separately. |
-| "`git add -p` lets me keep it clean" | It produces a commit that never existed as a working state. Sequence the edits and commit one at a time. |
-| "Plain `git commit` — nothing else is staged" | You do not control every process staging into that index. Name the paths. |
-| "The quality bar isn't met, I shouldn't commit yet" | Commit the coherent checkpoint and record the gap. |
-| "I'll leave it uncommitted so the user can look first" | Commit, then point at the commit. |
-| "The message is obvious from the diff" | The diff shows what. Write the body for why. |
-| "My harness adds the trailer automatically" | Remove it before committing. |
-| "It's already pushed but nobody has pulled" | Fix forward with a new commit. |
-| "Tests passed earlier in the session" | Run the smallest check now, against what you are actually committing. |
+You notice yourself reasoning toward a shortcut at commit time → read `@rationalizing.md` and check the thought against it before acting.
 
 ## Before You Commit — checklist
 

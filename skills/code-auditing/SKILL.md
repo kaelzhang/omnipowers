@@ -1,6 +1,6 @@
 ---
 name: code-auditing
-description: Use when reviewing, auditing, or assessing code — a diff, a branch, a commit range, a pull request, a file, a feature, or the whole project — or when finished work is about to advance — before a merge, a pull request, a release, or a handover — you MUST review the real code with evidence, report findings by severity, and act on every Critical and Important one before proceeding; an ordinary commit is not a review trigger
+description: Use when reviewing, auditing, or assessing code — a diff, a branch, a commit range, a pull request, a file, a feature, or the whole project — or when finished work is about to advance — a merge, a pull request, a release, a handover. An ordinary commit is not a review trigger.
 ---
 
 # Code Auditing
