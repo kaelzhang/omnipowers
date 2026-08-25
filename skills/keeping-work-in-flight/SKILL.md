@@ -69,7 +69,7 @@ Each dispatch MUST carry: the one problem it owns, the files or scope it may tou
 
 ## Red Flags — STOP if you catch yourself thinking
 
-| Thought | What you MUST do instead |
+| Thought | What to do instead |
 | --- | --- |
 | "I'll read this report first, then see what else to start." | Run the Dispatch Block first. Reading comes fourth. |
 | "A loop is quicker than six separate calls." | Issue six tracked calls. A loop's processes cannot wake you. |

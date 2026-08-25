@@ -17,6 +17,7 @@ stress-testing-a-plan ─(build intent)→ brainstorming → writing-plans
 - **executing-plans** — execute a written plan yourself, continuously, step-verified. When the host has subagents AND the plan's tasks are mostly independent → subagent-driven-development instead.
 - **subagent-driven-development** — execute a plan one fresh implementer+reviewer pair per task. NOT for tightly coupled plans (executing-plans) or ad-hoc parallel work (keeping-work-in-flight).
 - **finishing-a-development-branch** — the work is done and verified: merge / PR / keep / discard + cleanup. If the merge conflicts → resolving-merge-conflicts.
+- **using-git-worktrees** — the work needs isolation before it starts: detect existing isolation, prefer the host's native mechanism, verify a clean baseline. Owns the return to the mainline when the work is done. NOT the integration decision itself (finishing-a-development-branch).
 
 ## On-ramps — something is wrong
 

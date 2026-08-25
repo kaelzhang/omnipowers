@@ -90,7 +90,7 @@ A revised plan MUST be re-reviewed from the top before execution resumes. You MU
 
 ## Red Flags — STOP if you catch yourself thinking
 
-| Thought | What you MUST do instead |
+| Thought | What to do instead |
 | --- | --- |
 | "Reviewing the whole plan first wastes time." | Read the entire plan and review it critically before any action. |
 | "I'll batch these steps to save time." | Execute one step, verify, then the next. |
