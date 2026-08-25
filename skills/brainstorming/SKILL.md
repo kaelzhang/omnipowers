@@ -44,7 +44,9 @@ Two or more of these questions in a row → you are asking the user to do your j
 You choose the approach, so you own it.
 
 - You MUST choose the approach a competent practitioner in this domain would choose, grounded in the established practice of the industry this project belongs to, and fitting the project's existing paradigm and conventions.
-- The domain is complex, unfamiliar to you, or fast-moving → you MUST research current authoritative practice before settling the approach; recall MUST NOT be the basis.
+- The project already has an established pattern for this → follow it. No research.
+- No established pattern, AND the choice binds beyond this work — a dependency, a public contract, a data schema, a wire protocol, an auth or concurrency decision — or is hard to reverse, AND you cannot name current practice with confidence → you MUST verify it against an authoritative source before settling. Recall MUST NOT be the basis for that class of decision.
+- Ordinary work in a settled domain → decide from what you know and build. You MUST NOT spend the user's time researching a question you can already answer.
 - The capability may already exist → you MUST search the codebase by domain concept, not just by keyword, before building it.
 - The design contradicts a decision the project has recorded → you MUST surface the contradiction rather than silently override it.
 - The request spans several independent subsystems → you MUST say so and decompose before starting.
