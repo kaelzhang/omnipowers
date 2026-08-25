@@ -9,11 +9,8 @@ MUST follow the structure below.
 
 ## The Durability Rule
 
-A spec is a DURABLE artifact: it records what was agreed and why, and it must
-still read true long after the code has moved. The spec MUST NOT embed file
-paths, line numbers, or code — those go stale with the first refactor, and a
-stale spec is worse than none because it is trusted. The implementation plan
-carries them, not the spec.
+The spec MUST NOT embed file paths, line numbers, or code — the implementation
+plan carries them, not the spec.
 
 **The one exception:** a prototype-derived snippet MAY be embedded ONLY when
 the snippet itself IS the recorded decision — an agreed schema, state table,
@@ -25,7 +22,7 @@ it settles, and note that it came from a prototype.
 
 All six sections MUST appear, in this order. Scale each section's length to
 the task — a genuinely simple task yields a short spec, never a missing
-section. Each section's body below states what belongs in it.
+section.
 
 ```markdown
 # <Topic> — Design Spec

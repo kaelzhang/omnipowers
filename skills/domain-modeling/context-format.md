@@ -34,16 +34,16 @@ _Avoid_: client, buyer, account
 ## Rules
 
 - **Definitions are IS-statements.** Each definition MUST say what the term *is* in one or two sentences — not what it does, how it is implemented, or where it lives in the code.
-- **Every term carries an `_Avoid_` line** listing its banned synonyms. This line is the anti-synonym-drift device: it converts "we picked one word" into a rule any future reader or agent can enforce mechanically. A term with competing words in circulation and no `_Avoid_` line is unfinished.
-- **Be opinionated.** When several words compete for one concept, you MUST pick a single canonical term; every displaced word goes under `_Avoid_`.
-- **Purity.** The file is the glossary and nothing else. It MUST NOT contain specs, requirements, decision history, implementation details, or TODOs — decisions belong in ADRs, specs belong wherever the host project keeps specs. A glossary that accretes other content stops being consulted as a glossary.
-- **Project-specific concepts only.** General programming and infrastructure terms (timeout, retry, cache, queue) MUST NOT appear, however heavily the project uses them. Before adding a term, ask: is this concept unique to *this* domain, or generic? Only the former belongs.
+- **`_Avoid_` line.** Every term carries an `_Avoid_` line listing its banned synonyms. Competing words in circulation and no `_Avoid_` line → the term is unfinished.
+- **Be opinionated.** Several words compete for one concept → you MUST pick a single canonical term; every displaced word goes under `_Avoid_`.
+- **Purity.** The file is the glossary and nothing else. It MUST NOT contain specs, requirements, decision history, implementation details, or TODOs — decisions go in ADRs, specs go wherever the host project keeps specs.
+- **Project-specific concepts only.** General programming and infrastructure terms (timeout, retry, cache, queue) MUST NOT appear, however heavily the project uses them. Before adding a term, ask whether the concept is unique to *this* domain or generic; only the former belongs.
 - **Relationships section.** One line per relation, naming both terms in bold. Relations with cardinality or direction ("many", "exactly one", "after delivery") say more than bare arrows.
 - **Grouping.** Terms MAY be grouped under subheadings when natural clusters emerge; a flat list is fine when they don't. Do not invent clusters to look organized.
 
 ## Multi-context repositories — the minority case
 
-Most repositories are a single bounded context and need exactly one root `CONTEXT.md`. Only when a repository genuinely contains multiple bounded contexts — independent sub-domains where the *same word legitimately means different things* — does the split structure apply:
+The split structure applies only when a repository genuinely contains multiple bounded contexts — independent sub-domains where the *same word legitimately means different things*. Otherwise: one root `CONTEXT.md`.
 
 - A root `CONTEXT-MAP.md` lists each context, where its `CONTEXT.md` lives, and the **direction** of each relationship between contexts (who emits, who consumes, what is shared).
 - Each context keeps its own `CONTEXT.md` inside its directory.
@@ -62,4 +62,8 @@ Most repositories are a single bounded context and need exactly one root `CONTEX
 - **Ordering ↔ Billing**: shared types for `CustomerId` and `Money`
 ```
 
-Routing: if a `CONTEXT-MAP.md` exists, read it to determine which context the current topic belongs to; if the context is unclear, ask the user. You MUST NOT introduce the multi-context structure pre-emptively — keep a single root `CONTEXT.md` until a second bounded context actually exists.
+Routing:
+
+- A `CONTEXT-MAP.md` exists → read it to determine which context the current topic belongs to.
+- The context is unclear → ask the user.
+- You MUST NOT introduce the multi-context structure pre-emptively; keep a single root `CONTEXT.md` until a second bounded context actually exists.

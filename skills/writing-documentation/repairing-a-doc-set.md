@@ -6,13 +6,13 @@ Apply this when the set you are about to change has no entrypoint, has more than
 
 ## 1. Get the repair in scope first
 
-A repair is a larger change than the one you were asked for. Before restructuring anything you MUST tell the user what you found — the set, the specific defect, and what the repair touches — and get their agreement. Restructuring a set on your own initiative rewrites decisions you cannot see the reasons for.
+Before restructuring anything you MUST tell the user what you found — the set, the specific defect, and what the repair touches — and get their agreement.
 
-If they decline, make the change you were asked for, keep it consistent with the entrypoint as it stands, and leave the defect stated in your reply by exact path.
+They decline → make the change you were asked for, keep it consistent with the entrypoint as it stands, and leave the defect stated in your reply by exact path.
 
 ## 2. Read the whole set — this is the licensed case
 
-Ordinary tasks route through the entrypoint. A repair cannot: you are rebuilding the routing, so you MUST read every document in the set before writing a single row. A table built from filenames routes by guess.
+You MUST read every document in the set before writing a single row.
 
 ## 3. Inventory
 
@@ -25,26 +25,25 @@ A document you cannot write that second half for is mis-scoped, superseded, or d
 - Every document binds every reader → required-reading list.
 - Readers legitimately need different subsets → task-signal resolver table.
 - Both are true of different documents → state both, and mark which documents are unconditional.
-
-When the set's history does not make this obvious, ask. Guessing wrong makes readers either load too much forever or miss a document that actually binds them.
+- The set's history does not make this obvious → ask.
 
 ## 5. Derive signals from tasks, then split
 
-Write each signal from the inventory's second half — the task, not the title. Then split any signal whose load set is not small, until each branch resolves to a handful of documents. Splitting is the entire value of the table; a table with three broad rows is a directory listing with extra steps.
+Write each signal from the inventory's second half — the task, not the title. Then split any signal whose load set is not small, until each branch resolves to a handful of documents. A table with three broad rows is a directory listing with extra steps.
 
 ## 6. Reconcile every path
 
-You MUST open each path you write, resolving it from the entrypoint's directory. Renames and moves are exactly what break an entrypoint, and a path you did not resolve yourself is a path you are guessing at — it ships as a dead link that reads to the next reader as a deleted rule.
+You MUST open each path you write, resolving it from the entrypoint's directory.
 
 ## 7. Sweep for redundancy
 
-With the whole set in context — the one time you have it — find rules stated normatively in two documents. For each: keep one source, cross-reference from the other, and record in the entrypoint which is authoritative. Where either document is read alone, both copies stay and the entrypoint names the authoritative one.
+With the whole set in context, find rules stated normatively in two documents. For each: keep one source, cross-reference from the other, and record in the entrypoint which is authoritative. Either document is read alone → both copies stay and the entrypoint names the authoritative one.
 
 Redundancy you find in a **neighbouring** set is a finding, not a task: surface it by exact path and leave it alone.
 
 ## 8. Collapse extra entrypoints
 
-Where a set has more than one door, keep the one its readers already open, and reduce each other to a single redirect line or delete it. Whichever surviving door the next change misses becomes the stale routing table someone follows.
+A set has more than one door → keep the one its readers already open, and reduce each other to a single redirect line or delete it.
 
 ## 9. Deliver
 

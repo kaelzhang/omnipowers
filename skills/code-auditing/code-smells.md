@@ -2,14 +2,14 @@
 
 > Normative keywords — MUST, MUST NOT, REQUIRED, SHALL, SHALL NOT, SHOULD, SHOULD NOT, MAY — are used as defined in BCP 14 (RFC 2119, RFC 8174), and only when capitalized.
 
-A portable code-quality baseline for reviewers: twelve classic structural smells that apply in any host project, including one that documents no coding standards of its own. Read this file when a review assesses code quality; it supplements the code-quality checks in the reviewer brief.
+A review assesses code quality → read this file and apply it alongside the code-quality checks in the reviewer brief. Twelve classic structural smells, portable to any host project, including one that documents no coding standards of its own.
 
 ## Governing rules — read before the table
 
-1. **The host repo overrides.** Wherever the host project's own documented standards (coding-standards doc, contributor guide, style guide, lint or formatter configuration) conflict with this baseline, the host's standard wins: you MUST suppress the conflicting smell. This baseline fills the gap where the host documents nothing; a finding that overrules a documented host standard is a false finding and wastes the owner's trust.
-2. **Every smell is a labelled judgement call — never a hard violation.** A match is a heuristic signal, not proof of a defect. You SHOULD flag a match, and every flag MUST name the smell and state the concrete reasoning (e.g. "possible Feature Envy — `renderTotals()` reads five fields of `Invoice` and none of its own"). You MUST NOT report a smell as an automatic defect, a rule breach, or a Critical issue on the smell's authority alone — inflated severity buries the review's real findings. The code's owner decides whether the signal warrants a change; the table's fix direction is a reference suggestion, never a mandate.
+1. **The host repo overrides.** The host project's own documented standards (coding-standards doc, contributor guide, style guide, lint or formatter configuration) conflict with this baseline → the host's standard wins, and you MUST suppress the conflicting smell.
+2. **Every smell is a labelled judgement call — never a hard violation.** A match is a heuristic signal, not proof of a defect. You SHOULD flag a match; every flag MUST name the smell and state the concrete reasoning. You MUST NOT report a smell as an automatic defect, a rule breach, or a Critical issue on the smell's authority alone.
 
-You SHOULD skip any smell the host's tooling already detects or auto-fixes — duplicating a linter's report is noise.
+You SHOULD skip any smell the host's tooling already detects or auto-fixes.
 
 ## The baseline
 
@@ -32,4 +32,4 @@ Each entry is *what it is* → *how to fix*. Match against the diff under review
 
 ## Reporting shape
 
-Every flagged smell MUST carry three parts: the smell's name, the evidence in the diff (file and lines), and the fix direction from the table as a reference suggestion for the owner. A bare "this smells" with no evidence and no suggestion is not a finding.
+Every flagged smell MUST carry three parts: the smell's name, the evidence in the diff (file and lines), and the fix direction from the table as a reference suggestion, never a mandate — the code's owner decides whether the signal warrants a change. A bare "this smells" with no evidence and no suggestion is not a finding.

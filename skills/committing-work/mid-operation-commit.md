@@ -9,5 +9,3 @@ Apply this only while one of those operations is in progress. Everywhere else th
 1. run `git status --short` and identify every entry that is not part of the operation;
 2. stash or unstage each of them;
 3. use the operation's own continuation command where one exists (`git merge --continue`, `git rebase --continue`, `git cherry-pick --continue`).
-
-Skipping this checklist commits whatever else was in the tree into someone else's merge, where nobody will ever look for it.

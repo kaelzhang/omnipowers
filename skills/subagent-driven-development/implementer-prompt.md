@@ -2,7 +2,10 @@
 
 > Normative keywords — MUST, MUST NOT, REQUIRED, SHALL, SHALL NOT, SHOULD, SHOULD NOT, MAY — are used as defined in BCP 14 (RFC 2119, RFC 8174), and only when capitalized.
 
-Load this file at the **implement step** of `subagent-driven-development` — when you dispatch an implementer subagent, or (inline mode) when you start implementing a task. Use it as the implementer's prompt; in inline mode, follow the same contract as your own implementation discipline for the task.
+Load this file at the **implement step** of `subagent-driven-development`:
+
+- You dispatch an implementer subagent → send the block below as its prompt.
+- Inline mode, you start implementing a task → follow the block below as your own implementation discipline for the task.
 
 ```
 Implement Task N: [task name]
