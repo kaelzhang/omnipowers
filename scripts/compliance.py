@@ -184,16 +184,27 @@ def cmd_run(args) -> int:
         print(f"[compliance] WARNING: {args.skill} is installed globally — the CONTROL "
               f"arm would still see it. Run `make uninstall` first.", file=sys.stderr)
 
+    baseline_text = ""
+    if getattr(args, "baseline", ""):
+        with open(args.baseline, encoding="utf-8") as f:
+            baseline_text = f.read()
+        print(f"[compliance] variant A/B: control arm carries {args.baseline}", flush=True)
+
     # Serial warmup so a token refresh never races the parallel batch.
     _claude("Reply OK", tempfile.mkdtemp(prefix="omnipowers_warm_"), 60, args.model)
 
     def one_run(sc: dict, arm: str) -> tuple[int, int, bool]:
         scratch = _fixture_scratch(fixtures_root, sc.get("fixture", ""))
         try:
-            prompt = sc["prompt"] if arm == "control" else (
+            control_text = baseline_text if baseline_text else ""
+            prompt = (
+                sc["prompt"] if (arm == "control" and not control_text) else
+                ("A skill governs how you must handle this kind of request. Follow it exactly.\n\n"
+                 f"--- SKILL ---\n{control_text}\n--- END SKILL ---\n\n{sc['prompt']}")
+                if arm == "control" else (
                 "A skill governs how you must handle this kind of request. Follow it exactly.\n\n"
                 f"--- SKILL ---\n{skill_text}\n--- END SKILL ---\n\n{sc['prompt']}"
-            )
+            ))
             text, valid = _claude_traced(prompt, scratch, args.timeout, args.model)
             if not valid:
                 return 0, 0, False
@@ -241,6 +252,8 @@ def main() -> int:
     r.add_argument("--runs", type=int, default=2)
     r.add_argument("--workers", type=int, default=3)
     r.add_argument("--timeout", type=int, default=300)  # long skills need long turns
+    r.add_argument("--baseline", default="", help="file whose text the CONTROL arm carries; "
+                   "turns the run into variant-vs-variant instead of skill-vs-no-skill")
     r.add_argument("--model", default="")
     args = p.parse_args()
     return cmd_run(args) if args.cmd == "run" else 2
