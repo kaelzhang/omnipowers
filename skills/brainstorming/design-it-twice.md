@@ -2,7 +2,7 @@
 
 > Normative keywords — MUST, MUST NOT, REQUIRED, SHALL, SHALL NOT, SHOULD, SHOULD NOT, RECOMMENDED, MAY, OPTIONAL — are used as defined in BCP 14 (RFC 2119, RFC 8174), and only when capitalized.
 
-Load this during the approaches-exploration step of `brainstorming` (checklist item 4, "Propose 2-3 approaches") when the design centers on a **module interface** and the alternatives are non-obvious.
+Load this while choosing the approach under `brainstorming` when the design centres on a **module interface** and the alternatives are non-obvious.
 
 ## Differentiate by constraint
 

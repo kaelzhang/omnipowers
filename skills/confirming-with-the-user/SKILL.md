@@ -15,9 +15,9 @@ The user MUST be able to decide from the confirmation message alone, without re-
 
 Any point that needs the user's decision or sign-off → you MUST use this skill. This includes:
 
-- a **design or plan** you have produced and need approved before building;
+- a **goal or its delivery criteria** that is not yet settled, before building against it;
 - **review findings or proposals** — problems found, optimization proposals, or recommended changes from any review or audit;
-- a **significant technical decision** with real trade-offs — a core dependency, an architecture, a schema;
+- a **significant technical decision the user owns** — one that binds them beyond this work: a core dependency, a public contract, a data schema;
 - any **scope, branch, or blocker** decision the user owns;
 - the user **asks you to review, confirm, weigh, or decide on** a plan, design, approach, or proposal *with* them.
 
@@ -28,7 +28,7 @@ Confirm the *ends*; decide the *means* yourself.
 **You MUST confirm:**
 
 - **Goals and outcomes** — what the task or project must achieve; the definition of "done".
-- **Overall architecture / approach** — the high-level shape of the solution, before you build it.
+- **A risk the approach carries** — it would break an existing contract, lose data, be hard to reverse, or cost something the user has not seen. Surface the risk; the approach itself is yours to choose by best practice, and only its risk is theirs to weigh.
 - **Significant technical decisions** — a real choice between viable options you cannot settle on the merits → present the options and let the user pick. Whether a piece of work should be done at all, or to what extent → confirm.
 - **External blockers** — anything you cannot resolve yourself: missing access or credentials, information only the user has, a decision only the user can make, a broken external dependency.
 - **Irreversible, high-impact, or outward-facing actions** — any hard-to-undo or externally-visible action: deleting data, force-pushing, rewriting history, messaging anyone, spending money, deploying to production, publishing. Routinely pushing your own commits to the user's branch → not one of these; do not confirm it. Destroying or rewriting what is already published, or changing a branch other people build on → confirm.

@@ -12,8 +12,8 @@ stress-testing-a-plan ─(build intent)→ brainstorming → writing-plans
         → finishing-a-development-branch
 ```
 
-- **brainstorming** — the design gate: explore intent → approved written spec. Every build passes through it. NOT for interrogating a plan with no build intended (that is stress-testing-a-plan).
-- **writing-plans** — turn the approved spec into a bite-sized implementation plan. NOT for executing it.
+- **brainstorming** — the pre-build gate on the GOAL, not the design: state the goal and its delivery criteria in one line, or settle them with the user first, along with any blocker, serious risk, or disagreement. How and when to build is the agent's. NOT for interrogating a plan with no build intended (that is stress-testing-a-plan).
+- **writing-plans** — turn a settled goal into a bite-sized implementation plan. NOT for executing it.
 - **executing-plans** — execute a written plan yourself, continuously, step-verified. When the host has subagents AND the plan's tasks are mostly independent → subagent-driven-development instead.
 - **subagent-driven-development** — execute a plan one fresh implementer+reviewer pair per task. NOT for tightly coupled plans (executing-plans) or ad-hoc parallel work (keeping-work-in-flight).
 - **finishing-a-development-branch** — the work is done and verified: merge / PR / keep / discard + cleanup. If the merge conflicts → resolving-merge-conflicts.
@@ -27,7 +27,7 @@ stress-testing-a-plan ─(build intent)→ brainstorming → writing-plans
 
 ## Design-time instruments
 
-- **designing-deep-modules** — module/interface shape: depth, the deletion test, the two-adapter rule. Serves brainstorming's design step; not a workflow of its own.
+- **designing-deep-modules** — module/interface shape: depth, the deletion test, the two-adapter rule. Serves the agent's own design choices; not a workflow of its own.
 - **prototyping** — a design question only running code can answer: throwaway artifact, user delivers the verdict. NOT a first draft of the feature.
 - **researching** — a question answered by investigation: primary sources, per-claim citations, findings file. NOT design itself.
 - **domain-modeling** — the project's language: glossary (CONTEXT.md), gated ADRs. Fires when terms drift or a recorded decision is being made — merely *reading* the glossary is not this skill.

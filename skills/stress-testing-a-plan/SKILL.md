@@ -16,7 +16,7 @@ description: Use when the user asks you to interrogate their plan, idea, or deci
 ## When to Use — and When Another Skill Governs
 
 - The user asks you to interrogate their plan, idea, or decision — "stress-test this", "poke holes", "grill me", "challenge this idea", "拷问我" — with no build necessarily intended → you MUST use this skill.
-- **About to BUILD anything** → the brainstorming skill governs, and its full design gate applies. You MUST NOT use this skill as a backdoor around that gate.
+- **About to BUILD anything** → the brainstorming skill governs: the goal and its delivery criteria get settled before code. You MUST NOT use this skill as a backdoor around that gate.
 - **Presenting a single decision for sign-off** → the confirming-with-the-user skill governs on its own.
 - **This skill** = sustained interrogation of the user's plan, and nothing else.
 
@@ -40,8 +40,8 @@ Treat the plan as a decision tree: every choice it makes — or silently assumes
 
 ## The Handoff — the Moment Build Intent Appears
 
-- The user decides to actually build any of it — "let's do it", "implement option B", "write this up" → you MUST hand off to the brainstorming skill, and its full design gate governs from there.
-- A grilled plan is NOT an approved design → you MUST NOT treat it as one.
+- The user decides to actually build any of it — "let's do it", "implement option B", "write this up" → you MUST hand off to the brainstorming skill, and its goal gate governs from there.
+- A grilled plan is NOT a settled goal → you MUST NOT treat it as one; hand off and settle the goal.
 
 ## Rationalizations — Rejected
 
