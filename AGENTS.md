@@ -239,6 +239,27 @@ documentation, so whatever is filed there is written and never read again.
 Everything a skill leaves in the workbench MUST be promoted to a durable role or
 deleted when the work finishes.
 
+### Cross-skill consistency
+
+A skill is written one at a time and read one at a time, but it runs alongside
+every other skill in the collection. These three checks catch what per-statement
+review structurally cannot.
+
+- **A mechanism the collection defers to is added or changed** — a policy axis, an
+  artifact role, a shared gate, a named moment — → you MUST sweep every existing
+  skill for rules written before it, in the same change. A rule that predates the
+  mechanism does not know it exists and will keep asking a question the mechanism
+  already answers.
+- **A rule appears in more than one place** — two sections of one skill, or two
+  skills — → you MUST change every statement of it in the same change. Left
+  unsynced, the later statement wins and the earlier change silently does not
+  take effect.
+- **A rule fires at a fixed moment** — task start, round end, before a commit — →
+  you MUST read it together with every other rule that fires at that moment, as
+  the agent will meet them as one instruction. Check that they can all be
+  satisfied at once, and that none of them, read alone, forbids the moment from
+  ever arriving.
+
 ### Vocabulary
 
 Use these terms exactly; the _Avoid_ list prevents synonym drift.
@@ -270,3 +291,9 @@ For each statement in a skill:
 - [ ] Portable at runtime: works in any host project; no dependency on this repo's tooling; all state stays inside the host project.
 - [ ] No hardcoded home: every artifact declares one of the five roles and resolves its location through the host declaration, with the skill's own path stated only as the fallback.
 - [ ] Policy deferred: any commit form, branch/isolation assumption, or write into host-owned space yields to a declared `vcs` / `isolation` / `write-authority` axis.
+
+For the change as a whole:
+
+- [ ] A mechanism the collection defers to was added or changed → every skill predating it was swept in this change.
+- [ ] Every other statement of a rule you changed was changed with it.
+- [ ] A rule firing at a fixed moment was read against the others firing at that moment: all satisfiable together, and none forbids the moment from arriving.
