@@ -56,10 +56,11 @@ Every step is complete and every verification has passed:
 - Between steps you SHOULD narrate at most one short line.
 - A genuine blocker (see "When to Stop and Ask for Help") is the only permitted reason to stop before every step is complete → you MUST surface it with the `confirming-with-the-user` skill (plain-language options + your recommendation), get the decision, then resume continuous execution.
 
-## Branch Safety
+## Isolation
 
-- You MUST NOT begin implementation on the `main` or `master` branch without explicit user consent.
-- The work is not already on a dedicated branch or isolated workspace → you MUST create one, or confirm the existing one, before writing any code.
+- The host declares an `isolation` unit → the work MUST happen in that unit, and you MUST NOT ask consent to use it; the host has already answered. A declared shared-checkout model means writing on the mainline IS the declared unit.
+- Nothing is declared and you are about to write on `main` or `master` → you MUST obtain the user's explicit consent, or put the work in a dedicated branch or workspace first.
+- Ensuring that workspace exists is the `using-git-worktrees` skill's job. This skill requires only that the work be in one before any code is written.
 
 ## When to Stop and Ask for Help
 
@@ -97,7 +98,7 @@ A revised plan MUST be re-reviewed from the top before execution resumes. You MU
 | "The verification probably passes — I'll mark it done." / "Running every verification slows me down." | Run the verification and read its output before marking the step done. |
 | "This step is unclear, but I think it means X." / "Asking the user about this small ambiguity is annoying." | Stop and ask the user. |
 | "The plan says X, but Y is better — I'll do Y." / "I understand the intent, so the exact steps don't matter." | Raise the concern with the user; do not silently substitute. |
-| "I'll start on main, just this once." | Get explicit consent or create a branch first. |
+| "I'll start on main, just this once." | The host declares the unit → use it. Nothing declared → get consent or create a branch first. |
 | "The plan didn't cover this case, so I'll invent a step." / "I can fix the plan's gap myself without asking." | Stop and ask; the plan needs updating. |
 | "Tests fail, but it's probably flaky — I'll move on." / "It's faster to keep going than to stop at this blocker." | Stop, investigate, and ask if you cannot resolve it. |
 
@@ -108,7 +109,7 @@ Before reporting the work complete, confirm:
 - [ ] I read the entire plan and reviewed it critically before starting.
 - [ ] I raised every concern with the user and resolved them before execution.
 - [ ] I created a tracked checklist of the plan's steps (host task/todo tool, or an explicit written checklist kept updated in my responses).
-- [ ] I am on a dedicated branch/workspace (not `main`/`master` without consent).
+- [ ] The work is in the host's declared isolation unit, or — nothing declared — on a dedicated branch/workspace or with explicit consent.
 - [ ] I executed every step in order, exactly as written.
 - [ ] I ran and read the output of every step's verification before marking it done.
 - [ ] I worked in continuous mode — no permission-to-proceed pauses between steps; I stopped only for a real blocker, surfaced via confirming-with-the-user.

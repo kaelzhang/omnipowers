@@ -17,7 +17,7 @@ DISPATCH BEFORE YOU READ — COUNT BEFORE YOU FINISH — ONLY A TRACKED CALL WAK
 
 Run these four steps in order at both of these moments: an agent, subagent, or background task returns; a round is about to end. You MUST run them before reading any report and before writing any part of your reply.
 
-1. **Count what is still running.** Zero is a condition to fix, not a state to accept.
+1. **Count what is still running, and what is queued.** Queued work with nothing running is the condition this block exists to catch. Nothing queued is a finished round, not a failure.
 2. **List every ownership scope that is idle and has queued work.** Each one is wasted wall-clock.
 3. **Dispatch one tracked call per idle scope.** One scope, one call.
 4. **Now** read the reports, judge, and write.

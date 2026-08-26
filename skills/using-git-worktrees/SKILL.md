@@ -61,8 +61,9 @@ A linked worktree is the only context where `GIT_DIR != GIT_COMMON`. A plain sub
 
 ### Consent gate (REQUIRED before creating a worktree)
 
-- The user has already declared a worktree preference (instructions, task, or this conversation) → you MUST honor it without asking.
-- Otherwise you MUST ask for consent, and you MUST NOT create a worktree until the user agrees:
+- The host declared an `isolation` unit → you MUST use it without asking. That declaration is the answer to this gate.
+- The user declared a worktree preference (instructions, task, or this conversation) → you MUST honor it without asking.
+- Neither → you MUST ask for consent, and you MUST NOT create a worktree until the user agrees:
 
 > "Would you like me to set up an isolated worktree? It protects your current branch from changes."
 

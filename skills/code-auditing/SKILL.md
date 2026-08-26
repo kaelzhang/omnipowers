@@ -121,7 +121,9 @@ An audit report is a **record**. You MUST resolve where it goes in this order, s
 
 ## Phase 4 — Report and act
 
-You MUST output a concise summary to the session: the findings grouped by axis and severity, every `Critical` and `Important` finding (location + one-line fix), the overall assessment (ship / fix-first / needs-rework), and the path to the recorded file. Both outputs are REQUIRED — the record on disk AND the session summary.
+You MUST output a concise summary to the session: the findings grouped by axis and severity, every `Critical` and `Important` finding (location + one-line fix), and the overall assessment (ship / fix-first / needs-rework). The session summary is REQUIRED in every mode.
+
+Phase 3 required a written record → its path MUST appear in the summary.
 
 The target is a pull request and you post findings to it → you SHOULD place each inline finding in its code comment thread rather than as one top-level comment.
 
