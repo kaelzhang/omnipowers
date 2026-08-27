@@ -54,7 +54,7 @@ This step is REQUIRED. You MUST NOT skip it.
 ### FIX — minimal change at the root cause
 
 - You MUST fix the root cause, and you MUST NOT patch the symptom.
-- You MUST make the minimal change; in the same change you MUST NOT refactor unrelated code, add features, or fix unrelated bugs.
+- You MUST make the minimal change; in the same change you MUST NOT refactor unrelated code, add features, or fix unrelated bugs. Another site of the same root cause is not an unrelated bug — see SWEEP.
 - You MUST apply the fix to the host project's actual production implementation — the code that ships and that your reproducing test exercises.
 - You cannot locate that implementation → you MUST keep searching for it, and you MUST NOT substitute a standalone "corrected" function, a snippet, or sample code as the fix.
 
@@ -65,6 +65,16 @@ This step is REQUIRED.
 - You MUST confirm that the reproducing test now **passes**, that **all other tests still pass**, and that output is pristine — no new errors or warnings.
 - The reproducing test still fails → you MUST fix the code, not the test.
 - Other tests broke → you MUST address those side effects now.
+
+### SWEEP — every other site of the same root cause
+
+The fix is verified:
+
+- You MUST search the codebase for every other site that shares this root cause — the same call pattern, the same missing guard, the same wrong assumption, the same copied block — and you MUST state which searches you ran. A search you did not run MUST NOT be reported as "no other sites".
+- A site found has the defect → it is the same bug, and you MUST fix it in this change, each covered by a regression test.
+- A site found rests on the same assumption but cannot fail today → you MUST make it safe now, or record it where the host keeps follow-up work and name it in your report.
+- The root cause exists at exactly one site → you MUST say so, and the sweep is done.
+- The sweep is bounded by the cause: you MUST run only the searches the root cause defines, and you MUST NOT audit unrelated code.
 
 ### HARDEN — cover the defect class
 
@@ -130,6 +140,8 @@ You MUST be able to check every box before calling the bug fixed:
 - [ ] The reproducing test now passes
 - [ ] All other tests still pass; output pristine
 - [ ] The regression test remains in the suite
+- [ ] Swept for other sites of the same root cause, naming the searches run
+- [ ] Every site found is fixed in this change, made safe, or recorded as follow-up
 - [ ] Adjacent cases of the same defect are covered, or their absence is justified
 
 You cannot check every box → the bug is not fixed; you MUST start over. The only permitted gap is a missing reproducing test under the "Only Exception" conditions above.
