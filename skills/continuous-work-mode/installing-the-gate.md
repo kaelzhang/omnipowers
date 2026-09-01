@@ -48,6 +48,8 @@ No stop-time hook exists → the gate cannot be installed, and you MUST NOT clai
 
 ## Removing the gate
 
-The gate is inert whenever the mode is disarmed, so ending a round, finishing a goal, or leaving the mode is NOT a reason to remove it. Remove it only when the user asks, or when the project stops using the mode entirely.
+The mode ends → you MUST remove the gate in the same step that deletes the sentinel. Ending a single round is not the mode ending; delivering the goal it was armed for is.
 
-Removing it edits the host's configuration → you MUST obtain the user's explicit consent, and you MUST name the file you will change. Then delete the hook registration, the installed `checkpoint.sh`, and everything the mode leaves in the workbench: `.omnipowers/continuous-mode`, `.omnipowers/continuous-mode.owner`, `.omnipowers/continuous-gate.last`. A sentinel left behind after the gate is gone silently disarms nothing and misleads the next agent that reads it.
+Removal is authorized by the consent that installed it, so you MUST NOT ask again. Delete the hook registration, the installed `checkpoint.sh`, and everything the mode leaves in the workbench: `.omnipowers/continuous-mode`, `.omnipowers/continuous-mode.owner`, `.omnipowers/continuous-gate.last`. Removing the registration while leaving the sentinel behind is the one order that misleads: it reads as an armed mode that nothing enforces.
+
+The user states they will use the mode again in this project → you MAY leave the registration and the script in place, and you MUST say so when you report the mode off. A gate nobody asked to keep MUST NOT outlive the work it was installed for.
