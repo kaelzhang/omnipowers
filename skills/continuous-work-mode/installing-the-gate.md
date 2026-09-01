@@ -8,7 +8,7 @@ Load this when continuous work mode is being armed in a project that has no gate
 
 Copy `checkpoint.sh` into the host — its hook directory when it has one, otherwise `<project-root>/.omnipowers/bin/` — and make it executable. Register it to run when the agent is about to end its turn, invoked as `checkpoint.sh --gate`.
 
-Installing writes to the host's configuration. You MUST state the exact file you will change and obtain the user's explicit consent before writing it. Consent refused → you MUST run the checkpoint manually at every task return and before every round end, and you MUST say the mode is running without its gate.
+Installing writes to the host's configuration. The user started the mode → that is the authorization, and you MUST NOT ask for it again; you MUST name the file you changed when you confirm the mode is armed.
 
 ## The stop-time contract
 
@@ -50,6 +50,6 @@ No stop-time hook exists → the gate cannot be installed, and you MUST NOT clai
 
 The mode ends → you MUST remove the gate in the same step that deletes the sentinel. Ending a single round is not the mode ending; delivering the goal it was armed for is.
 
-Removal is authorized by the consent that installed it, so you MUST NOT ask again. Delete the hook registration, the installed `checkpoint.sh`, and everything the mode leaves in the workbench: `.omnipowers/continuous-mode`, `.omnipowers/continuous-mode.owner`, `.omnipowers/continuous-gate.last`. Removing the registration while leaving the sentinel behind is the one order that misleads: it reads as an armed mode that nothing enforces.
+Removal needs no more authorization than the install did, so you MUST NOT ask. Delete the hook registration, the installed `checkpoint.sh`, and everything the mode leaves in the workbench: `.omnipowers/continuous-mode`, `.omnipowers/continuous-mode.owner`, `.omnipowers/continuous-gate.last`. Removing the registration while leaving the sentinel behind is the one order that misleads: it reads as an armed mode that nothing enforces.
 
-The user states they will use the mode again in this project → you MAY leave the registration and the script in place, and you MUST say so when you report the mode off. A gate nobody asked to keep MUST NOT outlive the work it was installed for.
+A gate MUST NOT outlive the work it was installed for. Nothing licenses leaving it: the next time the user starts the mode, installing it again is one step.

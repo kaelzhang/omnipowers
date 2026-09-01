@@ -19,11 +19,11 @@ A rule that must be recalled while writing a completion summary is recalled leas
 
 - The user starts the mode in this session → you MUST arm it before the next unit of work.
 - The user ends it, or the goal it was armed for is delivered → you MUST disarm it.
-- The user has not asked for it → you MUST NOT arm it. An armed gate changes when the host lets a round end, and that is the user's decision.
+- The user has not asked for it → you MUST NOT arm it, MUST NOT install the gate, and MUST NOT ask whether to. An armed gate changes when the host lets a round end; the user's own words are the only thing that starts it.
 
 ## Arming the Mode
 
-1. **Install the gate.** The gate is absent → read `@installing-the-gate.md` and install it. Installing writes to the host's configuration → you MUST obtain the user's explicit consent first, naming the file you will change and stating that the gate comes back out when the mode ends. That consent covers the removal, so disarming asks nothing further.
+1. **Install the gate.** The gate is absent → read `@installing-the-gate.md` and install it. The user starting the mode is the authorization: the gate is what the mode is, not a further decision. You MUST NOT ask consent for it, and you MUST NOT install it for any other reason. Name the file you changed when you confirm in step 3.
 2. **Write the sentinel** at `<project-root>/.omnipowers/continuous-mode`. The gate is inert while this file is absent, so the mode is armed and disarmed by this file alone:
 
 ```
@@ -77,9 +77,7 @@ The gate blocks a round end once per distinct checkpoint state and never twice f
 
 ## Disarming
 
-Disarming removes both halves: the sentinel, the owner file beside it, and the gate's marker, **and the gate itself** — its registration and its installed script. An inert gate is still a script the host runs at the end of every turn, in a project whose work is finished, and the user did not ask to keep it. Leaving it is residue, not thrift.
-
-The user states they will use the mode again in this project → you MAY leave the gate installed, and you MUST say it is still there. Nothing else licenses leaving it.
+Disarming removes both halves: the sentinel, the owner file beside it, and the gate's marker, **and the gate itself** — its registration and its installed script. An inert gate is still a script the host runs at the end of every turn in a project whose work is finished. There is no exception: the mode is cheap to install again the next time the user starts it.
 
 You MUST disarm when any of these is true:
 
@@ -103,7 +101,8 @@ The mode outliving its session is prevented, not merely discouraged. The gate cl
 | "I'll arm the mode, it will help." | Arm it only when the user starts it. |
 | "The gate is complaining about a mode I never started." | It is a leftover. Ask the user, then delete the files it named. |
 | "The goal is delivered, I'll leave the mode on in case." | Disarm it. An armed mode gates the next, unrelated task. |
-| "The gate is harmless when disarmed, I'll leave it installed." | Remove it with the sentinel. Only the user saying they will use it again keeps it. |
+| "The gate is harmless when disarmed, I'll leave it installed." | Remove it with the sentinel. Installing it again costs one step. |
+| "Should I install the hook?" | They started the mode. Install it and say which file you changed. |
 
 ## Checklist
 
@@ -114,4 +113,4 @@ Before ending any round while the mode is armed:
 - [ ] Every finding is cleared, dispatched, or named in the report.
 - [ ] This round ends on delivery, a decision the user owns, or the user's stop — nothing else.
 - [ ] The mode is disarmed if its goal is delivered, the user ended it, or the task changed.
-- [ ] Disarming removed the gate too, unless the user said they will use the mode again here.
+- [ ] Disarming removed the gate too — registration, script, and workbench files.
