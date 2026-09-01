@@ -37,6 +37,7 @@ stress-testing-a-plan ─(build intent)→ brainstorming → writing-plans
 - **confirming-with-the-user** — HOW any single decision is put to the user (options, impacts, recommendation, prose). Every other skill's user-facing decisions ride on it.
 - **verification-before-completion** — evidence before any "done/fixed/passing" claim. Gates every completion claim in every flow.
 - **keeping-work-in-flight** — the dispatch block: at every agent return and before any round ends, count what is running, dispatch one tracked call per idle ownership scope, then read. Also owns the independence gate for fan-out and the continuation of work past the round.
+- **continuous-work-mode** — the user starts it by name: install a stop-time gate so the queue is checked by a command before any round may end, and stop ending rounds to ask whether to continue. Explicit activation only; it mechanizes keeping-work-in-flight rather than replacing it.
 - **committing-work** — how each individual commit is formed: one coherent change, explicit paths, the smallest proving check, a standalone message. NOT integrating the branch afterwards (finishing-a-development-branch), NOT judging the code (code-auditing).
 - **code-auditing** — all code review and audit: a checkpoint review of finished work before it advances (merge-base range, reviewed against its requirements) OR a standards audit against the host's compounding checklist; Phase 1 routes between them, and both record + act on findings by severity.
 
@@ -56,5 +57,6 @@ stress-testing-a-plan ─(build intent)→ brainstorming → writing-plans
 - Finding a bug's cause → **systematic-debugging**; writing the fix → **test-driven-bug-fixing**.
 - Any code review or audit → **code-auditing** (it routes internally: checkpoint review vs standards audit).
 - Executing a plan with subagents per task → **subagent-driven-development**; parallel unrelated tasks → **keeping-work-in-flight**.
+- Counting and dispatching at a return → **keeping-work-in-flight** (always on); the user asking to stop being the scheduler → **continuous-work-mode** (installs the gate that forces the count, only when they say so).
 - Making a commit → **committing-work**; merging, pushing, or opening the PR afterwards → **finishing-a-development-branch**. "Commit and push" splits across both.
 - Writing a project document → **writing-documentation**; writing a `SKILL.md` → **writing-skills**. What a term means or whether a decision is worth recording → **domain-modeling**; how it is reached and structured → **writing-documentation**.

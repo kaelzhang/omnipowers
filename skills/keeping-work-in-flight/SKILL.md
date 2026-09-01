@@ -48,6 +48,7 @@ The block found an idle scope with queued work → read `@fanning-out.md` and ap
 - You MAY install a periodic report that states only: how many tasks are running, which scopes are idle, the last commit, and the number of unpushed commits.
 - That report MUST NOT edit, commit, dispatch, or change any state. A heartbeat that acts is a second uncoordinated writer and stops being a trustworthy observer.
 - A heartbeat catches idling after the fact → you MUST NOT treat it as replacing the Dispatch Block.
+- The user has started continuous work mode → the Dispatch Block is enforced by that mode's stop-time gate. The gate decides when a round may end; this block still decides what gets dispatched.
 
 ## Red Flags — STOP if you catch yourself thinking
 
