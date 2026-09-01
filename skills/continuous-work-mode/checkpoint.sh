@@ -23,18 +23,59 @@ MODE=report
 ROOT=$(git rev-parse --show-toplevel 2>/dev/null) || exit 0
 SENTINEL="$ROOT/.omnipowers/continuous-mode"
 MARKER="$ROOT/.omnipowers/continuous-gate.last"
+OWNER="$ROOT/.omnipowers/continuous-mode.owner"
 
 if [ "$MODE" = gate ] && [ ! -f "$SENTINEL" ]; then exit 0; fi
 
-BASE=""; DEFECTS=(); REPOS=("$ROOT")
+# Block at most once per distinct state, so nothing the agent cannot clear can
+# deadlock the session.
+block_once() {
+  [ -f "$MARKER" ] && [ "$(cat "$MARKER" 2>/dev/null)" = "$1" ] && return 1
+  mkdir -p "$(dirname "$MARKER")" && printf '%s' "$1" > "$MARKER"
+  return 0
+}
+
+BASE=""; EXPIRES=24; STARTED=""; DEFECTS=(); REPOS=("$ROOT")
 if [ -f "$SENTINEL" ]; then
   while IFS='=' read -r k v; do
     case "$k" in
       base)    BASE="$v" ;;
+      started) STARTED="$v" ;;
+      expires) EXPIRES="$v" ;;
       defects) DEFECTS+=("$v") ;;
       repo)    REPOS+=("$v") ;;
     esac
   done < "$SENTINEL"
+fi
+
+# An armed mode that outlives the session that armed it would block a stranger.
+# Ownership is claimed on the gate's first fire, so arming costs no bookkeeping.
+if [ "$MODE" = gate ]; then
+  hook_session=""
+  [ -t 0 ] || hook_session=$(head -c 4096 2>/dev/null \
+    | sed -n 's/.*"session_id"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' | head -1)
+  stale=""
+  if [ -n "$hook_session" ]; then
+    if [ ! -f "$OWNER" ]; then
+      mkdir -p "$(dirname "$OWNER")" && printf '%s' "$hook_session" > "$OWNER"
+    elif [ "$(cat "$OWNER" 2>/dev/null)" != "$hook_session" ]; then
+      stale="it was armed by a different session"
+    fi
+  fi
+  if [ -z "$stale" ] && [ -n "$STARTED" ]; then
+    age=$(( ( $(date +%s) - STARTED ) / 3600 ))
+    [ "$age" -gt "$EXPIRES" ] && stale="it was armed ${age}h ago, past its ${EXPIRES}h life"
+  fi
+  if [ -n "$stale" ]; then
+    block_once "stale:$stale" || exit 0
+    {
+      echo "Continuous work mode is armed, but $stale."
+      echo "Ask the user whether it still applies. It does not → delete these and the mode is off:"
+      echo "  $SENTINEL"
+      echo "  $OWNER"
+    } >&2
+    exit 2
+  fi
 fi
 [ -n "$BASE" ] || BASE=$(git -C "$ROOT" rev-parse HEAD 2>/dev/null)
 
@@ -97,7 +138,10 @@ if [ -n "$BASE" ]; then
 fi
 
 if [ "${#FINDINGS[@]}" -eq 0 ]; then
-  [ "$MODE" = report ] && echo "checkpoint: queue empty — nothing uncommitted, unpushed, unreferenced, or open."
+  if [ "$MODE" = report ]; then
+    echo "checkpoint: queue empty — nothing uncommitted, unpushed, unreferenced, or open."
+    [ -f "$SENTINEL" ] && echo "The mode has nothing left to enforce. The goal is delivered → disarm it: rm $SENTINEL $OWNER $MARKER"
+  fi
   exit 0
 fi
 
@@ -111,10 +155,6 @@ report() {
 
 if [ "$MODE" = report ]; then report; exit 0; fi
 
-# Gate: block once per distinct state, never twice for the same one, so an
-# unfixable finding can never deadlock the session.
-sig=$(printf '%s\n' "${FINDINGS[@]}" | shasum | awk '{print $1}')
-if [ -f "$MARKER" ] && [ "$(cat "$MARKER" 2>/dev/null)" = "$sig" ]; then exit 0; fi
-mkdir -p "$(dirname "$MARKER")" && printf '%s' "$sig" > "$MARKER"
+block_once "$(printf '%s\n' "${FINDINGS[@]}" | shasum | awk '{print $1}')" || exit 0
 report >&2
 exit 2

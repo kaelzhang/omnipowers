@@ -28,13 +28,15 @@ A rule that must be recalled while writing a completion summary is recalled leas
 
 ```
 base=<the commit the mode starts from>
-defects=<path to a checklist file>      # optional, repeatable
-repo=<path to another repo to watch>    # optional, repeatable
+started=<current epoch seconds>
+expires=<hours before the mode goes stale>   # optional, default 24
+defects=<path to a checklist file>           # optional, repeatable
+repo=<path to another repo to watch>         # optional, repeatable
 ```
 
-3. **Confirm in one line** what the mode was armed for, and continue working in the same reply. You MUST NOT end the round on the confirmation.
+`.omnipowers/` is not git-ignored → you MUST add it to `.gitignore` before writing the sentinel. A committed sentinel arms the mode for everyone who clones the project.
 
-`.omnipowers/` is the workbench: it MUST be git-ignored, and the sentinel MUST NOT be committed.
+3. **Confirm in one line** what the mode was armed for, and continue working in the same reply. You MUST NOT end the round on the confirmation.
 
 ## The Order
 
@@ -75,8 +77,17 @@ The gate blocks a round end once per distinct checkpoint state and never twice f
 
 ## Disarming
 
-- The goal is delivered, or the user ends the mode → you MUST delete the sentinel and say the mode is off.
-- You MUST NOT leave the mode armed across an unrelated task.
+The mode ends by deleting the sentinel, the owner file beside it, and the gate's marker. The gate itself stays installed: it is inert without the sentinel, so removing it every time would only mean installing it again.
+
+You MUST disarm when any of these is true:
+
+- the goal the mode was armed for is delivered;
+- the user ends the mode;
+- the work turns into an unrelated task. You MUST NOT carry an armed mode into one.
+
+The checkpoint prompts the disarm itself: it prints the removal command whenever it finds the queue empty, which is the moment disarming is correct. You MUST NOT rely on remembering it while writing a completion summary — that is the failure this whole mode exists to remove.
+
+The mode outliving its session is prevented, not merely discouraged. The gate claims the session on its first fire, and it refuses a mode that a different session armed or that has passed its `expires` life. It says which files to delete and blocks once, so a mode nobody owns costs one interruption and then clears.
 
 ## Red Flags — STOP if you catch yourself thinking
 
@@ -88,6 +99,8 @@ The gate blocks a round end once per distinct checkpoint state and never twice f
 | "The gate let me through, so the queue must be clear." | The gate blocks once per state. Read what it printed. |
 | "The user is not watching, I'll pause here." | Nothing pauses a round except delivery, a ruling, or the user. |
 | "I'll arm the mode, it will help." | Arm it only when the user starts it. |
+| "The gate is complaining about a mode I never started." | It is a leftover. Ask the user, then delete the files it named. |
+| "The goal is delivered, I'll leave the mode on in case." | Disarm it. An armed mode gates the next, unrelated task. |
 
 ## Checklist
 
@@ -97,4 +110,4 @@ Before ending any round while the mode is armed:
 - [ ] The Dispatch Block ran before I read any report or wrote any reply.
 - [ ] Every finding is cleared, dispatched, or named in the report.
 - [ ] This round ends on delivery, a decision the user owns, or the user's stop — nothing else.
-- [ ] The mode is disarmed if its goal is delivered.
+- [ ] The mode is disarmed if its goal is delivered, the user ended it, or the task changed.

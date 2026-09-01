@@ -45,3 +45,9 @@ Exit code `2` blocks the stop and sends the gate's stderr to the agent; exit `0`
 ## A host with no hook mechanism
 
 No stop-time hook exists → the gate cannot be installed, and you MUST NOT claim the mode is mechanized. Run `checkpoint.sh` yourself as step 1 of every task return and every round end, and state in the arming confirmation that the check is manual in this project.
+
+## Removing the gate
+
+The gate is inert whenever the mode is disarmed, so ending a round, finishing a goal, or leaving the mode is NOT a reason to remove it. Remove it only when the user asks, or when the project stops using the mode entirely.
+
+Removing it edits the host's configuration → you MUST obtain the user's explicit consent, and you MUST name the file you will change. Then delete the hook registration, the installed `checkpoint.sh`, and everything the mode leaves in the workbench: `.omnipowers/continuous-mode`, `.omnipowers/continuous-mode.owner`, `.omnipowers/continuous-gate.last`. A sentinel left behind after the gate is gone silently disarms nothing and misleads the next agent that reads it.
