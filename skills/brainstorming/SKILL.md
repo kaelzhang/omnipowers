@@ -1,6 +1,6 @@
 ---
 name: brainstorming
-description: "Use before building anything — a feature, a behavior change, scaffolding, a refactor — you MUST be able to state the goal and its delivery criteria in one line before writing code; where you cannot, or where you hit a blocker you cannot resolve, a serious risk, or a disagreement with the request, you MUST settle that with the user first. How and when to build is yours to decide, by best practice."
+description: "Use before building anything — a feature, a behavior change, scaffolding, a refactor — you MUST state the goal and its delivery criteria in one line before writing code, and settle with the user only that, an unresolvable blocker, a serious risk, or a disagreement. How and when to build is yours."
 ---
 
 # Brainstorming

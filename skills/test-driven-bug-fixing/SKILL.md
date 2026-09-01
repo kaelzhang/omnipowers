@@ -71,7 +71,7 @@ This step is REQUIRED.
 The fix is verified:
 
 - You MUST search the codebase for every other site that shares this root cause — the same call pattern, the same missing guard, the same wrong assumption, the same copied block — and you MUST state which searches you ran. A search you did not run MUST NOT be reported as "no other sites".
-- A site found has the defect → it is the same bug, and you MUST fix it in this change, each covered by a regression test.
+- A site found has the defect → it is the same bug, and you MUST fix it in this change, covered by a test that fails without the fix. One test MAY cover several sites. These fixes are part of this cycle → you MUST NOT restart the cycle for each of them.
 - A site found rests on the same assumption but cannot fail today → you MUST make it safe now, or record it where the host keeps follow-up work and name it in your report.
 - The root cause exists at exactly one site → you MUST say so, and the sweep is done.
 - The sweep is bounded by the cause: you MUST run only the searches the root cause defines, and you MUST NOT audit unrelated code.

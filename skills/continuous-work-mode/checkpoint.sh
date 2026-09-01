@@ -103,12 +103,45 @@ for repo in "${REPOS[@]}"; do
 
   # 3. Untracked files that committed code already references — the shape that
   #    passes locally and breaks every other checkout.
+  #
+  #    Two corrections, both made after this fired on correct work. A bare
+  #    `git grep` searches the WORKING TREE, so a module another session is
+  #    still writing was reported as already committed and broken; asking HEAD
+  #    is what makes this a statement about the commit. And the candidate must
+  #    be a source file: the defect is a module declared and never tracked, and
+  #    matching every stem flagged two thousand capture frames because a log
+  #    somewhere contains the word "0001". A gate that argues with correct work
+  #    teaches people to skip it.
   while IFS= read -r f; do
     [ -n "$f" ] || continue
     case "$f" in .omnipowers/*) continue ;; esac
+    case "$f" in
+      *.rs|*.swift|*.c|*.h|*.cpp|*.mm|*.py|*.ts|*.tsx|*.js|*.sh|*.proto) ;;
+      *) continue ;;
+    esac
     stem=$(basename "$f"); stem="${stem%.*}"
     [ ${#stem} -ge 4 ] || continue
-    if git -C "$repo" grep -l -w -F -- "$stem" -- . ':!*.md' ':!*.txt' >/dev/null 2>&1; then
+    #    And it looks for a DECLARATION, not for the word. HEAD contains
+    #    "renderer" in a hundred sentences and declares `mod renderer;` in
+    #    none, and only the second one breaks a fresh checkout.
+    case "$f" in
+      *.rs)  pat="^ *(pub[^ ]* )?mod +${stem} *;" ;;
+      *.py)  pat="(^|[^.[:alnum:]_])(import|from) +${stem}([^[:alnum:]_]|$)" ;;
+      *.sh)  pat="(source|\\.) +[^ ]*${stem}" ;;
+      *)     pat="[\"<][^\"<>]*${stem}\\.[a-z]+[\">]" ;;
+    esac
+    #    Rust narrows further, to the only two files that CAN declare it.
+    #    `mod tests;` appears in hundreds of committed files and refers to a
+    #    different tests.rs in every one; scoping to the parent module is what
+    #    turns the question from "does this word appear" into "is THIS file
+    #    declared". (#[path] can move a module and is not handled: this check
+    #    is a cheap warning, and `make check-head` is what actually answers.)
+    scope=". :!*.md :!*.txt"
+    case "$f" in
+      *.rs) d=$(dirname "$f"); scope="${d}.rs ${d}/mod.rs ${d}/lib.rs ${d}/main.rs" ;;
+    esac
+    # shellcheck disable=SC2086
+    if git -C "$repo" grep -l -E -- "$pat" HEAD -- $scope >/dev/null 2>&1; then
       add "untracked but referenced by committed code: $f"
     fi
   done < <(git -C "$repo" ls-files --others --exclude-standard 2>/dev/null | head -40)

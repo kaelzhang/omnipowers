@@ -37,7 +37,9 @@ You MUST NOT start a later task while the current task has an unresolved Critica
 
 ## Pre-Flight Plan Review (MANDATORY)
 
-Before you start Task 1, you MUST scan the whole plan once for:
+You wrote this plan in this session and ran the review its own skill requires → that review stands, and you MUST NOT repeat this scan. Start Task 1.
+
+Otherwise, before you start Task 1, you MUST scan the whole plan once for:
 
 - Tasks that contradict each other or the plan's stated global constraints.
 - Anything the plan explicitly mandates that a competent review would treat as a defect.

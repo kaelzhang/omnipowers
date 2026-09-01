@@ -22,7 +22,7 @@ description: Use when you have a written implementation plan (plan.md / a plan f
 ### Step 1: Load and Review the Plan
 
 1. You MUST read the entire plan file before taking any action.
-2. You MUST review it critically and identify every question, gap, ambiguity, or concern.
+2. You wrote this plan in this session and ran the review its own skill requires → that review stands, and you MUST NOT repeat it. Go to step 5. Otherwise you MUST review it critically and identify every question, gap, ambiguity, or concern.
 3. A concern is MATERIAL when it could change what gets built, break a step, or invalidate a verification → you MUST raise it with the user and get resolution BEFORE starting execution, and you MUST NOT begin implementation while it is unresolved.
 4. A concern is cosmetic (a typo, a stylistic preference) → you MUST note it and MUST NOT block on it.
 5. No material concern remains → you MUST create a tracked checklist of the plan's steps, one entry per step, using the host's task/todo tool if one exists, otherwise an explicit written checklist you keep updated in your responses; then proceed.
@@ -87,13 +87,14 @@ You MUST return to Step 1 (Load and Review) when:
 - The user updates the plan in response to your feedback.
 - The fundamental approach turns out to need rethinking.
 
-A revised plan MUST be re-reviewed from the top before execution resumes. You MUST NOT continue executing against a plan that has materially changed without re-reviewing it.
+You MUST review what changed and whatever the change bears on, and you MUST NOT continue executing against a materially changed plan without doing so. Re-reviewing the untouched remainder is not required.
 
 ## Red Flags — STOP if you catch yourself thinking
 
 | Thought | What to do instead |
 | --- | --- |
-| "Reviewing the whole plan first wastes time." | Read the entire plan and review it critically before any action. |
+| "Reviewing the whole plan first wastes time." | Read the entire plan before any action; review it critically unless you wrote and reviewed it this session. |
+| "I wrote this plan, but I should review it again to be safe." | Its own review already ran. Start executing. |
 | "I'll batch these steps to save time." | Execute one step, verify, then the next. |
 | "The verification probably passes — I'll mark it done." / "Running every verification slows me down." | Run the verification and read its output before marking the step done. |
 | "This step is unclear, but I think it means X." / "Asking the user about this small ambiguity is annoying." | Stop and ask the user. |
@@ -106,7 +107,7 @@ A revised plan MUST be re-reviewed from the top before execution resumes. You MU
 
 Before reporting the work complete, confirm:
 
-- [ ] I read the entire plan and reviewed it critically before starting.
+- [ ] I read the entire plan, and reviewed it critically unless I wrote and reviewed it this session.
 - [ ] I raised every concern with the user and resolved them before execution.
 - [ ] I created a tracked checklist of the plan's steps (host task/todo tool, or an explicit written checklist kept updated in my responses).
 - [ ] The work is in the host's declared isolation unit, or — nothing declared — on a dedicated branch/workspace or with explicit consent.

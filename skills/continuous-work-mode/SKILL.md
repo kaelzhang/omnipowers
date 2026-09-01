@@ -1,6 +1,6 @@
 ---
 name: continuous-work-mode
-description: Use when the user explicitly starts or ends continuous work mode — "进入连续工作模式", "退出连续工作模式", or 连续工作模式 with any verb, "continuous work mode", "keep going until everything is done, stop asking me" — you MUST install a stop-time gate that runs the checkpoint before any round can end, and while the mode is armed you MUST NOT end a round to ask whether to continue
+description: Use when the user explicitly starts or ends continuous work mode — "进入连续工作模式", "退出连续工作模式", or 连续工作模式 with any verb, "continuous work mode", "keep going until everything is done, stop asking me" — you MUST install the stop-time gate and stop ending rounds to ask whether to continue
 ---
 
 # Continuous Work Mode
