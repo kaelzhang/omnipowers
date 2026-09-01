@@ -27,6 +27,15 @@ About to state any status, or express satisfaction → MUST, in order:
 
 MUST NOT skip a step.
 
+## The Exit Code You Read Must Be the Command's
+
+- A command whose result you need MUST NOT run inside a pipeline. The shell reports the pipeline's status, not the command's, so a failed build reads as exit 0; and a reader that exits with its lines kills the producer with SIGPIPE partway through.
+- You MUST redirect the command's own output to a file, read its own exit code, then read the file:
+
+```bash
+<command> > <file> 2>&1; echo "exit: $?"
+```
+
 ## What Each Claim Requires
 
 | Claim | Proof REQUIRED | Not sufficient |
@@ -49,6 +58,7 @@ Notice any of these → MUST stop and verify:
 - about to commit, push, or open a PR without a fresh check
 - trusting a reported success instead of checking the artifacts yourself
 - relying on a partial check, or on a passing linter as proof of the build or the tests
+- reading a check's result through a pipe (`| tail`, `| grep`, `| head`)
 - "just this once", or being tired and wanting it over
 - ANY wording that implies success when the check has not been run
 

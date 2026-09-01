@@ -30,6 +30,8 @@ A returned report is not a reason to stop → it is the trigger to run this bloc
 - A shell loop that backgrounds N processes inside one call → you MUST NOT use it. The host cannot list those processes, and their completion does not re-invoke you.
 - You need the task's result → that task MUST be the tracked call itself.
 - You need only that a process stays alive — a server, a device, a daemon, anything with no result to wait for → detach it. It MUST outlive the shell that started it.
+- A dispatch the host does not list as active work cannot wake you, whatever its exit code says. A form that reports completion within seconds while its process runs on looks tracked and is not → you MUST NOT use it.
+- Choosing a background form, closing a delegated run's stdin, polling one, or ending one → read `@dispatch-mechanics.md` and apply it.
 
 ## Before You Dispatch
 
@@ -56,7 +58,7 @@ The block found an idle scope with queued work → read `@fanning-out.md` and ap
 | --- | --- |
 | "I'll read this report first, then see what else to start." | Run the Dispatch Block first. Reading comes fourth. |
 | "A loop is quicker than six separate calls." | Issue six tracked calls. A loop's processes cannot wake you. |
-| "Nothing is running, but I'm nearly done anyway." | Zero running is the condition the block exists to catch. Dispatch, then finish. |
+| "Nothing is running, but I'm nearly done anyway." | Zero running is the condition the block exists to catch. The round that lands something big is the round that ends empty. Dispatch, then finish. |
 | "I'll wait for this agent to come back." | You do not wait. Dispatch every idle scope, then read what returned. |
 | "These two tasks barely overlap." | Overlap fails the precondition. Do not parallelize them. |
 | "That directory belongs to another owner, but it's a tiny change." | Route it to its owner. Independence is not authority. |
