@@ -35,11 +35,12 @@ block_once() {
   return 0
 }
 
-BASE=""; EXPIRES=24; STARTED=""; DEFECTS=(); REPOS=("$ROOT")
+BASE=""; EXPIRES=24; STARTED=""; GOAL=""; DEFECTS=(); REPOS=("$ROOT")
 if [ -f "$SENTINEL" ]; then
   while IFS='=' read -r k v; do
     case "$k" in
       base)    BASE="$v" ;;
+      goal)    GOAL="$v" ;;
       started) STARTED="$v" ;;
       expires) EXPIRES="$v" ;;
       defects) DEFECTS+=("$v") ;;
@@ -140,17 +141,20 @@ fi
 if [ "${#FINDINGS[@]}" -eq 0 ]; then
   if [ "$MODE" = report ]; then
     echo "checkpoint: queue empty — nothing uncommitted, unpushed, unreferenced, or open."
-    [ -f "$SENTINEL" ] && echo "The mode has nothing left to enforce. The goal is delivered → disarm it: rm $SENTINEL $OWNER $MARKER"
+    [ -f "$SENTINEL" ] && echo "The mode has nothing left to enforce. Disarm it: rm $SENTINEL $OWNER $MARKER"
   fi
   exit 0
 fi
 
 report() {
+  [ -n "$GOAL" ] && echo "Mode goal: $GOAL"
   echo "Continuous work mode — the queue is not empty:"
   printf '  - %s\n' "${FINDINGS[@]}"
   echo ""
   echo "Clear what is clearable now, dispatch what can run, and end the round only"
   echo "on what genuinely needs the user. Report last, not first."
+  echo "None of this is the goal above? Name it as follow-up and disarm — findings"
+  echo "do not extend the mode."
 }
 
 if [ "$MODE" = report ]; then report; exit 0; fi

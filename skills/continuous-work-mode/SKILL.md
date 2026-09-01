@@ -27,6 +27,7 @@ A rule that must be recalled while writing a completion summary is recalled leas
 2. **Write the sentinel** at `<project-root>/.omnipowers/continuous-mode`. The gate is inert while this file is absent, so the mode is armed and disarmed by this file alone:
 
 ```
+goal=<one line: what delivers this mode, in terms you can test>
 base=<the commit the mode starts from>
 started=<current epoch seconds>
 expires=<hours before the mode goes stale>   # optional, default 24
@@ -36,7 +37,7 @@ repo=<path to another repo to watch>         # optional, repeatable
 
 `.omnipowers/` is not git-ignored → you MUST add it to `.gitignore` before writing the sentinel. A committed sentinel arms the mode for everyone who clones the project.
 
-3. **Confirm in one line** what the mode was armed for, and continue working in the same reply. You MUST NOT end the round on the confirmation.
+3. **Confirm in one line** the goal you wrote into the sentinel, and continue working in the same reply. You MUST NOT end the round on the confirmation.
 
 ## The Order
 
@@ -85,7 +86,13 @@ You MUST disarm when any of these is true:
 - the user ends the mode;
 - the work turns into an unrelated task. You MUST NOT carry an armed mode into one.
 
-The checkpoint prompts the disarm itself: it prints the removal command whenever it finds the queue empty, which is the moment disarming is correct. A disarmed gate cannot speak — the host shows nothing from a hook that lets the turn end — so the decision to remove it MUST be taken at disarm, while you are still running. You MUST NOT rely on remembering it while writing a completion summary — that is the failure this whole mode exists to remove.
+**The goal in the sentinel decides when the mode ends — never the checkpoint.** The checkpoint reports a queue; a queue is not a definition of done, and some of it is never empty in a healthy project.
+
+- The goal is delivered → you MUST disarm, in that same round, even when the checkpoint still lists findings. Name those findings in the report as follow-up.
+- The checkpoint reports something that is not the goal → it is follow-up, not a reason to keep going. You MUST NOT promote a finding into a new goal, and you MUST NOT re-arm the mode for it. Only the user sets a goal.
+- The goal turns out to be unreachable → that is a decision the user owns; surface it, and the mode ends with it.
+
+The checkpoint prints the goal above its findings on every run, and prints the removal command whenever it does find the queue empty. A disarmed gate cannot speak — the host shows nothing from a hook that lets the turn end — so removal MUST be decided while you are still running.
 
 The mode outliving its session is prevented, not merely discouraged. The gate claims the session on its first fire, and it refuses a mode that a different session armed or that has passed its `expires` life. It says which files to delete and blocks once, so a mode nobody owns costs one interruption and then clears.
 
@@ -102,6 +109,8 @@ The mode outliving its session is prevented, not merely discouraged. The gate cl
 | "The gate is complaining about a mode I never started." | It is a leftover. Ask the user, then delete the files it named. |
 | "The goal is delivered, I'll leave the mode on in case." | Disarm it. An armed mode gates the next, unrelated task. |
 | "The gate is harmless when disarmed, I'll leave it installed." | Remove it with the sentinel. Installing it again costs one step. |
+| "The checkpoint still lists things, so the mode is not done." | The goal decides. Report the rest as follow-up and disarm. |
+| "While I am in this mode I may as well fix these too." | Findings are follow-up. Only the user sets a goal. |
 | "Should I install the hook?" | They started the mode. Install it and say which file you changed. |
 
 ## Checklist
@@ -112,5 +121,5 @@ Before ending any round while the mode is armed:
 - [ ] The Dispatch Block ran before I read any report or wrote any reply.
 - [ ] Every finding is cleared, dispatched, or named in the report.
 - [ ] This round ends on delivery, a decision the user owns, or the user's stop — nothing else.
-- [ ] The mode is disarmed if its goal is delivered, the user ended it, or the task changed.
+- [ ] The mode is disarmed the moment its goal is delivered, whatever the checkpoint still lists.
 - [ ] Disarming removed the gate too — registration, script, and workbench files.
