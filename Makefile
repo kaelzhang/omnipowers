@@ -29,14 +29,14 @@ help: ## Show available targets
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
 	  | awk 'BEGIN{FS=":.*?## "}{printf "  \033[36m%-10s\033[0m %s\n", $$1, $$2}'
 
-dev: ## Analyze status, then symlink this repo's skills into Claude + Codex (FORCE=1 to re-link)
-	@FORCE='$(FORCE)' bash $(INSTALLER) dev
+dev: ## Symlink this repo's skills into the target hosts (TARGETS="claude codex", FORCE=1 to re-link)
+	@FORCE='$(FORCE)' $(if $(TARGETS),OMNIPOWERS_TARGETS='$(TARGETS)',) bash $(INSTALLER) dev
 
 status: ## Show Claude/Codex install state and which skills are linked
-	@bash $(INSTALLER) status
+	@$(if $(TARGETS),OMNIPOWERS_TARGETS='$(TARGETS)',) bash $(INSTALLER) status
 
-uninstall: ## Remove omnipowers skill symlinks from Claude + Codex
-	@bash $(INSTALLER) uninstall
+uninstall: ## Remove omnipowers skill symlinks (TARGETS="codex" for one host; default: the configured targets)
+	@bash $(INSTALLER) uninstall $(TARGETS)
 
 test: ## Run skill tests (free content checks; TEST_ARGS="--integration" also runs agent tests, costs API)
 	@bash tests/run-skill-tests.sh $(TEST_ARGS)

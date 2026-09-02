@@ -27,6 +27,28 @@ FORCE="${FORCE:-0}"
 CLAUDE_DIR="$HOME/.claude/skills"
 CODEX_DIR="$HOME/.agents/skills"
 
+# Which hosts this repo installs into. Both by default. Override with the
+# OMNIPOWERS_TARGETS environment variable, or by writing the same value into an
+# untracked .install-targets file at the repo root, e.g.
+#   echo claude > .install-targets
+# Values: claude, codex, or both separated by a space. Explicit CLI arguments
+# after the command win over either.
+DEFAULT_TARGETS="claude codex"
+if [ -n "${OMNIPOWERS_TARGETS:-}" ]; then
+  TARGETS="$OMNIPOWERS_TARGETS"
+elif [ -f "$REPO/.install-targets" ]; then
+  TARGETS="$(tr '\n' ' ' < "$REPO/.install-targets")"
+else
+  TARGETS="$DEFAULT_TARGETS"
+fi
+
+target_dir()   { case "$1" in claude) printf '%s' "$CLAUDE_DIR" ;; codex) printf '%s' "$CODEX_DIR" ;; esac; }
+target_label() { case "$1" in claude) printf 'Claude' ;; codex) printf 'Codex ' ;; esac; }
+
+for _t in $TARGETS; do
+  case "$_t" in claude|codex) ;; *) printf 'unknown target: %s (use claude and/or codex)\n' "$_t" >&2; exit 2 ;; esac
+done
+
 if [ -t 1 ]; then
   B=$'\033[1m'; G=$'\033[32m'; Y=$'\033[33m'; R=$'\033[31m'; C=$'\033[36m'; N=$'\033[0m'
 else
@@ -116,6 +138,7 @@ print_status() {
   [ "$n" -gt 0 ] || warn "no skills found under $SKILLS_DIR"
   info ""
   info "${B}Install state${N}"
+  info "  targets: $TARGETS"
   status_target "Claude Code" "$CLAUDE_DIR"
   status_target "Codex" "$CODEX_DIR"
 }
@@ -143,14 +166,13 @@ link_one() { # name dir label
 }
 
 do_install() {
-  info "${B}Installing omnipowers skills${N} (FORCE=$FORCE)"
-  prune_retired "$CLAUDE_DIR" "Claude"
-  prune_retired "$CODEX_DIR"  "Codex "
+  info "${B}Installing omnipowers skills${N} (FORCE=$FORCE, targets: $TARGETS)"
+  local t
+  for t in $TARGETS; do prune_retired "$(target_dir "$t")" "$(target_label "$t")"; done
   local any=0 name
   while IFS= read -r name; do
     any=1
-    link_one "$name" "$CLAUDE_DIR" "Claude"
-    link_one "$name" "$CODEX_DIR"  "Codex "
+    for t in $TARGETS; do link_one "$name" "$(target_dir "$t")" "$(target_label "$t")"; done
   done < <(skill_names)
   if [ "$any" != 1 ]; then err "no skills found under $SKILLS_DIR"; exit 1; fi
   info ""
@@ -160,12 +182,17 @@ do_install() {
   info "  - Codex auto-detects changes (restart Codex if one does not show)."
 }
 
-do_uninstall() {
-  info "${B}Uninstalling omnipowers skills${N}"
-  prune_retired "$CLAUDE_DIR" "Claude"
-  prune_retired "$CODEX_DIR"  "Codex "
+do_uninstall() { # [target...]
+  local sel="$*"; [ -n "$sel" ] || sel="$TARGETS"
+  local t
+  for t in $sel; do
+    case "$t" in claude|codex) ;; *) err "unknown target: $t"; exit 2 ;; esac
+  done
+  info "${B}Uninstalling omnipowers skills${N} (targets: $sel)"
+  for t in $sel; do prune_retired "$(target_dir "$t")" "$(target_label "$t")"; done
   local dir name link
-  for dir in "$CLAUDE_DIR" "$CODEX_DIR"; do
+  for t in $sel; do
+    dir="$(target_dir "$t")"
     while IFS= read -r name; do
       link="$dir/$name"
       if [ -L "$link" ] && [ "$(readlink "$link")" = "$SKILLS_DIR/$name" ]; then
@@ -180,6 +207,6 @@ do_uninstall() {
 case "${1:-status}" in
   status)    print_status ;;
   dev)       print_status; info ""; do_install ;;
-  uninstall) do_uninstall ;;
-  *) err "unknown command: ${1:-}"; info "use: status | dev | uninstall"; exit 2 ;;
+  uninstall) shift || true; do_uninstall "$@" ;;
+  *) err "unknown command: ${1:-}"; info "use: status | dev | uninstall [claude|codex]"; exit 2 ;;
 esac
