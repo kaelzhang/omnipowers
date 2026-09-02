@@ -21,8 +21,7 @@ stress-testing-a-plan ─(build intent)→ brainstorming → writing-plans
 
 ## On-ramps — something is wrong
 
-- **systematic-debugging** — any bug, crash, flaky test, build or perf problem: root cause before any fix. It governs the *investigation*.
-- **test-driven-bug-fixing** — the fix itself: a reproducing failing test before production code changes. Debugging finds the cause; this skill lands the fix.
+- **fixing-bugs** — any bug, crash, flaky test, regression, build or perf problem: reproduce it red, name the root cause, fix the cause, then sweep every other site sharing it. Investigation depth loads on demand.
 - **resolving-merge-conflicts** — an in-progress merge/rebase with conflict markers: per-hunk intent archaeology, never invent behavior.
 
 ## Design-time instruments
@@ -54,7 +53,7 @@ stress-testing-a-plan ─(build intent)→ brainstorming → writing-plans
 ## Boundary rules (the chronic confusions)
 
 - Interrogating the user's plan (they answer) → **stress-testing-a-plan**; presenting them one decision (you propose) → **confirming-with-the-user**; about to build → **brainstorming**.
-- Finding a bug's cause → **systematic-debugging**; writing the fix → **test-driven-bug-fixing**.
+- Any bug, from first symptom to verified fix → **fixing-bugs** (one skill: investigation and fix are one cycle).
 - Any code review or audit → **code-auditing** (it routes internally: checkpoint review vs standards audit).
 - Executing a plan with subagents per task → **subagent-driven-development**; parallel unrelated tasks → **keeping-work-in-flight**.
 - Counting and dispatching at a return → **keeping-work-in-flight** (always on); the user asking to stop being the scheduler → **continuous-work-mode** (installs the gate that forces the count, only when they say so).

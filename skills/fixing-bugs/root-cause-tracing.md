@@ -2,7 +2,7 @@
 
 > Normative keywords — MUST, MUST NOT, REQUIRED, SHALL, SHALL NOT, SHOULD, SHOULD NOT, MAY — are used as defined in BCP 14 (RFC 2119, RFC 8174), and only when capitalized.
 
-Load this technique during **Phase 1** of `systematic-debugging` when the failure surfaces **deep in the call stack** and it is not obvious where the bad value came from. It is the concrete method behind the Phase 1 rule "trace the bad value to its source."
+Load this technique while investigating for `fixing-bugs` when the failure surfaces **deep in the call stack** and it is not obvious where the bad value came from. It is the concrete method behind the Phase 1 rule "trace the bad value to its source."
 
 ## Core principle
 

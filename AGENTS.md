@@ -96,7 +96,7 @@ mandatory and auditable — never a soft "if you can't, skip it". Canonical shap
 > `MAY <skip> ONLY when <condition>`, gated by a `MUST` checklist + explicit user
 > permission + a durable record (e.g. a code comment).
 
-Worked example (`test-driven-bug-fixing`): the reproducing test is REQUIRED; it
+Worked example (`fixing-bugs`): the reproducing test is REQUIRED; it
 MAY be skipped ONLY when reproduction is genuinely impossible, and only after the
 agent (1) summarizes the complete reasons, (2) obtains the user's explicit
 permission, and (3) adds an explanatory comment in the relevant production code.

@@ -2,7 +2,7 @@
 
 > Normative keywords — MUST, MUST NOT, REQUIRED, SHALL, SHALL NOT, SHOULD, SHOULD NOT, MAY — are used as defined in BCP 14 (RFC 2119, RFC 8174), and only when capitalized.
 
-Load this reference during **Phase 1** of `systematic-debugging` when you must "reproduce it consistently" and no reproduction route is obvious. A feedback loop is **one command** that goes red on *this* bug, goes green once it is fixed, and runs unattended.
+Load this reference at the REPRODUCE step of `fixing-bugs` when you must "reproduce it consistently" and no reproduction route is obvious. A feedback loop is **one command** that goes red on *this* bug, goes green once it is fixed, and runs unattended.
 
 ## The menu — try routes cheapest-first
 

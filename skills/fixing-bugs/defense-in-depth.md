@@ -2,7 +2,7 @@
 
 > Normative keywords — MUST, MUST NOT, REQUIRED, SHALL, SHALL NOT, SHOULD, SHOULD NOT, MAY — are used as defined in BCP 14 (RFC 2119, RFC 8174), and only when capitalized.
 
-Load this technique in **Phase 4** of `systematic-debugging`, after you have fixed a bug caused by an invalid value, when you want that class of bug to become **structurally impossible** rather than merely fixed at one spot.
+Load this technique at the HARDEN step of `fixing-bugs`, after you have fixed a bug caused by an invalid value, when you want that class of bug to become **structurally impossible** rather than merely fixed at one spot.
 
 ## Core principle
 
