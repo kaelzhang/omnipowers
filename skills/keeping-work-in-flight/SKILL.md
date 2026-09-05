@@ -1,6 +1,6 @@
 ---
 name: keeping-work-in-flight
-description: Use at every agent or background-task return and before ending any round, and whenever 2+ separate problems could run at once (different test files, subsystems, bugs) — you MUST count what is still running, dispatch one tracked call per idle ownership scope before reading any report, and never leave work running whose completion cannot wake you
+description: Use before starting any long-running command, background job, or subagent, at every task or agent return, before ending any round, and whenever 2+ separate problems could run at once — you MUST launch work in the form the host tracks so its completion wakes you, never a backgrounded process you poll, and you MUST count what is still running before reading any report
 ---
 
 # Keeping Work In Flight
@@ -23,6 +23,16 @@ Run these four steps in order at both of these moments: an agent, subagent, or b
 4. **Now** read the reports, judge, and write.
 
 A returned report is not a reason to stop → it is the trigger to run this block again.
+
+## Launch it in the tracked form
+
+This applies to a single command as much as to a fan-out. It is decided when you start the work, not when you come back to it.
+
+- You are about to start anything that outlives the call starting it — a build, a test suite, a deploy, a long script, a CI wait, a subagent, a delegated CLI run → you MUST launch it in the form the host lists as active work, so its completion re-invokes you.
+- A tracked form exists → you MUST NOT background the work and poll it, and you MUST NOT schedule a wake-up to check on it. A poll finishes no earlier than the notification it replaces and costs a turn every time it looks.
+- You cannot say where the host lists this work as running → it is not tracked. You MUST NOT treat "it is running somewhere" as dispatched.
+- The dispatch is tracked and you then wait on it — a PID wait, a poll loop, a sleep-and-check → you MUST NOT. The wake-up is the whole point; waiting on it turns the tracked call back into a blocking one and spends the turn it freed. Launch it, then start the next thing.
+- The work is a script you wrote yourself rather than a delegated agent → the same rule applies. Tracking is about how the host sees the process, never about who authored it.
 
 ## One tracked call per scope
 
@@ -58,6 +68,11 @@ The block found an idle scope with queued work → read `@fanning-out.md` and ap
 | --- | --- |
 | "I'll read this report first, then see what else to start." | Run the Dispatch Block first. Reading comes fourth. |
 | "A loop is quicker than six separate calls." | Issue six tracked calls. A loop's processes cannot wake you. |
+| "I'll kick this build off in the background and check on it later." | Launch it in the tracked form. A check is not a wake-up. |
+| "I'll schedule a wake-up to see whether it finished." | Needing to schedule a check means it was not tracked. Relaunch it tracked. |
+| "It's one long command, not parallel work — this doesn't apply." | The form is decided per dispatch, not per fan-out. |
+| "Launched it tracked, now I'll wait on the PID until it finishes." | Then it is a blocking call again. Launch and move on. |
+| "The subagents are tracked; my own background script is different." | Your own script is a dispatch. Same form, same rule. |
 | "Nothing is running, but I'm nearly done anyway." | Zero running is the condition the block exists to catch. The round that lands something big is the round that ends empty. Dispatch, then finish. |
 | "I'll wait for this agent to come back." | You do not wait. Dispatch every idle scope, then read what returned. |
 | "These two tasks barely overlap." | Overlap fails the precondition. Do not parallelize them. |
@@ -71,6 +86,6 @@ Before ending a round, confirm:
 
 - [ ] I ran the Dispatch Block at every agent return and before ending this round.
 - [ ] Every idle ownership scope with queued work received its own tracked call.
-- [ ] No work was launched through a shell loop or any untracked background form.
+- [ ] Every dispatch — delegated or written by me — was launched in the host's tracked form; nothing was backgrounded and polled, no wake-up was scheduled to check on work, and no tracked dispatch was then waited on.
 - [ ] Every task whose result I need is itself a tracked call.
 - [ ] Work that outlives this round is on the host's continuation mechanism, or its next step is written into the host's work-state.

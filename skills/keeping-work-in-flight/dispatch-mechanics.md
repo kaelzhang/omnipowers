@@ -31,7 +31,9 @@ The tracked form carries one command, so N dispatches cost N calls. A loop that 
 
 ## Waiting
 
-The host forbids a foreground wait → poll with a bounded loop, and treat exhausting the bound as a result, not as failure to wait longer.
+Polling is the fallback for work that could not be tracked — an already-running process, something started outside this session, a resource you do not own. Work you are about to start MUST be launched in the tracked form instead; you MUST NOT poll what you could have been notified about.
+
+No tracked form covers it AND the host forbids a foreground wait → poll with a bounded loop, and treat exhausting the bound as a result, not as failure to wait longer.
 
 ```bash
 for i in $(seq 1 9); do
