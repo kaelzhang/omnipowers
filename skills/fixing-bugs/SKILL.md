@@ -39,7 +39,7 @@ REPRODUCE IT RED — NAME THE ROOT CAUSE — ONLY THEN CHANGE PRODUCTION CODE
 This step is REQUIRED. You MUST NOT skip it.
 
 - You MUST confirm the test **fails** rather than merely errors out, that it fails **the way the bug manifests**, and that it fails because of the defect — not a typo or a wrong import.
-- The test passes → it does NOT reproduce the bug; you MUST fix the test until it does.
+- The test passes → it does NOT reproduce the bug; you MUST fix the test you are writing until it does. This is the one test you may edit freely, and only until it goes red for the bug's reason.
 - The failure differs from the bug → you have NOT reproduced this bug; you MUST keep working.
 
 ## ROOT CAUSE — before any fix
@@ -61,8 +61,16 @@ This step is REQUIRED.
 
 - You MUST confirm the reproducing test now **passes**, that **all other tests still pass**, and that output is pristine — no new errors or warnings.
 - The reproducing test still fails → you MUST fix the code, not the test.
-- Other tests broke → you MUST address those side effects now.
+- Other tests broke → each states a requirement your change violated. You MUST fix the code.
 - Cleanup is part of verification: a grep for your probe tag MUST return nothing, throwaway harnesses and repro scripts MUST be deleted or promoted into real tests deliberately, and the change description MUST state the confirmed root cause in one line.
+
+## A test states a requirement
+
+Changing a test changes the requirement it states. That is the user's call, never a route to green.
+
+- A test that should be passing fails → you MUST fix the code. You MUST NOT weaken the assertion, narrow the input, delete the test, skip it, or mark it expected-to-fail.
+- The test was already red before you started → the same rule holds. An inherited failure is not permission to edit it.
+- You MAY change a test ONLY when it is demonstrably wrong — it asserts behavior the requirement contradicts — and only after you (1) quote the requirement it contradicts, (2) obtain the user's explicit approval, and (3) make that change its own commit, separate from the fix.
 
 ## SWEEP — every other site of the same root cause
 
@@ -122,6 +130,8 @@ Any of these → you MUST revert the fix, reproduce with a failing test, name th
 - The symptom is patched without locating the cause.
 - Listing fixes before tracing the data flow, or several changes at once and then running tests.
 - "Skip the test, I'll check manually."
+- "That assertion is too strict / this test is outdated — I'll adjust it." (without meeting the bar above)
+- A failing test deleted, skipped, or marked expected-to-fail to reach green.
 - A standalone "corrected" function or snippet submitted instead of a patch to the real implementation.
 - The fix is speculative, for a bug you cannot trigger, without having met the Only Exception bar.
 - "This bug is different because..."
@@ -135,6 +145,7 @@ You MUST be able to check every box before calling the bug fixed:
 - [ ] Located the root cause; fixed the cause, not the symptom
 - [ ] Made the minimal fix (no unrelated changes)
 - [ ] The reproducing test now passes; all other tests still pass; output pristine
+- [ ] No test was weakened, narrowed, skipped, or deleted to reach green
 - [ ] Probes removed and their removal verified; the change description names the root cause
 - [ ] The regression test remains in the suite
 - [ ] Swept for other sites of the same root cause, naming the searches run
