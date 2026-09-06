@@ -83,6 +83,16 @@ fi
 FINDINGS=()
 add() { FINDINGS+=("$1"); }
 
+# 0. The acceptance list is what "delivered" means. Unchecked items outrank
+#    everything else below: the mode is not done while one is open.
+UNMET=0
+if [ -f "$SENTINEL" ]; then
+  UNMET=$(grep -c '^[[:space:]]*[-*] \[ \]' "$SENTINEL" 2>/dev/null || echo 0)
+  while IFS= read -r item; do
+    [ -n "$item" ] && add "unmet: ${item#*] }"
+  done < <(grep '^[[:space:]]*[-*] \[ \]' "$SENTINEL" 2>/dev/null)
+fi
+
 # 1. Uncommitted work, per top-level module.
 for repo in "${REPOS[@]}"; do
   [ -d "$repo/.git" ] || [ -f "$repo/.git" ] || continue
@@ -174,7 +184,7 @@ fi
 if [ "${#FINDINGS[@]}" -eq 0 ]; then
   if [ "$MODE" = report ]; then
     echo "checkpoint: queue empty — nothing uncommitted, unpushed, unreferenced, or open."
-    [ -f "$SENTINEL" ] && echo "The mode has nothing left to enforce. Disarm it: rm $SENTINEL $OWNER $MARKER"
+    [ -f "$SENTINEL" ] && echo "Every acceptance item is checked. Delivered → disarm now: rm $SENTINEL $OWNER $MARKER"
   fi
   exit 0
 fi
@@ -186,8 +196,12 @@ report() {
   echo ""
   echo "Clear what is clearable now, dispatch what can run, and end the round only"
   echo "on what genuinely needs the user. Report last, not first."
-  echo "None of this is the goal above? Name it as follow-up and disarm — findings"
-  echo "do not extend the mode."
+  if [ "$UNMET" -gt 0 ]; then
+    echo "$UNMET acceptance item(s) open — the mode is not delivered."
+  else
+    echo "Every acceptance item is checked. Delivered → disarm now, and report the rest"
+    echo "as follow-up. Findings do not extend the mode."
+  fi
 }
 
 if [ "$MODE" = report ]; then report; exit 0; fi

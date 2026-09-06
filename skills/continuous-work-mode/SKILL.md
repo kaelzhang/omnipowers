@@ -27,13 +27,15 @@ A rule that must be recalled while writing a completion summary is recalled leas
 2. **Write the sentinel** at `<project-root>/.omnipowers/continuous-mode`. The gate is inert while this file is absent, so the mode is armed and disarmed by this file alone:
 
 ```
-goal=<one line: what delivers this mode, in terms you can test>
+goal=<one line: what this mode delivers>
 base=<the commit the mode starts from>
 started=<current epoch seconds>
 expires=<hours before the mode goes stale>   # optional, default 24
 defects=<path to a checklist file>           # optional, repeatable
 repo=<path to another repo to watch>         # optional, repeatable
 ```
+
+Below those, write the **acceptance list** — one `- [ ]` per line, at least one. Each item MUST be observable in the product, never a step you remember taking. You MUST write the list in one pass from what the user already stated: you MUST NOT research or design to produce it, and you MUST NOT add scope. Nothing in the request is observable → settle the delivery criteria with the user first, then arm. You MUST check items off as they land.
 
 `.omnipowers/` is not git-ignored → you MUST add it to `.gitignore` before writing the sentinel. A committed sentinel arms the mode for everyone who clones the project.
 
@@ -86,13 +88,14 @@ You MUST disarm when any of these is true:
 - the user ends the mode;
 - the work turns into an unrelated task. You MUST NOT carry an armed mode into one.
 
-**The goal in the sentinel decides when the mode ends — never the checkpoint.** The checkpoint reports a queue; a queue is not a definition of done, and some of it is never empty in a healthy project.
+**The acceptance list decides when the mode ends — never the checkpoint**, whose queue is never empty in a healthy project.
 
-- The goal is delivered → you MUST disarm, in that same round, even when the checkpoint still lists findings. Name those findings in the report as follow-up.
-- The checkpoint reports something that is not the goal → it is follow-up, not a reason to keep going. You MUST NOT promote a finding into a new goal, and you MUST NOT re-arm the mode for it. Only the user sets a goal.
-- The goal turns out to be unreachable → that is a decision the user owns; surface it, and the mode ends with it.
+- Every item checked → delivered. You MUST disarm in that same round, even when the checkpoint still lists findings; name those as follow-up.
+- Any item unchecked → not delivered, whatever else is finished.
+- A finding is not an item. You MUST NOT promote one into the list or re-arm for it; only the user adds an item.
+- An item proves unreachable → that is a decision the user owns; surface it, and the mode ends with it.
 
-The checkpoint prints the goal above its findings on every run, and prints the removal command whenever it does find the queue empty. A disarmed gate cannot speak — the host shows nothing from a hook that lets the turn end — so removal MUST be decided while you are still running.
+A disarmed gate cannot speak — the host shows nothing from a hook that lets the turn end — so removal MUST be decided while you are still running.
 
 The mode outliving its session is prevented, not merely discouraged. The gate claims the session on its first fire, and it refuses a mode that a different session armed or that has passed its `expires` life. It says which files to delete and blocks once, so a mode nobody owns costs one interruption and then clears.
 
