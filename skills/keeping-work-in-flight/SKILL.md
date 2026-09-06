@@ -22,6 +22,8 @@ Run these four steps in order at both of these moments: an agent, subagent, or b
 3. **Dispatch one tracked call per idle scope.** One scope, one call.
 4. **Now** read the reports, judge, and write.
 
+Steps 1 and 2 count work already separated into pieces. Nothing is queued → before you call that a finished round, you MUST check whether what you are about to do next splits into pieces that could run at once. Separable work left unsplit is idle capacity, not an empty queue; the independence test is in `@fanning-out.md`.
+
 A returned report is not a reason to stop → it is the trigger to run this block again.
 
 ## Launch it in the tracked form
@@ -73,6 +75,7 @@ The block found an idle scope with queued work → read `@fanning-out.md` and ap
 | "It's one long command, not parallel work — this doesn't apply." | The form is decided per dispatch, not per fan-out. |
 | "Launched it tracked, now I'll wait on the PID until it finishes." | Then it is a blocking call again. Launch and move on. |
 | "The subagents are tracked; my own background script is different." | Your own script is a dispatch. Same form, same rule. |
+| "It's quicker to just work through these one at a time." | Split first, then dispatch. Serial by default is the silent cost. |
 | "Nothing is running, but I'm nearly done anyway." | Zero running is the condition the block exists to catch. The round that lands something big is the round that ends empty. Dispatch, then finish. |
 | "I'll wait for this agent to come back." | You do not wait. Dispatch every idle scope, then read what returned. |
 | "These two tasks barely overlap." | Overlap fails the precondition. Do not parallelize them. |
@@ -85,6 +88,7 @@ The block found an idle scope with queued work → read `@fanning-out.md` and ap
 Before ending a round, confirm:
 
 - [ ] I ran the Dispatch Block at every agent return and before ending this round.
+- [ ] I checked whether the next serial stretch splits into independent pieces before treating the queue as empty.
 - [ ] Every idle ownership scope with queued work received its own tracked call.
 - [ ] Every dispatch — delegated or written by me — was launched in the host's tracked form; nothing was backgrounded and polled, no wake-up was scheduled to check on work, and no tracked dispatch was then waited on.
 - [ ] Every task whose result I need is itself a tracked call.

@@ -46,7 +46,7 @@ Below those, write the **acceptance list** — one `- [ ]` per line, at least on
 A task returns, or a round is about to end:
 
 1. Run the checkpoint — `@checkpoint.sh`, or the command the gate reports.
-2. Run the Dispatch Block of the `keeping-work-in-flight` skill. That skill owns counting and dispatching; this mode owns only that the check happens before the reply.
+2. Run the Dispatch Block of the `keeping-work-in-flight` skill against the checkpoint's findings and the acceptance items still open — including its check that the next serial stretch is not splittable. That skill owns counting, splitting, and dispatching; this mode owns only that they happen before the reply.
 3. Clear what the checkpoint found and can be cleared now.
 4. **Then** write the report.
 
