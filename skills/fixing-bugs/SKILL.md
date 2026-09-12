@@ -93,14 +93,7 @@ The suite is green:
 
 ## When the Regression Test Is Hard to Write
 
-| Friction | What to do |
-|---|---|
-| The test needs elaborate setup — the unit does too much / is too coupled | Extract helpers; consider splitting the unit. |
-| You must mock almost everything — the code depends on concretes, not interfaces | Inject the dependency instead of reaching for it. |
-| You cannot isolate the bug in a test — the responsibility is smeared across layers | Narrow the seam; test at the level the defect lives. |
-
-- Friction does not waive the Iron Law → you MUST still write the reproducing test, and the fix may need a small structural change to make that test writable.
-- No correct seam exists (the only way to test would couple to internals) → you MUST record the seam gap and raise it with the user after the fix lands, and you MUST NOT skip the test or test through internals.
+The test needs elaborate setup, near-total mocking, or you cannot isolate the bug at one seam → read `@hard-to-test.md` and apply it. Friction does not waive the Iron Law.
 
 ## The Only Exception — when you cannot reproduce it
 
