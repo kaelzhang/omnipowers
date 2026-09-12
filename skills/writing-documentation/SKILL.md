@@ -115,10 +115,9 @@ The redundancy, dead path, or structural defect you find lives outside what you 
 ## Where Documentation Lives
 
 - A document describing an existing directory, package, or module SHOULD live in that directory. The host project deliberately centralizes its documentation → follow what it already does.
-- A new durable documentation set with no obvious home is a **design-docs** artifact. Resolve its location in this order, stopping at the first that applies: (1) a location the user states in this session; (2) the host project's `Omnipowers` declaration — a section by that name in the host's `AGENTS.md` / `CLAUDE.md`, or in a document that file points to — using its `design-docs` row; (3) where the host already keeps durable documentation, when that is unambiguous; (4) the fallback `docs/`. Resolving to 3 or 4 MUST be confirmed with the user before the first write; resolving to 1 or 2 MUST NOT ask.
+- A new durable documentation set with no obvious home is a `design-docs` artifact: resolve its location per `using-omnipowers`, fallback `docs/`.
 - The entrypoint's **filename** is the host's convention, not this skill's: use the file the host's readers already open — commonly `README.md` for a directory, and the host's own contributor/agent entrypoint file for agent-facing sets. You MUST NOT introduce a second entrypoint filename alongside one the host already uses.
 - Documentation that is the host's own **standards** — its review checklists, coding rules, the criteria it holds work to — is maintained by the host. You MUST NOT restructure it on your own initiative; apply this skill there only on the user's explicit direction.
-- The host declares a write-authority model → you MUST obtain authorization through it rather than writing into space it governs.
 
 ## Red Flags — STOP
 

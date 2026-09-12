@@ -33,7 +33,7 @@ You MUST NOT start a later task while the current task has an unresolved Critica
 
 - You MUST NOT pause to check in with the user between tasks or ask "should I continue?"; execute every task in the plan without stopping.
 - Only three conditions permit stopping: a blocker you cannot resolve; a genuine ambiguity or plan contradiction that prevents correct progress; all tasks complete.
-- Between steps you SHOULD narrate at most one short line; unsolicited progress summaries between tasks waste the user's time, and the ledger and the review records carry the detail.
+- Between tasks you SHOULD narrate at most one short line; the ledger and the review records carry the detail, and the `brainstorming` skill's rule on what may be asked applies.
 
 ## Pre-Flight Plan Review (MANDATORY)
 
@@ -194,7 +194,7 @@ You MUST track progress in a ledger file, not only in todos.
   `Task N: complete (commits <base7>..<head7>, review clean)`.
 - After any compaction or resume you MUST trust the ledger and `git log` over your own recollection.
 - `git clean -fdx` destroyed the ledger → you MUST recover the state from `git log` before dispatching anything.
-- The ledger is a cache, not the project's record of progress. The host keeps its own work-state document — its `Omnipowers` declaration names it under `work-state`, or the project plainly records progress, blockers, and the next action somewhere → you MUST update that document as each task completes, and it is authoritative if the two ever disagree.
+- The ledger is a cache, not the project's record of progress. The host's `work-state` document, located per `using-omnipowers`, is the project's record of progress → you MUST update it as each task completes, and it is authoritative if the two ever disagree.
 
 ## Implementer Prompt Template — `@implementer-prompt.md`
 

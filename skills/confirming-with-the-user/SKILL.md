@@ -41,7 +41,6 @@ Confirm the *ends*; decide the *means* yourself.
 - **The work plan, or the order of work** — devise it with best practice; do not ask the user to sequence or approve it.
 - **Routine execution mechanics** — file layout, naming, which library call, how to structure a test, refactor steps.
 - **Anything you can verify yourself** — answerable by reading the code, the docs, or running a command → investigate instead of asking.
-- **Permission to proceed on already-approved work** — goal and approach set → work continuously to completion; only a blocker listed above interrupts.
 - **A decision already made** — do not re-open or re-confirm it.
 - **A trivial, reversible choice with an obvious default** — take the default, state it in passing, move on.
 

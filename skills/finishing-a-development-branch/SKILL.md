@@ -27,7 +27,7 @@ You MUST execute these phases in order. You MUST NOT resolve the option before t
 
 ### Phase 1 — Verify Tests (REQUIRED gate)
 
-- Before resolving the option → you MUST run the project's own test command and read its output in this session.
+- Before resolving the option → the project's own test command MUST have passed on this exact tree in this session, under the `verification-before-completion` rule; it has not → run it and read its output.
 - The suite fails → you MUST stop, you MUST NOT proceed to Phase 2, and you MUST report:
 
 ```
@@ -129,7 +129,7 @@ git rev-parse --abbrev-ref --symbolic-full-name @{u} >/dev/null 2>&1 && git pull
 git merge <feature-branch>
 ```
 
-- Re-run the project's test command on the merged result. It fails → STOP; you MUST NOT delete the branch or the worktree.
+- The merged tree differs from the tested one → re-run the project's test command on it. It fails → STOP; you MUST NOT delete the branch or the worktree.
 - The merge conflicts → you MUST resolve it via the `resolving-merge-conflicts` skill (per-hunk, by intent). You MUST NOT `git merge --abort` and report failure — an abort is the user's decision, not an escape from difficulty.
 - The merge succeeded AND tests on the merged result passed → clean up the worktree (Phase 6) first, then delete the branch. You MUST NOT delete the branch before removing the worktree that references it.
 

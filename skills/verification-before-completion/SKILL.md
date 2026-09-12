@@ -1,6 +1,6 @@
 ---
 name: verification-before-completion
-description: Use when about to claim work is complete, fixed, passing, or ready — or before committing, pushing, or opening a PR — you MUST run the verification and read its output before making any success claim; evidence before assertions, always
+description: Use once per session, the first time you are about to claim work is complete, fixed, passing, or ready, or to commit, push, or open a PR; it then governs every later claim — you MUST run the verification and read its output before any success claim; evidence before assertions, always
 ---
 
 # Verification Before Completion
@@ -21,7 +21,8 @@ NO COMPLETION CLAIM WITHOUT FRESH VERIFICATION EVIDENCE
 About to state any status, or express satisfaction → MUST, in order:
 
 1. **Identify** the command or check that would prove the claim.
-2. **Run** it fresh and to completion — never cut short, never a remembered one. Its scope is the claim's: a commit's coherence takes the smallest sufficient check, "tests pass" takes the suite. One run is evidence for every claim made from it while nothing changes.
+2. **Run** it to completion — never cut short, never a remembered one. Its scope is the claim's: a commit's coherence takes the smallest sufficient check, "tests pass" takes the suite.
+   **A result stands until a file it covered changes.** The same check has passed on this exact tree in this session → that run is the evidence, whichever skill or phase now asks for it; you MUST NOT re-run it for the asking. A fast-forward merge leaves the tree unchanged; a merge commit does not.
 3. **Read** the full output: the exit code and the actual pass/fail counts.
 4. **Compare** the output to the claim. Output confirms the claim → state the claim WITH the evidence. Output does not confirm it → state the actual status with the evidence.
 

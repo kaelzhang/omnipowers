@@ -1,6 +1,6 @@
 ---
 name: using-omnipowers
-description: Use at the start of any task or conversation — establishes how omnipowers skills work; you MUST check for and invoke any applicable skill before responding
+description: Use once, at the start of a conversation — establishes how omnipowers skills work; you MUST check for and invoke any applicable skill before responding
 ---
 
 > Normative keywords — MUST, MUST NOT, REQUIRED, SHOULD, SHOULD NOT, MAY — are used as defined in BCP 14 (RFC 2119, RFC 8174), and only when capitalized.
@@ -26,6 +26,19 @@ Before you respond or act, you MUST check whether a skill governs what you are a
 - A skill carries a checklist → run it as a self-check before the claim it guards, and you MUST NOT report the work done while an item fails. It is not a task list: you MUST NOT copy it into the host's task tool or into your reply.
 - Two skills both look applicable → read `@skill-map.md`.
 - You notice yourself reasoning toward invoking a skill you have not matched, or toward skipping one you have → read `@rationalizing.md`.
+
+## Where an artifact goes
+
+Every file a skill writes has one of five roles — `design-docs`, `work-state`, `records`, `scratch`, `standards`. The skill names the role and a fallback path; the host decides the location. Resolve it in this order, stopping at the first that applies:
+
+1. a location the user states in this session;
+2. the host's `Omnipowers` declaration — a section by that name in the host's `AGENTS.md` / `CLAUDE.md`, or in a document that file points to — using the row for that role;
+3. where the host already keeps documents of that role, when that is unambiguous;
+4. the skill's fallback.
+
+- Resolved to 3 or 4 → confirm once, before the first write of that role in that project; the answer governs from then on. Resolved to 1 or 2 → you MUST NOT ask.
+- The declaration's `write-authority`, `vcs`, `isolation`, and `continuation` rows bind every skill over its own defaults; a skill names the row it obeys, and it is read here.
+- You MUST create missing parent directories.
 
 ## Instruction priority
 

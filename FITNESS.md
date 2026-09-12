@@ -40,6 +40,11 @@ serially**. Narrow it with `SKILLS=a,b` and `PHASE=triggers|compliance`.
    `wc -w`.
 4. **Model-version sensitivity** — re-run (2) after each model upgrade before
    trusting last quarter's verdict.
+5. **Throughput on the reference tasks** — for one small feature and one bug fix,
+   count the bytes of skill text loaded, the test-suite runs, the documents
+   written, and the user questions asked before the work lands. Any increase
+   in a round MUST be justified by a measured delta in (2); otherwise it is
+   reverted.
 
 ## Decision rules
 

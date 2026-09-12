@@ -37,6 +37,17 @@ same process every time, not produce the same result every time. A divergent
 skill (brainstorming, prototyping) must predictably *diverge* — over-constraining
 its output defeats it as surely as under-constraining its process.
 
+### Throughput is a requirement
+
+Every obligation is paid on every invocation, by an agent whose job is to ship code. An obligation that does not change the outcome of an ordinary task slows the agent for nothing, and that is a defect of the same rank as a missing rule.
+
+- A rule demands a run, a read, a write, or a review → it MUST accept one already made on the same input in this session. The owner of that acceptance is `verification-before-completion`; other skills point at it.
+- A rule fires per action (per commit, per return, per task) → its cost MUST be proportional to the action. A per-action rule that always costs the same as the largest case is a defect.
+- A skill produces a document → it MUST say when the work is too small for one, and what carries the record instead.
+- A description MUST NOT instruct re-invocation at each recurring moment. A skill loads once per session and governs from then on; `using-omnipowers` states this once.
+- A checklist is a self-check before a claim. It is not a task list and is not reported.
+- Heavy material loads on a condition that is false on the ordinary task. A pointer whose condition is true every time is inline content with extra steps.
+
 ### Classify every normative statement before writing it
 
 - **MANDATORY** → `MUST` / `MUST NOT` / `REQUIRED` / `SHALL` / `SHALL NOT`. Use
@@ -175,8 +186,9 @@ produces as exactly one of these and MUST NOT invent a sixth:
 | `scratch` | throwaway: debug harnesses, captured diffs, resume caches | deleted when the work ends |
 | `standards` | the source of the project's own criteria (review checklist, coding standards) | maintained by the host, never by a skill |
 
-**Resolving a location.** Before writing any artifact a skill MUST resolve its
-location in this order, stopping at the first that applies:
+**Resolving a location.** The resolution ladder below is stated once, at
+runtime, in `using-omnipowers`. A skill names only its artifact's role and its
+fallback path, and points at that skill for the rest. The ladder:
 
 1. a location the user states in this session;
 2. the host's `Omnipowers` declaration — a section by that name in the host's
@@ -250,10 +262,11 @@ review structurally cannot.
   skill for rules written before it, in the same change. A rule that predates the
   mechanism does not know it exists and will keep asking a question the mechanism
   already answers.
-- **A rule appears in more than one place** — two sections of one skill, or two
-  skills — → you MUST change every statement of it in the same change. Left
-  unsynced, the later statement wins and the earlier change silently does not
-  take effect.
+- **A requirement is stated in two skills** → it is a defect. Every requirement
+  has exactly one owning skill; another skill that depends on it names the owner
+  and adds nothing. Two statements drift, the later wins, and the earlier change
+  silently does not take effect. Within one skill, a rule restated in a second
+  section MUST be changed with the first.
 - **A rule fires at a fixed moment** — task start, round end, before a commit — →
   you MUST read it together with every other rule that fires at that moment, as
   the agent will meet them as one instruction. Check that they can all be
@@ -289,11 +302,12 @@ For each statement in a skill:
 - [ ] Self-contained: carries the BCP 14 note; no reference outside this repo.
 - [ ] Progressive disclosure: every-invocation discipline stays inline; situational or heavy reference (>~100 lines, or used in a minority of runs) is a same-directory supporting file reached by a conditional `@`-pointer.
 - [ ] Portable at runtime: works in any host project; no dependency on this repo's tooling; all state stays inside the host project.
-- [ ] No hardcoded home: every artifact declares one of the five roles and resolves its location through the host declaration, with the skill's own path stated only as the fallback.
+- [ ] No hardcoded home: every artifact names one of the five roles and its fallback, and resolves the rest through `using-omnipowers`; the ladder is not restated.
+- [ ] Throughput: every run/read/write/review demand accepts a prior result on the same input; per-action cost is proportional; a document has a too-small case; heavy material is behind a condition that is false on the ordinary task.
 - [ ] Policy deferred: any commit form, branch/isolation assumption, or write into host-owned space yields to a declared `vcs` / `isolation` / `write-authority` axis.
 
 For the change as a whole:
 
 - [ ] A mechanism the collection defers to was added or changed → every skill predating it was swept in this change.
-- [ ] Every other statement of a rule you changed was changed with it.
+- [ ] The requirement you added or changed is stated in exactly one skill; every other skill that needs it names that owner.
 - [ ] A rule firing at a fixed moment was read against the others firing at that moment: all satisfiable together, and none forbids the moment from arriving.

@@ -59,7 +59,7 @@ A design question that reasoning and research cannot settle MAY be answered with
 
 ## Record the Goal
 
-The goal and its delivery criteria are settled → write them where the host keeps durable design documents: (1) a location the user states in this session; (2) the host's `Omnipowers` declaration — a section by that name in its `AGENTS.md` / `CLAUDE.md`, or in a document that file points to — its `design-docs` row; (3) where the host already keeps design documents, when unambiguous; (4) the fallback `docs/design/YYYY-MM-DD-<topic>.md`. Resolving to 3 or 4 → confirm the location once, before the project's first such write; resolving to 1 or 2 → MUST NOT ask.
+The goal and its delivery criteria are settled → write them as a `design-docs` artifact, located per `using-omnipowers`, fallback `docs/design/YYYY-MM-DD-<topic>.md`.
 
 Write it only when the goal took settling with the user, or the work outlives this round. A goal you could state unaided for work that lands this round → the commit message is its record, and you MUST NOT create a document for it.
 

@@ -43,7 +43,7 @@ The plan instructs you to apply a particular technique, follow another procedure
 
 Every step is complete and every verification has passed:
 
-1. You MUST run the project's full verification — tests, type checks, linters, build, whatever the project defines as its completeness gate — and read the output.
+1. The project's full verification — tests, type checks, linters, build, whatever it defines as its completeness gate — MUST have passed on the final tree; a run already made on that tree stands (`verification-before-completion`), otherwise run it and read the output.
 2. You MUST NOT claim the work is complete until that verification has passed on real, observed output.
 3. The final verification passes → you MUST integrate the branch by invoking the `finishing-a-development-branch` skill (verify tests, present the merge / PR / keep / discard options, execute the user's choice, clean up only what you created). That skill is not installed → run the host project's branch-completion process directly: full suite green, working tree clean, then merge or open the PR as the project requires.
 4. Report completion with the evidence: which steps were executed and the result of the final verification.
@@ -51,16 +51,12 @@ Every step is complete and every verification has passed:
 ## Continuous Execution
 
 - The plan and its goal are clear → you MUST execute in continuous work mode: run every step through to completion without pausing to check in.
-- Step 1 is done and execution has begun → you MUST NOT ask "should I continue?", request permission to proceed, or stop to deliver an unsolicited progress summary between steps.
-- Apply best practice to decide what to do next and how to do it, rather than asking the user to sequence or approve the mechanics.
-- Between steps you SHOULD narrate at most one short line.
+- Between steps you MUST NOT ask anything the `brainstorming` skill forbids asking — how, when, or whether to proceed — and MUST NOT stop for an unsolicited progress summary. You SHOULD narrate at most one short line.
 - A genuine blocker (see "When to Stop and Ask for Help") is the only permitted reason to stop before every step is complete → you MUST surface it with the `confirming-with-the-user` skill (plain-language options + your recommendation), get the decision, then resume continuous execution.
 
 ## Isolation
 
-- The host declares an `isolation` unit → the work MUST happen in that unit, and you MUST NOT ask consent to use it; the host has already answered. A declared shared-checkout model means writing on the mainline IS the declared unit.
-- Nothing is declared and you are about to write on `main` or `master` → you MUST obtain the user's explicit consent, or put the work in a dedicated branch or workspace first.
-- Ensuring that workspace exists is the `using-git-worktrees` skill's job. This skill requires only that the work be in one before any code is written.
+Before any code is written the work MUST be in the host's isolation unit. The `using-git-worktrees` skill resolves that unit, including whether anyone needs asking, and creates it; this skill adds nothing to its rules.
 
 ## When to Stop and Ask for Help
 
@@ -99,7 +95,7 @@ You MUST review what changed and whatever the change bears on, and you MUST NOT 
 | "The verification probably passes — I'll mark it done." / "Running every verification slows me down." | Run the verification and read its output before marking the step done. |
 | "This step is unclear, but I think it means X." / "Asking the user about this small ambiguity is annoying." | Stop and ask the user. |
 | "The plan says X, but Y is better — I'll do Y." / "I understand the intent, so the exact steps don't matter." | Raise the concern with the user; do not silently substitute. |
-| "I'll start on main, just this once." | The host declares the unit → use it. Nothing declared → get consent or create a branch first. |
+| "I'll start on main, just this once." | `using-git-worktrees` resolves the unit. Be in it first. |
 | "The plan didn't cover this case, so I'll invent a step." / "I can fix the plan's gap myself without asking." | Stop and ask; the plan needs updating. |
 | "Tests fail, but it's probably flaky — I'll move on." / "It's faster to keep going than to stop at this blocker." | Stop, investigate, and ask if you cannot resolve it. |
 
@@ -110,7 +106,7 @@ Before reporting the work complete, confirm:
 - [ ] I read the entire plan, and reviewed it critically unless I wrote and reviewed it this session.
 - [ ] I raised every concern with the user and resolved them before execution.
 - [ ] I created a tracked checklist of the plan's steps (host task/todo tool, or an explicit written checklist kept updated in my responses).
-- [ ] The work is in the host's declared isolation unit, or — nothing declared — on a dedicated branch/workspace or with explicit consent.
+- [ ] The work is in the isolation unit `using-git-worktrees` resolved.
 - [ ] I executed every step in order, exactly as written.
 - [ ] I ran and read the output of every step's verification before marking it done.
 - [ ] I worked in continuous mode — no permission-to-proceed pauses between steps; I stopped only for a real blocker, surfaced via confirming-with-the-user.

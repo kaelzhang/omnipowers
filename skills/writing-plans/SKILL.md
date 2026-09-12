@@ -26,14 +26,7 @@ description: Use when asked to plan, break down, or decompose a multi-step featu
 
 ## Where to Save the Plan
 
-A plan is **work state**. You MUST resolve its location in this order, stopping at the first that applies:
-
-1. a location the user states in this session;
-2. the host's `Omnipowers` declaration — a section by that name in the host's `AGENTS.md` / `CLAUDE.md`, or in a document that file points to — using its `work-state` row;
-3. where the host already records the plan for work in progress, when that is unambiguous;
-4. the fallback `.omnipowers/plans/YYYY-MM-DD-<feature-name>.md`.
-
-- Resolved to 3 or 4 → you MUST confirm with the user before the project's first plan is written.
+A plan is a `work-state` artifact: resolve its location per `using-omnipowers`, fallback `.omnipowers/plans/YYYY-MM-DD-<feature-name>.md`.
 - Resolved to 1 or 2 → you MUST NOT ask.
 - Parent directories missing → you MUST create them.
 - The host already keeps a plan document → you MUST write into it rather than beside it.

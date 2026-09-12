@@ -29,7 +29,7 @@ You begin feature work that needs isolation, or you are about to execute an impl
 
 ## The Host's Isolation Rules (REQUIRED before Step 0)
 
-You MUST read the host project's `Omnipowers` declaration — a section by that name in the host's `AGENTS.md` / `CLAUDE.md`, or in a document that file points to — and honor its `isolation` row where it has one:
+You MUST read the host's `isolation` row — the declaration is located per `using-omnipowers` — and honor it where it has one:
 
 - **The declared unit governs.** The host names its isolation unit (a worktree, a branch, or a shared checkout isolated only by explicit commit paths) → you MUST use that unit and MUST NOT substitute another.
 - **Declared mainline-only paths MUST stay on the mainline.** A host MAY name paths that MUST NOT be copied into an isolated workspace. Such paths are declared → you MUST read and write them in the mainline checkout, never in the worktree.
@@ -133,7 +133,7 @@ You MUST use the project's actual toolchain when it differs from these patterns 
 
 ## Step 3 — Verify a Clean Baseline (REQUIRED)
 
-You MUST run the project's test suite to confirm the workspace starts clean. The commands `npm test`, `cargo test`, `pytest`, and `go test ./...` are illustrative only; the project declares its own test command (a Makefile target, a lockfile-pinned runner, a configured script) → you MUST use that instead.
+The workspace MUST start from a clean baseline: the suite already passed on this commit in this session → that is the baseline; otherwise run the project's test suite. The commands `npm test`, `cargo test`, `pytest`, and `go test ./...` are illustrative only; the project declares its own test command (a Makefile target, a lockfile-pinned runner, a configured script) → you MUST use that instead.
 
 - **Tests fail** → you MUST report the failures and ask the user whether to proceed or investigate first. You MUST NOT start implementation on an unexplained failing baseline without that explicit decision.
 - **Tests pass** → you MUST report ready, stating the worktree's full path, the passing test count with zero failures, and the feature you are about to implement.

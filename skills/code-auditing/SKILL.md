@@ -61,12 +61,7 @@ HEAD_SHA=$(git rev-parse HEAD)
 
 ### 1b. Standards audit
 
-**First, find the criteria.** You MUST resolve where this project's audit criteria come from, stopping at the first that applies:
-
-1. a source the user names in this session;
-2. the host's `Omnipowers` declaration — a section by that name in the host's `AGENTS.md` / `CLAUDE.md`, or in a document that file points to — using its `standards` row;
-3. a standards set the project already publishes and expects its contributors to follow (a standards directory, a contributor guide, a documented coding standard);
-4. none of the above — the project publishes no criteria.
+**First, find the criteria.** They are the host's `standards` artifact: resolve their source per `using-omnipowers`, where step 3 is a standards set the project already publishes and expects contributors to follow, and step 4 means the project publishes none.
 
 **1, 2, or 3 applies → you MUST audit against that source, and you MUST NOT generate a checklist of your own.** The published source leaves one of the dimensions below uncovered → you MAY audit that dimension against the portable baseline in `@code-smells.md`, and you MUST say so in the report.
 
@@ -108,17 +103,13 @@ Scale the record to the audit:
 
 Either way, the report MUST contain: the target and scope (including the reviewed range for a checkpoint review), the requirements or checklist reference, every verdict, all findings (each with `file:line` + severity + fix), and the overall assessment.
 
-An audit report is a **record**. You MUST resolve where it goes in this order, stopping at the first that applies: (1) a location the user states in this session; (2) the host's `Omnipowers` declaration — a section by that name in the host's `AGENTS.md` / `CLAUDE.md`, or in a document that file points to — using its `records` row; (3) where the host already keeps review write-ups, when that is unambiguous; (4) the fallback:
+An audit report is a `records` artifact: resolve its location per `using-omnipowers`, fallback:
 
 ```
 <project-root>/.omnipowers/reviews/<YYYY-MM-DD>-<HHMMSS>-<review-target>.md
 ```
 
 `<review-target>` is a short kebab-case slug of what was reviewed.
-
-- Resolved to 3 or 4 → you MUST confirm the location with the user before the project's first audit is recorded.
-- Resolved to 1 or 2 → you MUST NOT ask.
-- Parent directories missing → you MUST create them.
 
 ## Phase 4 — Report and act
 

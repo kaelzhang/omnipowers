@@ -69,7 +69,7 @@ You MUST scan the material for secrets, credentials, API keys, tokens, connectio
 
 ## Location
 
-- A handoff is **work state**. You MUST resolve where it goes in this order, stopping at the first that applies: (1) a location the user states in this session; (2) the host's `Omnipowers` declaration — a section by that name in the host's `AGENTS.md` / `CLAUDE.md`, or in a document that file points to — using its `work-state` row; (3) where the host already records progress, blockers, and the next action for work in progress, when that is unambiguous; (4) the fallback `.omnipowers/handoffs/YYYY-MM-DD-<purpose>.md`, with `<purpose>` a short kebab-case slug. Resolving to 3 or 4 MUST be confirmed with the user before the project's first handoff is written; resolving to 1 or 2 MUST NOT ask. You MUST create any missing parent directories.
+- A handoff is a `work-state` artifact: resolve its location per `using-omnipowers`, fallback `.omnipowers/handoffs/YYYY-MM-DD-<purpose>.md`, `<purpose>` a short kebab-case slug.
 - The host already keeps live work-state documents → you MUST update them and write the handoff as a pointer to them: the current state, blockers, and next action stated once, in the host's documents, and referenced here.
 - The host declares an `isolation` unit and the work is sitting inside one (a worktree, a branch checkout) → you MUST return the work to the mainline before handing off, merged or pushed as the host requires.
 - After writing, you MUST report the file's path to the user.

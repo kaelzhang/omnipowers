@@ -72,7 +72,7 @@ While the mode is armed, exactly three things end a round:
 
 You MUST NOT end a round for any other reason. In particular:
 
-- You MUST NOT ask whether to continue. Work that is not blocked and needs no ruling is dispatched now, not offered.
+- You MUST NOT end a round to ask anything the `brainstorming` skill forbids asking. Work that is not blocked and needs no ruling is dispatched now, not offered.
 - You MUST NOT end a round on a progress summary, a completed task, or a delivered report.
 - You are writing "I have finished X, next I could do Y, would you like me to continue?" → Y is unblocked and needs no ruling → you MUST do Y instead of sending that sentence.
 

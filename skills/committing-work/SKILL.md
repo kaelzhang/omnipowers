@@ -1,6 +1,6 @@
 ---
 name: committing-work
-description: Use when about to stage or commit anything — "commit this", "git commit", "save my work", "commit and push", splitting edits into commits, or ending a round with a dirty tree — you MUST form each commit deliberately and end the round committed and pushed.
+description: Use once per session, the first time you are about to stage or commit anything — "commit this", "git commit", "save my work", "commit and push", or ending a round with a dirty tree; it then governs every commit — you MUST form each commit deliberately and end the round committed and pushed.
 ---
 
 # Committing Work
@@ -68,7 +68,7 @@ Before every commit you MUST:
 
 ## 4. Prove the commit coheres
 
-Before each commit you MUST run the smallest check that proves this commit's contents hold together, and you MUST read its output. Running it and reading it is the `verification-before-completion` gate; one run satisfies both when you commit and claim in the same step. Smallest means smallest *sufficient*, scaled to what changed and to the host's tooling:
+Before each commit you MUST run the smallest check that proves this commit's contents hold together, and you MUST read its output. Running it and reading it is the `verification-before-completion` gate, and its rule on when a result stands applies. Smallest means smallest *sufficient*, scaled to what changed and to the host's tooling:
 
 - prose or docs only — a whitespace/conflict-marker check (e.g. `git diff --check`) and a read of the result;
 - code — the relevant tests, plus whatever type, lint, or build check the host requires for that area;
@@ -114,7 +114,7 @@ Follow the convention resolved above. Whatever its form:
 - An unmet quality bar — coverage below the host's target, a benchmark not yet met, a follow-up case not handled, a known blocker — MUST NOT be used as a reason to withhold the round's commits. Commit the coherent checkpoint and record the gap:
   1. in the commit body, stating plainly what is not yet met;
   2. at the code site, as a comment where the gap lives, when the gap has a site;
-  3. in the host's `work-state` — the location its `Omnipowers` declaration names, otherwise wherever it already keeps plans and progress, otherwise `.omnipowers/`. Resolved by the host's existing habit or by the fallback rather than from the user or a declaration → confirm it with the user before the first such write in that project.
+  3. in the host's `work-state` document, located per `using-omnipowers`, fallback `.omnipowers/`.
 - Committing a checkpoint is never a claim that the work is complete. A blocker remains → commit first, then report the blocker and ask for direction. You MUST NOT present blocked work as finished.
 - Once the round's commits exist you MUST push the current branch to its remote, and you MUST NOT ask whether to push or offer it as an option:
   - Push the **current branch** to its configured upstream. It has none → set one to the default remote under the same branch name (`git push -u origin <branch>`). You MUST NOT push a branch other than the one you worked on.

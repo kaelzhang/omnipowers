@@ -1,6 +1,6 @@
 ---
 name: keeping-work-in-flight
-description: Use before starting any long-running command, background job, or subagent, at every task or agent return, before ending any round, and whenever 2+ separate problems could run at once — you MUST launch work in the form the host tracks so its completion wakes you, never a backgrounded process you poll, and you MUST count what is still running before reading any report
+description: Use once per session, the first time you start a long-running command, background job, or subagent, or a task returns; it then governs every return and round end — you MUST launch work in the form the host tracks so its completion wakes you, never a backgrounded process you poll, and MUST count what is still running before reading any report
 ---
 
 # Keeping Work In Flight

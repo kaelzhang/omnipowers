@@ -40,8 +40,7 @@ Any gate fails → no ADR.
 ## Artifact Locations
 
 - Both artifacts are durable design documents for humans, not skill state → they MUST NOT be placed under `.omnipowers/` or any other agent-only directory.
-- You MUST resolve their location in this order, stopping at the first that applies: (1) a location the user states in this session; (2) the host's `Omnipowers` declaration — a section by that name in the host's `AGENTS.md` / `CLAUDE.md`, or in a document that file points to — using its `design-docs` row; (3) where the host already keeps design documents, when that is unambiguous; (4) the fallback — the glossary at the **host project root** as `CONTEXT.md`, ADRs in `docs/adr/`.
-- Resolving to 3 or 4 MUST be confirmed with the user before the **first creation** of either artifact in a host project; resolving to 1 or 2 MUST NOT ask. A location the user states governs permanently for that project.
+- Both are `design-docs`: resolve their location per `using-omnipowers`; fallback — the glossary at the **host project root** as `CONTEXT.md`, ADRs in `docs/adr/`.
 
 ## Lazy Creation
 
