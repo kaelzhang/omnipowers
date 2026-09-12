@@ -15,7 +15,7 @@ REPRODUCE IT RED — NAME THE ROOT CAUSE — ONLY THEN CHANGE PRODUCTION CODE
 
 - You MUST NOT modify production code until a test reproduces the bug and you have watched it fail for the bug's reason.
 - You MUST NOT propose or apply a fix until you can state the root cause. "It's probably X" is not a root cause.
-- The fix was written first → you MUST revert it, reproduce the bug with a failing test, then re-apply it. You MUST NOT keep it staged or commented out "for reference" while you write the test.
+- The fix was written first → you MUST take it out of the working tree (a stash is the normal way), reproduce the bug with a failing test against the unfixed code, then put the fix back and watch the test pass. You MUST NOT leave it in place, staged, or commented out while you write the test.
 - You MUST NOT write a test that passes against the buggy code and call it a regression test.
 
 ## When to Use
@@ -27,7 +27,7 @@ REPRODUCE IT RED — NAME THE ROOT CAUSE — ONLY THEN CHANGE PRODUCTION CODE
 ## REPRODUCE — a failing test that triggers the bug
 
 - You MUST produce a command, test, or script that runs red for the bug's reason, and you MUST have observed its red output before going further.
-- You MUST reconstruct the triggering input, data, and state in the fixture, assert the *correct* behavior — the exact value, error message, status, or count the report names — and you MUST NOT assert the buggy behavior or a vague "it works". Each test MUST cover one defect and MUST be named after the bug.
+- You MUST reconstruct the triggering input, data, and state in the fixture, assert the *correct* behavior — the exact value, error message, status, or count the report names — and you MUST NOT assert the buggy behavior or a vague "it works". Each test MUST cover one defect and MUST be named after the behavior it pins, readable as a sentence.
 - You MUST run it through the host project's own test runner, following that project's test-file conventions.
 - No obvious loop is available → read `@building-a-feedback-loop.md` and apply it.
 - The problem is a **performance** problem → the loop MUST be a measurement with a captured baseline, not logs.
@@ -70,7 +70,8 @@ Changing a test changes the requirement it states. That is the user's call, neve
 
 - A test that should be passing fails → you MUST fix the code. You MUST NOT weaken the assertion, narrow the input, delete the test, skip it, or mark it expected-to-fail.
 - The test was already red before you started → the same rule holds. An inherited failure is not permission to edit it.
-- You MAY change a test ONLY when it is demonstrably wrong — it asserts behavior the requirement contradicts — and only after you (1) quote the requirement it contradicts, (2) obtain the user's explicit approval, and (3) make that change its own commit, separate from the fix.
+- A test asserts the behavior the user's report or task says is wrong → it encoded the bug. Change it in the same commit as the fix, and name it and the requirement it now states in the commit message.
+- A test looks wrong to you but contradicts nothing the user has stated → you MUST NOT change it until you have quoted the requirement you believe it violates and obtained the user's explicit approval.
 
 ## SWEEP — every other site of the same root cause
 
@@ -89,7 +90,7 @@ The suite is green:
 - You SHOULD add tests for adjacent cases of the same defect (boundary, null, zero, concurrent) wherever they could plausibly fail.
 - The bug was an invalid value reaching a dangerous operation → you SHOULD guard each layer that value crosses, so the class becomes structurally impossible; read `@defense-in-depth.md` and apply it.
 - You MAY clean up the fix (names, duplication). You MUST keep every test green; refactoring MUST NOT change behavior.
-- **Ask the prevention question — after the fix lands.** What would have made this bug impossible or caught it earlier? A cheap hardening (a validation, an assertion, a lint rule) MAY follow as its own change; an architectural answer goes to the user via the `confirming-with-the-user` skill. You MUST NOT bundle the prevention work into the fix itself.
+- **The bug reached users or production, has recurred, or the sweep found it at two or more sites → ask the prevention question after the fix lands.** What would have made it impossible or caught it earlier? A cheap hardening (a validation, an assertion, a lint rule) MAY follow as its own change; an architectural answer goes to the user via the `confirming-with-the-user` skill. You MUST NOT bundle the prevention work into the fix itself. An ordinary bug gets its regression test and its sweep, and no more.
 
 ## When the Regression Test Is Hard to Write
 
@@ -118,17 +119,12 @@ Any of these → you MUST revert the fix, reproduce with a failing test, name th
 
 - "Quick fix now, investigate later" / "Just try changing X and see" / "It's probably X, let me fix that"
 - "I don't fully understand but this might work"
-- The fix was written before a reproducing test, or the regression test was added after the fix.
-- The "regression test" passes against the buggy code.
-- The symptom is patched without locating the cause.
-- Listing fixes before tracing the data flow, or several changes at once and then running tests.
-- "Skip the test, I'll check manually."
-- "That assertion is too strict / this test is outdated — I'll adjust it." (without meeting the bar above)
-- A failing test deleted, skipped, or marked expected-to-fail to reach green.
-- A standalone "corrected" function or snippet submitted instead of a patch to the real implementation.
-- The fix is speculative, for a bug you cannot trigger, without having met the Only Exception bar.
+- "It's one line, I'll skip the test and check by hand"
+- "I reproduced it manually, that counts"
+- "That assertion is too strict / this test is outdated — I'll adjust it"
+- "Here's the corrected function" — a snippet in place of a patch to the real implementation
 - "This bug is different because..."
-- One more fix attempt after 3 failed fixes, or each fix exposing a new problem elsewhere → read `@investigating.md` and question the architecture.
+- "One more try" after three failed fixes, or each fix exposing a new problem elsewhere → read `@investigating.md` and question the architecture.
 
 ## Verification Checklist
 

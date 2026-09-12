@@ -159,27 +159,7 @@ Gate — before creating mock responses:
 - Creating a mock → understand the ENTIRE structure; partial mocks fail silently when code depends on omitted fields.
 - Uncertain → include all documented fields.
 
-## Anti-Pattern 5: Fixing Without a Reproducing Test
-
-Match:
-```
-✅ Fix applied
-❌ No test reproduces the bug
-"Should be fixed now"
-```
-
-Can't claim fixed without a test that failed first.
-
-Fix:
-```
-Reproduce-first cycle:
-1. Write a test that reproduces the bug (it fails)
-2. Fix the root cause to make it pass
-3. Harden adjacent cases
-4. THEN claim fixed
-```
-
-## Anti-Pattern 6: Tautological Tests
+## Anti-Pattern 5: Tautological Tests
 
 Match — the assertion recomputes the expected value the way the code does, so the test passes even when the formula itself is the bug:
 ```typescript
@@ -198,7 +178,7 @@ test('computes total', () => {
 });
 ```
 
-## Anti-Pattern 7: Implementation-Coupled Tests
+## Anti-Pattern 6: Implementation-Coupled Tests
 
 Match: a test that verifies HOW the code works instead of WHAT it does — asserting call counts, spying on internal collaborators, reading private state, or verifying through a side channel (e.g. checking `createUser` worked by inspecting the database row instead of calling `getUser`).
 
@@ -233,7 +213,6 @@ Mock setup exceeds the test logic → you SHOULD prefer an integration test with
 | Test-only methods in production | Move to test utilities |
 | Mock without understanding | Understand dependencies first, mock minimally |
 | Incomplete mocks | Mirror real API completely |
-| Fix without a reproducing test | Reproduce the bug first |
 | Tautological test | Expected value from an independent source of truth |
 | Implementation-coupled test | Verify through the public interface |
 | Over-complex mocks | Consider integration tests |

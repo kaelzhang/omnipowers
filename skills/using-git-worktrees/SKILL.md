@@ -133,7 +133,7 @@ You MUST use the project's actual toolchain when it differs from these patterns 
 
 ## Step 3 — Verify a Clean Baseline (REQUIRED)
 
-The workspace MUST start from a clean baseline: the suite already passed on this commit in this session → that is the baseline; otherwise run the project's test suite. The commands `npm test`, `cargo test`, `pytest`, and `go test ./...` are illustrative only; the project declares its own test command (a Makefile target, a lockfile-pinned runner, a configured script) → you MUST use that instead.
+The workspace MUST start from a clean baseline: the suite already passed on this exact commit — in this session, or in the project's CI — → that is the baseline, and you MUST cite it; otherwise run the project's test suite. The commands `npm test`, `cargo test`, `pytest`, and `go test ./...` are illustrative only; the project declares its own test command (a Makefile target, a lockfile-pinned runner, a configured script) → you MUST use that instead.
 
 - **Tests fail** → you MUST report the failures and ask the user whether to proceed or investigate first. You MUST NOT start implementation on an unexplained failing baseline without that explicit decision.
 - **Tests pass** → you MUST report ready, stating the worktree's full path, the passing test count with zero failures, and the feature you are about to implement.
