@@ -21,7 +21,7 @@ NO COMPLETION CLAIM WITHOUT FRESH VERIFICATION EVIDENCE
 About to state any status, or express satisfaction → MUST, in order:
 
 1. **Identify** the command or check that would prove the claim.
-2. **Run** it fresh and in full — never a partial run, never a remembered one.
+2. **Run** it fresh and to completion — never cut short, never a remembered one. Its scope is the claim's: a commit's coherence takes the smallest sufficient check, "tests pass" takes the suite. One run is evidence for every claim made from it while nothing changes.
 3. **Read** the full output: the exit code and the actual pass/fail counts.
 4. **Compare** the output to the claim. Output confirms the claim → state the claim WITH the evidence. Output does not confirm it → state the actual status with the evidence.
 

@@ -23,11 +23,11 @@ NO INTEGRATION WITHOUT GREEN TESTS, AND NO DESTRUCTIVE ACTION WITHOUT EXPLICIT U
 
 ## The Process
 
-You MUST execute these phases in order. You MUST NOT present options before tests pass and the workspace is detected.
+You MUST execute these phases in order. You MUST NOT resolve the option before tests pass and the workspace is detected.
 
 ### Phase 1 — Verify Tests (REQUIRED gate)
 
-- Before presenting any option → you MUST run the project's own test command and read its output in this session.
+- Before resolving the option → you MUST run the project's own test command and read its output in this session.
 - The suite fails → you MUST stop, you MUST NOT proceed to Phase 2, and you MUST report:
 
 ```
@@ -81,9 +81,10 @@ BASE=$(git rev-parse --verify --quiet main >/dev/null && echo main \
 
 `BASE` comes back empty, the base is ambiguous, or the project uses a different integration branch → you MUST confirm the base with the user rather than guessing.
 
-### Phase 4 — Present the Options (let the user choose)
+### Phase 4 — Resolve the Option
 
-You MUST present the options as a concise, numbered menu and then wait for the user's choice. You MUST NOT add commentary, recommend one option as "what I'll do", or execute any option before the user selects it. The host project's integration policy is unknown → you MUST NOT assume one; the user's choice is authoritative.
+- The host's `Omnipowers` declaration — its `isolation` or `vcs` row — or the user in this session states how finished work returns to the mainline → that is the choice. You MUST execute it in Phase 5 and MUST NOT present a menu.
+- Neither says → you MUST present the options as a concise, numbered menu with your recommendation, as the `confirming-with-the-user` skill requires, and wait for the user's choice. You MUST NOT execute an option before they select it, and MUST NOT assume a policy the host has not stated.
 
 **Full menu — plain repo or named-branch worktree. Present exactly these 4 options:**
 
@@ -112,7 +113,7 @@ Which option?
 
 ### Phase 5 — Execute the Chosen Option
 
-You MUST execute only the option the user selected, using the steps below. You MUST NOT force-push without the user's explicit request.
+You MUST execute only the option resolved in Phase 4 — declared, stated, or chosen — using the steps below. You MUST NOT force-push without the user's explicit request.
 
 #### Option: Merge Locally
 
@@ -215,7 +216,7 @@ You MUST stop and correct course if you catch yourself thinking any of these:
 |---|---|
 | "Tests probably pass — I ran them earlier." / "The merge looks fine, skip the re-test." | Run the suite now, on the current result, and read the output. |
 | "There's no test command, so there are no tests." | State the missing-suite finding and get the user's acknowledgement first. |
-| "It's a single-maintainer repo, just merge it." / "The user clearly wants a PR." | Present the menu and wait for the user's choice. |
+| "It's a single-maintainer repo, just merge it." / "The user clearly wants a PR." | A guess is not a declaration. Nothing declared or stated → present the menu and wait. |
 | "`yes` is good enough to discard." | Wait for the exact typed word `discard`. |
 | "I'll force-push to tidy this up." | Do not force-push without the user's explicit request. |
 | "I'll clean up the worktree now to be tidy." | Clean up only for Merge and Discard; PR and Keep preserve the worktree. |
@@ -231,7 +232,7 @@ You MUST be able to check every applicable box before calling the work finished:
 - [ ] Ran the test suite this session and it passed (or the no-test state was acknowledged by the user).
 - [ ] Detected the workspace shape and chose the matching menu.
 - [ ] Confirmed the base branch.
-- [ ] Presented the exact menu (4 options, or 3 for detached HEAD) and waited for the user's choice.
+- [ ] The option came from the host's declaration or the user's words; otherwise the exact menu was presented and I waited for their choice.
 - [ ] Executed only the chosen option.
 - [ ] For Merge: verified the merge and re-ran tests on the result before any deletion.
 - [ ] For Discard: obtained the typed `discard` confirmation.

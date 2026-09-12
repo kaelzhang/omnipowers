@@ -59,7 +59,7 @@ This step is REQUIRED. You MUST NOT skip it.
 
 This step is REQUIRED.
 
-- You MUST confirm the reproducing test now **passes**, that **all other tests still pass**, and that output is pristine — no new errors or warnings.
+- You MUST confirm the reproducing test now **passes** and the tests covering the changed area still pass, with pristine output — no new errors or warnings. The full suite runs once, before the completion claim, after SWEEP and HARDEN have finished changing code.
 - The reproducing test still fails → you MUST fix the code, not the test.
 - Other tests broke → each states a requirement your change violated. You MUST fix the code.
 - Cleanup is part of verification: a grep for your probe tag MUST return nothing, throwaway harnesses and repro scripts MUST be deleted or promoted into real tests deliberately, and the change description MUST state the confirmed root cause in one line.
@@ -117,7 +117,7 @@ The reproducing test is REQUIRED. You MAY skip it ONLY when reproduction is genu
 
 ## Testing Anti-Patterns
 
-When you write the regression test or add mocks, you MUST read `@testing-anti-patterns.md` and avoid testing mock behavior instead of real behavior, adding test-only methods to production classes, and mocking without understanding dependencies.
+The regression test needs a mock, stub, fake, or test-only hook → you MUST read `@testing-anti-patterns.md` and avoid testing mock behavior instead of real behavior, adding test-only methods to production classes, and mocking without understanding dependencies.
 
 ## Red Flags — STOP
 
@@ -144,7 +144,7 @@ You MUST be able to check every box before calling the bug fixed:
 - [ ] Reproduced the bug with a test that failed first, the way the bug manifests
 - [ ] Located the root cause; fixed the cause, not the symptom
 - [ ] Made the minimal fix (no unrelated changes)
-- [ ] The reproducing test now passes; all other tests still pass; output pristine
+- [ ] The reproducing test passes; the full suite passed once, after the last code change; output pristine
 - [ ] No test was weakened, narrowed, skipped, or deleted to reach green
 - [ ] Probes removed and their removal verified; the change description names the root cause
 - [ ] The regression test remains in the suite

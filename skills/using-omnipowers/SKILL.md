@@ -21,8 +21,9 @@ Before you respond or act, you MUST check whether a skill governs what you are a
 - You MUST NOT soften a rule, skip a step, or treat a `MUST` as a suggestion.
 - You MUST NOT invent an exception. Where a skill states one (`MAY … ONLY when …`), you MUST satisfy every condition it lists.
 - The host offers a skill-invocation mechanism → you MUST use it. Reading a `SKILL.md` does not activate the skill.
+- The skill is already in this context → it is in force. You MUST NOT invoke it again at each trigger; apply it.
 - Immediately after invoking a skill → announce `Using <skill> to <purpose>`.
-- A skill carries a checklist → you MUST track every item to completion, and MUST NOT report the work done while any item is unchecked.
+- A skill carries a checklist → run it as a self-check before the claim it guards, and you MUST NOT report the work done while an item fails. It is not a task list: you MUST NOT copy it into the host's task tool or into your reply.
 - Two skills both look applicable → read `@skill-map.md`.
 - You notice yourself reasoning toward invoking a skill you have not matched, or toward skipping one you have → read `@rationalizing.md`.
 

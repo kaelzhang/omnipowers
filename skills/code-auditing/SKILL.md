@@ -19,12 +19,13 @@ Everything this skill creates MUST live inside the audited project, in the locat
 
 You MUST use this skill when:
 
-- a discrete task in a plan, a major feature, or a complex bug fix is complete;
+- a plan, a major feature, or a complex bug fix is complete;
 - work is about to be merged, opened as a pull request, released, handed over, depended on, or taken into a refactor;
 - you are asked to audit or assess a codebase, a PR, a diff, or a commit range;
 - you are stuck and a fresh perspective would help.
 
 - An ordinary commit on your own branch → not a review trigger.
+- One task inside a plan → not a review trigger. The skill executing the plan verifies each task; this skill reviews the finished plan.
 - Work committed onto a branch you will review as a range → review it then, once, against the whole range.
 - A review is warranted → you MUST NOT skip or shallow it because the change "is simple," "is small," or "obviously works." Only the absence of work about to advance lifts the review; size never does.
 
