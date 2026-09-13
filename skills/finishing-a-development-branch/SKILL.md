@@ -113,7 +113,7 @@ Which option?
 
 ### Phase 5 — Execute the Chosen Option
 
-You MUST execute only the option resolved in Phase 4 — declared, stated, or chosen — using the steps below. You MUST NOT force-push without the user's explicit request.
+You MUST execute only the option resolved in Phase 4 — declared, stated, or chosen — using the steps below. History integrity — force-pushes, rewriting published commits — is the `committing-work` skill's rule and applies here.
 
 #### Option: Merge Locally
 
@@ -157,7 +157,7 @@ Keeping branch <name>. Worktree preserved at <path> (if any).
 ```
 
 - You MUST NOT describe kept work as done or delivered.
-- The work is later handed to another agent or session → you MUST return it to the mainline first.
+- The work is later handed to another agent or session → the `using-git-worktrees` rule on returning to the mainline before a handoff applies.
 
 #### Option: Discard (REQUIRED confirmation gate)
 
@@ -214,11 +214,11 @@ You MUST stop and correct course if you catch yourself thinking any of these:
 
 | Thought | What to do instead |
 |---|---|
-| "Tests probably pass — I ran them earlier." / "The merge looks fine, skip the re-test." | Run the suite now, on the current result, and read the output. |
+| "Tests probably pass — I ran them earlier." / "The merge looks fine, skip the re-test." | A run on this exact tree stands; anything else → run it now and read the output. |
 | "There's no test command, so there are no tests." | State the missing-suite finding and get the user's acknowledgement first. |
 | "It's a single-maintainer repo, just merge it." / "The user clearly wants a PR." | A guess is not a declaration. Nothing declared or stated → present the menu and wait. |
 | "`yes` is good enough to discard." | Wait for the exact typed word `discard`. |
-| "I'll force-push to tidy this up." | Do not force-push without the user's explicit request. |
+| "I'll force-push to tidy this up." | `committing-work` governs history integrity. |
 | "I'll clean up the worktree now to be tidy." | Clean up only for Merge and Discard; PR and Keep preserve the worktree. |
 | "The merge is done — I'll remove the worktree now." | Confirm the merge succeeded and its tests passed first. |
 | "I'm inside the worktree; `git worktree remove` will sort it out." | `cd` to the main checkout first; removal fails from inside the worktree being removed. |

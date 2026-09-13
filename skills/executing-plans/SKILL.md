@@ -33,9 +33,8 @@ You MUST work the steps strictly in the order the plan defines them. For each st
 
 1. Mark it in progress.
 2. Follow the step exactly as written. You MUST NOT merge, reorder, or shortcut steps.
-3. Run the verification the step specifies. You MUST NOT skip a verification, and you MUST NOT mark a step done on the basis of an unrun or unread verification.
-4. Read the verification's actual output to confirm it passed. It failed → treat it as a blocker (see "When to Stop and Ask for Help").
-5. Mark the step completed only after its verification has passed.
+3. Run the verification the step specifies; whether it counts as passed is the `verification-before-completion` rule. You MUST NOT skip it. It failed → treat it as a blocker (see "When to Stop and Ask for Help").
+4. Mark the step completed only after its verification has passed.
 
 The plan instructs you to apply a particular technique, follow another procedure, or invoke a specific capability at a step → you MUST do so at that step rather than substituting your own approach.
 

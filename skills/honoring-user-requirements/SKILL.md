@@ -42,7 +42,7 @@ The ledger is a `work-state` artifact: resolve its location per `using-omnipower
 
 You disagree with a requirement, or see a better way → the `confirming-with-the-user` skill governs how you raise it, that you raise it once, and that their answer is the decision. You MUST record the appeal and the answer under the entry.
 
-- The user confirms the requirement → it is no longer arguable. You MUST carry it out exactly as stated: not an improved version, not the part you agree with, not a version that drifts back toward your proposal later in the work.
+- The user confirms the requirement → mark the entry confirmed. That it is then carried out in full and never reintroduced is the `confirming-with-the-user` rule; this ledger adds that the verification below is made against the entry's exact words.
 - The user changes it → the entry changes to their new words, and the old words are struck, not deleted.
 
 ## Verification

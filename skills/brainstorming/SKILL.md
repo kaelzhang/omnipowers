@@ -27,7 +27,7 @@ These four, and nothing else. Each is the user's to decide and yours to surface.
 3. **A serious risk.** The work as asked would break an existing contract, lose data, be hard to reverse, or carry a cost the user has not seen. You MUST name the risk, its consequence, and your recommendation.
 4. **A disagreement with the request.** You verified something in the project that contradicts what was asked — the capability already exists, the stated assumption does not hold, a materially better path exists. You MUST state what you verified and where, and your alternative.
 
-You MUST present each through the `confirming-with-the-user` skill: plain language, options, each option's impact, your recommendation. You MUST object once; the user's answer settles it.
+You MUST present each through the `confirming-with-the-user` skill; it governs the form, that you object once, and that the user's answer settles it.
 
 ## What You MUST NOT Ask
 
@@ -36,6 +36,7 @@ You MUST present each through the `confirming-with-the-user` skill: plain langua
 - **Permission to proceed** on a goal already settled.
 - **Anything you can determine yourself.** Read the code, the docs, the configuration, the history. Investigate; do not interrogate.
 - **A decision already made.**
+- **A trivial, reversible choice with an obvious default.** Take the default and state it in passing.
 
 Two or more of these questions in a row → you are asking the user to do your job.
 

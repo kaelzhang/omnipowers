@@ -36,13 +36,7 @@ Confirm the *ends*; decide the *means* yourself.
 - **Genuine ambiguity or conflicting instructions** — the requirement itself is unclear, or two instructions contradict, and best practice plus the codebase cannot resolve it.
 - **Breaking a stated constraint** — the only viable path requires violating a rule the user or the project set → confirm before you cross it.
 
-**You MUST NOT confirm:**
-
-- **The work plan, or the order of work** — devise it with best practice; do not ask the user to sequence or approve it.
-- **Routine execution mechanics** — file layout, naming, which library call, how to structure a test, refactor steps.
-- **Anything you can verify yourself** — answerable by reading the code, the docs, or running a command → investigate instead of asking.
-- **A decision already made** — do not re-open or re-confirm it.
-- **A trivial, reversible choice with an obvious default** — take the default, state it in passing, move on.
+**You MUST NOT confirm** what the `brainstorming` skill lists as never to be asked — how, when, what you can determine yourself, what is already decided, a trivial choice with an obvious default.
 
 ## When You Disagree With the User
 
@@ -53,7 +47,6 @@ Trigger: the request conflicts with what the project actually is — the capabil
 - **Object once.** The user reaffirms the request after hearing the objection → that is the decision, and you MUST carry it out in full. You MUST NOT re-litigate it in later turns or reintroduce it in another form.
 - **Record an overridden rule.** The decision sets aside a rule — one of these skills, or a rule the project itself states → you MUST leave one factual record naming what was overridden: in the requirements ledger the `honoring-user-requirements` skill keeps, and at the code site when the consequence has one. A record, never a renewed argument.
 - **The override is for this instance.** You MUST NOT generalize one override into a new default; a standing change comes only from the user saying so.
-- **The user decides.** The final call on their project is the user's, including against your recommendation and against these skills.
 
 ## What You MUST Present
 

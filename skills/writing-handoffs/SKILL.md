@@ -71,7 +71,7 @@ You MUST scan the material for secrets, credentials, API keys, tokens, connectio
 
 - A handoff is a `work-state` artifact: resolve its location per `using-omnipowers`, fallback `.omnipowers/handoffs/YYYY-MM-DD-<purpose>.md`, `<purpose>` a short kebab-case slug.
 - The host already keeps live work-state documents → you MUST update them and write the handoff as a pointer to them: the current state, blockers, and next action stated once, in the host's documents, and referenced here.
-- The host declares an `isolation` unit and the work is sitting inside one (a worktree, a branch checkout) → you MUST return the work to the mainline before handing off, merged or pushed as the host requires.
+- The work sits in an isolated workspace → the `using-git-worktrees` rule on returning to the mainline before a handoff applies; the handoff is written after that return.
 - After writing, you MUST report the file's path to the user.
 
 ## Writing Rules

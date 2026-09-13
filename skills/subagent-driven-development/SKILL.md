@@ -31,13 +31,11 @@ You MUST NOT start a later task while the current task has an unresolved Critica
 
 ## Continuous Execution
 
-- You MUST NOT pause to check in with the user between tasks or ask "should I continue?"; execute every task in the plan without stopping.
-- Only three conditions permit stopping: a blocker you cannot resolve; a genuine ambiguity or plan contradiction that prevents correct progress; all tasks complete.
-- Between tasks you SHOULD narrate at most one short line; the ledger and the review records carry the detail, and the `brainstorming` skill's rule on what may be asked applies.
+- The `executing-plans` skill's rules on continuous execution and on when to stop apply between tasks unchanged; this skill adds only that the ledger and the review records carry the detail, so narration stays to one short line.
 
 ## Pre-Flight Plan Review (MANDATORY)
 
-You wrote this plan in this session and ran the review its own skill requires → that review stands, and you MUST NOT repeat this scan. Start Task 1.
+Whether a plan you wrote this session is reviewed again is decided by `executing-plans` Step 1; its answer governs this scan too.
 
 Otherwise, before you start Task 1, you MUST scan the whole plan once for:
 
@@ -224,7 +222,7 @@ git merge-base <base-branch> HEAD   # = MERGE_BASE (the commit the branch starte
 - Direct it to evaluate the whole change for cross-task integration, contract consistency, and any defect that only emerges across tasks, and to triage which Minors must be fixed before merge.
 - Use the same review contract as `@task-reviewer-prompt.md`, with the merge-base range as the diff and "merge review" rather than "task-scoped gate" as the scope.
 - It returns findings → you MUST resolve them per the Fix Dispatch Rules (one fix worker, complete list) and re-review before the branch is considered done.
-- The final review is clean → finish the development branch per the host project's branch-completion process: run the full test suite, ensure the working tree is clean, then merge or open the PR as the project requires.
+- The final review is clean → finish the development branch with the `finishing-a-development-branch` skill; it is not installed → the host project's own branch-completion process.
 
 ## Red Flags — STOP
 
