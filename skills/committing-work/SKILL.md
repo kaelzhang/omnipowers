@@ -104,6 +104,7 @@ Follow the convention resolved above. Whatever its form:
 - Commit messages MUST NOT credit a model, assistant, agent, CLI, harness, or runtime configuration — `Co-Authored-By:` naming a model or tool, `Generated-by:`, or any variant.
 - You MUST NOT add yourself, your model name, your tool name, or your configuration to a commit message.
 - Your harness appends such a trailer by default → you MUST remove it before committing.
+- This rule is enforced by a hook that refuses the commit. It is not yet installed in this project → install it before your first commit here (`@host-convention.md`).
 - Such a trailer is already written and the commit is **not yet published** → you MUST amend it away.
 - Trailers crediting *people* — a human co-author, reviewer, or reporter — are the host's convention to require or forbid, and are unaffected by this rule.
 
@@ -164,6 +165,6 @@ You MUST be able to check every box:
 - [ ] The commit names its paths via pathspec (or is the one exception, with its checklist done)
 - [ ] The subject names what changed; a body covers gap, solution, and verification where the change is non-obvious
 - [ ] Breaking changes are marked
-- [ ] No model, agent, or tool attribution trailer
+- [ ] No model, agent, or tool attribution trailer; the attribution gate is installed, or the host cannot host one and the report says so
 - [ ] At the end of the round, the branch is pushed — and what landed was reported
 - [ ] Nothing already published is being rewritten
