@@ -8,6 +8,7 @@ A collection of skills that improve coding effectiveness for AI coding agents.
 | --- | --- |
 | [using-omnipowers](skills/using-omnipowers/SKILL.md) | Starting any task or conversation — how omnipowers skills work; check for and invoke any applicable skill before responding |
 | [fixing-bugs](skills/fixing-bugs/SKILL.md) | Any bug, crash, test failure, regression, or unexpected behavior — you MUST reproduce it red and name the root cause before changing production code |
+| [honoring-user-requirements](skills/honoring-user-requirements/SKILL.md) | Every requirement the user states — you MUST record it as stated the moment it is said, verify it with evidence at each checkpoint, and carry it out exactly once confirmed |
 | [verification-before-completion](skills/verification-before-completion/SKILL.md) | About to claim work is complete/fixed/passing — you MUST run the verification and read its output before any success claim |
 | [code-auditing](skills/code-auditing/SKILL.md) | Work about to advance — a merge, PR, release, or handover — or any review you are asked for: a checkpoint review or a standards audit; evidence for every finding, Critical/Important fixed before proceeding. An ordinary commit is not a review trigger |
 | [brainstorming](skills/brainstorming/SKILL.md) | Before building — state the goal and its delivery criteria in one line, or settle them with the user first, together with any blocker, serious risk, or disagreement. How and when to build is the agent's, by best practice |
