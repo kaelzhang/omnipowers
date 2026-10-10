@@ -1,6 +1,6 @@
 ---
 name: confirming-with-the-user
-description: Use whenever a decision or sign-off is on the table — you need the user's approval (a design, plan, findings, a trade-off), they ask you to review or decide something with them, or you disagree with what they asked for — you MUST present plain-language options with impacts and your recommendation, one decision at a time
+description: Use whenever a decision or sign-off is on the table — you need the user's approval (a design, plan, findings, a trade-off), they ask you to review or decide something with them or to rule on it ("裁定"), or you disagree with what they asked for — you MUST present plain-language options with impacts and your recommendation, one decision at a time
 ---
 
 # Confirming With the User
