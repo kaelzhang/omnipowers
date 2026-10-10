@@ -1,6 +1,6 @@
 ---
 name: writing-skills
-description: Use when creating, editing, writing, hardening, or verifying any skill (a SKILL.md) before deployment, when tuning a skill's description so it triggers/fires reliably, or when a skill keeps getting rationalized around — you MUST develop it test-first, watching an agent fail without it before you write a word
+description: Use when creating, editing, writing, hardening, verifying, or cutting down any skill (a SKILL.md) — "大砍", "精简" — before deployment, when tuning a skill's description so it triggers/fires reliably, or when a skill keeps getting rationalized around — you MUST develop it test-first, watching an agent fail without it before you write a word
 ---
 
 # Writing Skills

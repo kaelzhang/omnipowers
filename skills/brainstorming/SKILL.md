@@ -1,6 +1,6 @@
 ---
 name: brainstorming
-description: "Use before building anything — a feature, a behavior change, scaffolding, a refactor — you MUST state the goal and its delivery criteria in one line before writing code, and settle with the user only that, an unresolvable blocker, a serious risk, or a disagreement. How and when to build is yours."
+description: "Use before building anything — a feature, a behavior change, scaffolding, a refactor — you MUST state the goal and its delivery criteria (「终极目标」「交付标准」) in one line before writing code, and settle with the user only that, an unresolvable blocker, a serious risk, or a disagreement. How and when to build is yours."
 ---
 
 # Brainstorming

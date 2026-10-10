@@ -1,6 +1,6 @@
 ---
 name: honoring-user-requirements
-description: Use once per session, at the first instruction the user gives; it then governs every requirement they state — you MUST write each one into the requirements ledger the moment it is stated, verify every open entry at each task return and before any completion claim, and carry out a confirmed requirement exactly as stated
+description: Use once per session, at the first instruction the user gives, or when they ask that their requirements be recorded, appealed, or carried out exactly ("落档", "申诉", "绝对执行"); it then governs every requirement they state — you MUST write each one into the requirements ledger the moment it is stated, verify every open entry at each task return and before any completion claim, and carry out a confirmed requirement exactly as stated
 ---
 
 # Honoring User Requirements

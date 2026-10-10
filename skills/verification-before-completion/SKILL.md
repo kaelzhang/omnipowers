@@ -1,6 +1,6 @@
 ---
 name: verification-before-completion
-description: Use once per session, the first time you are about to claim work is complete, fixed, passing, or ready, or to commit, push, or open a PR; it then governs every later claim — you MUST run the verification and read its output before any success claim; evidence before assertions, always
+description: Use once per session, the first time you are about to claim work is complete, fixed, passing, or ready, or to commit, push, or open a PR, or when asked to verify or measure something yourself ("实测", "验证"); it then governs every later claim — you MUST run the verification and read its output before any success claim; evidence before assertions, always
 ---
 
 # Verification Before Completion

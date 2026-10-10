@@ -1,6 +1,6 @@
 ---
 name: committing-work
-description: Use once per session, the first time you are about to stage or commit anything — "commit this", "git commit", "save my work", "commit and push", or ending a round with a dirty tree; it then governs every commit — you MUST form each commit deliberately and end the round committed and pushed.
+description: Use once per session, the first time you are about to stage or commit anything — "commit this", "git commit", "save my work", "commit and push", "提交", "推送", or ending a round with a dirty tree; it then governs every commit — you MUST form each commit deliberately and end the round committed and pushed.
 ---
 
 # Committing Work

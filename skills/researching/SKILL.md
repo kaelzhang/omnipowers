@@ -1,6 +1,6 @@
 ---
 name: researching
-description: Use when asked to research, investigate, or look something up — how X works, which library to pick, the current state of Y, docs or API facts to gather — you MUST trace every claim to the primary source that owns it and deliver the findings as a cited Markdown file
+description: Use when asked to research, investigate, or look something up — how X works, which library to pick, the current state of Y, docs or API facts to gather, current authoritative practice ("调研", "权威实践") — you MUST trace every claim to the primary source that owns it and deliver the findings as a cited Markdown file
 ---
 
 # Researching

@@ -1,6 +1,6 @@
 ---
 name: fixing-bugs
-description: Use when encountering or fixing any bug, crash, exception, test failure (including flaky/intermittent), regression, wrong output, build or performance problem, or other unexpected behavior — you MUST reproduce it red and name the root cause before you change production code
+description: Use when encountering or fixing any bug, crash, exception, test failure (including flaky/intermittent), regression, wrong output, build or performance problem, or other unexpected behavior — "修 bug", "回归测试", "排查" — you MUST reproduce it red and name the root cause before you change production code
 ---
 
 # Fixing Bugs
