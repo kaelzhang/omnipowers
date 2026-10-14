@@ -66,7 +66,7 @@ Before every commit you MUST:
 - You introduce something that produces such artifacts → its ignore rule MUST land in the same commit or earlier.
 - Which paths the host ignores is the host's convention: extend its existing ignore file rather than inventing a parallel one.
 - A code file in this commit, first added to the repository on or after 2026-01-01, exceeds 1000 lines → you MUST split it by responsibility before committing. A file added by this commit counts as added now; an existing file's first commit is `git log --diff-filter=A -- <file>`.
-- A documentation file (Markdown, docs) in this commit, first added on or after 2026-01-01, exceeds 2000 lines → you MUST split it by topic before committing.
+- A documentation file (Markdown, docs) in this commit exceeds 2000 lines → you MUST split it by topic before committing.
 - These file types MAY exceed both limits, and you SHOULD NOT split them for length: data files (JSON, YAML, CSV, TOML data), configuration files, lockfiles, generated code and generated artifacts, vendored third-party code, test fixtures, snapshots and golden files, database migrations, and static lookup tables.
 
 ## 4. Prove the commit coheres
@@ -163,7 +163,7 @@ You MUST be able to check every box:
 - [ ] Every path was staged explicitly; no bulk-stage command, no hunk staging
 - [ ] `git status --short` read, and every entry accounted for
 - [ ] The diff read in full; no secrets; nothing edited since reading it
-- [ ] No code file added since 2026-01-01 exceeds 1000 lines, and no such documentation file exceeds 2000
+- [ ] No code file added since 2026-01-01 exceeds 1000 lines, and no documentation file exceeds 2000
 - [ ] The smallest check that proves coherence was run, and its output read
 - [ ] The commit names its paths via pathspec (or is the one exception, with its checklist done)
 - [ ] The subject names what changed; a body covers gap, solution, and verification where the change is non-obvious
