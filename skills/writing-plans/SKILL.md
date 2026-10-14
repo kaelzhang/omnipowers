@@ -40,9 +40,9 @@ The spec covers multiple independent subsystems → you MUST split it into separ
 Before defining any task, you MUST map out which files will be created or modified and what each is responsible for. Decomposition decisions are locked in here.
 
 - Each file MUST have one clear responsibility, with well-defined boundaries and interfaces.
-- You SHOULD prefer smaller, focused **code** files over large ones that do too much. Line count is a **smell, not a hard cap**: past a few hundred lines, check a code file's cohesion; past ~1000 it is a strong smell — a genuinely single-responsibility file MAY exceed it, and the host codebase's own norms override any absolute number.
-- The length concern applies to **code units judged by responsibility only**. It does NOT apply to **documentation** (Markdown / docs — judged by structure and navigability; split only when length hurts navigation or the document has grown to span separable topics, a looser ~2000-line reference) or to **data / generated / config files** (JSON/YAML data, fixtures, snapshots, lockfiles, migrations, large static maps — you SHOULD NOT split them for length).
-- The host project declares a hard file-size policy → that threshold overrides both exemptions for the file types it names.
+- A code file first added to the repository on or after 2026-01-01 exceeds 1000 lines → you MUST split it by responsibility. A file not yet committed counts as added now; an existing file's first commit is `git log --diff-filter=A -- <file>`.
+- A documentation file (Markdown, docs) first added on or after 2026-01-01 exceeds 2000 lines → you MUST split it by topic.
+- These file types MAY exceed both limits, and you SHOULD NOT split them for length: data files (JSON, YAML, CSV, TOML data), configuration files, lockfiles, generated code and generated artifacts, vendored third-party code, test fixtures, snapshots and golden files, database migrations, and static lookup tables.
 - Files that change together MUST live together. You MUST split by responsibility, not by technical layer.
 - In an existing codebase you MUST follow established patterns, and MUST NOT unilaterally restructure a codebase that uses large files.
 - A file you are already modifying has grown unwieldy → you MAY include a split for it in the plan; the split is a separate refactor rather than incidental to the change → it belongs in its own plan.
