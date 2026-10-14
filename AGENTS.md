@@ -70,28 +70,26 @@ to rationalize around the MUSTs that matter. Instruction-following degrades
 measurably as the number of simultaneous hard constraints grows — every
 unearned MUST taxes every earned one.
 
-### Style: condition + command
+### Style: rules only
 
-Write rules, not arguments. Each normative statement MUST be a condition and the
-command it triggers, and nothing else.
+A skill states rules. Every sentence in a skill MUST be exactly one of:
 
-- MUST NOT: persuasion, justification, or any clause explaining why the rule is
-  right ("because…", "this is how…", "which is why…").
-- MUST NOT: illustrative examples, worked scenarios, or sample dialogue. A format
-  the reader must reproduce exactly MAY be shown as a template.
-- MUST NOT: restating a rule for emphasis.
-- MAY: one clause naming the consequence, only where the consequence changes what
-  the reader does. Where it only motivates, cut it.
+1. **A rule** — `<condition> → <command>`. The command carries a BCP 14 keyword stating its force. A rule that applies to less than the whole skill states its scope in the condition.
+2. **A definition** a rule depends on — `<term> — <meaning>`, stated once.
+3. **A template** the reader reproduces exactly.
 
-Rewriting an existing skill into this style changes wording, never force. Every
-obligation in the result MUST trace to a capitalized keyword in the source.
-Promoting unmarked prose to a keyword, capitalizing a lowercase modal, or adding
-a keyword to a table header invents a rule — the header case invents one per row
-at once — and an invented MUST taxes every earned one exactly as an unearned one
-does. Dropping a keyword demotes a rule the same way. Check both directions.
+Headings, the BCP 14 note, and red-flag tables of `<thought> | <command>` are structure, not sentences.
 
-The reader is an agent that will comply once instructed. Prose spent convincing
-it is paid for on every invocation and buys nothing.
+- Every other sentence MUST be deleted: why a rule exists, what follows from breaking it, how it was found, examples, scenarios, emphasis, restatement.
+- A condition MUST be checkable: a number, a named event, or a named state. "Large", "a few", "genuinely", "where appropriate" MUST NOT appear in a condition.
+- A sentence MUST NOT carry two commands of different force; split it.
+- An imperative step under a lead-in that carries a keyword ("You MUST:") inherits that keyword.
+
+Rewriting into this style changes wording, never force:
+
+- Every obligation in the result MUST trace to a keyword in the source, and every keyword in the source MUST survive.
+- A source sentence with no keyword and no keyword-bearing lead-in MUST become a definition or be deleted. It MUST NOT be promoted to a rule.
+- A keyword MUST NOT be added to a table header.
 
 ### BCP 14 keyword convention
 
@@ -297,7 +295,7 @@ For each statement in a skill:
 - [ ] Every `MUST` traces to a failure observed or concretely arguable; no nameable failure → downgrade to `SHOULD` or delete.
 - [ ] Genuine judgment / no standard answer → `SHOULD` / `MAY`, and say why it varies.
 - [ ] No softening of a real rule ("consider", "try to", "it's good practice").
-- [ ] Condition + command only: no persuasion, no justification, no illustrative examples; a consequence appears only where it changes what the reader does.
+- [ ] Every sentence is a rule (condition → keyword command), a definition, or a template; nothing else.
 - [ ] Any exception uses the one-escape shape above.
 - [ ] Self-contained: carries the BCP 14 note; no reference outside this repo.
 - [ ] Progressive disclosure: every-invocation discipline stays inline; situational or heavy reference (>~100 lines, or used in a minority of runs) is a same-directory supporting file reached by a conditional `@`-pointer.
