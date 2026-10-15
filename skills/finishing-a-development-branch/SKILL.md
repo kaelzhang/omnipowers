@@ -226,6 +226,8 @@ Plain repo — `GIT_DIR == GIT_COMMON`; no worktree exists.
 
 - `WORKTREE_PATH` is not under `.worktrees/` or `worktrees/`, you did not create the worktree this session, or its provenance is uncertain → you MUST NOT remove it.
 
+**Host-owned workspace** — a worktree you did not create this session, or whose provenance is uncertain. The host's workspace-exit mechanism ends it; without one it stays in place and is reported as host-owned.
+
 ## Red Flags — STOP if you catch yourself thinking
 
 You catch yourself thinking any thought in this table → you MUST stop and correct course:

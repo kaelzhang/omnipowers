@@ -37,6 +37,8 @@ Locality of change — whether the interface confines anticipated changes behind
 
 Comparing the designs → you MUST compare them at the interface only.
 
+**Interface criteria** — depth, the deletion test, and locality of change, as defined above.
+
 A design has an elegant implementation and a shallow interface → the implementation MUST NOT rescue the interface.
 
 ## Step 4 — Synthesize and Hand Back

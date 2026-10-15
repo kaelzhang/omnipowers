@@ -63,7 +63,7 @@ Headings, the BCP 14 note, red-flag tables of `<thought> | <command>`, and condi
 - Every other sentence MUST be deleted: why a rule exists, what follows from breaking it, how it was found, examples, scenarios, emphasis, restatement.
 - A condition MUST be checkable: a number, a named event, or a named state. "Large", "a few", "genuinely", "where appropriate" MUST NOT appear in a condition.
 - A sentence MUST NOT carry two commands of different force; split it.
-- An imperative step under a lead-in that carries a keyword ("You MUST:") inherits that keyword.
+- An imperative step inherits a keyword only from a lead-in that carries the keyword and introduces that step: "You MUST:" above a list, or "You MUST complete it" naming the procedure the step belongs to. A complete sentence that merely precedes a list passes no keyword to it.
 
 Rewriting into this style changes wording, never force:
 

@@ -176,6 +176,8 @@ When constructing a review prompt or setting an inline reviewer stance → you M
 
 The host provides subagents with selectable models → you MUST specify the model explicitly on every dispatch.
 
+**Model tiers** — mechanical implementation (isolated function, complete spec, 1–2 files): a fast, cheap model, the cheapest tier when the plan text contains the complete code; integration or judgment (multi-file coordination, pattern matching, debugging): a standard model; architecture, design, and the final whole-branch review: the most capable available model; reviews: a model matched to the diff's size, complexity, and risk.
+
 - When selecting models for reviewers or implementers working from prose → you SHOULD use a mid-tier model as the floor.
 - Inline (no-subagent) mode has no model to select → you MUST still scale your own effort the same way: minimal ceremony for transcription tasks, deliberate care for integration and design.
 
@@ -206,8 +208,6 @@ When re-reviewing after a fix → the re-review MUST cover both verdicts again.
 
 ## Final Whole-Branch Review (MANDATORY)
 
-Final whole-branch review contract — the same review contract as `@task-reviewer-prompt.md`, with the merge-base range as the diff and "merge review" rather than "task-scoped gate" as the scope.
-
 Every task is complete and clean → you MUST run one broad review across the entire branch.
 
 When preparing the final whole-branch review → you MUST build a branch-wide review package from the branch's merge base:
@@ -222,9 +222,11 @@ git merge-base <base-branch> HEAD   # = MERGE_BASE (the commit the branch starte
 } > .omnipowers/sdd/branch-review.diff
 ```
 
+**Final review dispatch** — the most capable model, or your most deliberate inline stance, given the branch package path and the ledger's Minor-findings list; it evaluates the whole change for cross-task integration, contract consistency, and any defect that only emerges across tasks; its contract is the one in `@task-reviewer-prompt.md`, with the merge-base range as the diff and "merge review" rather than "task-scoped gate" as the scope.
+
 - The final whole-branch review returns findings → you MUST resolve them per the Fix Dispatch Rules (one fix worker, complete list) and re-review before the branch is considered done.
 
-Branch-completion process — `finishing-a-development-branch` when installed; otherwise the host project's own branch-completion process.
+**Branch-completion process** — `finishing-a-development-branch` when installed; otherwise the host project's own branch-completion process.
 
 ## Red Flags — STOP
 

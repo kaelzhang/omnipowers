@@ -145,6 +145,8 @@ Unmet quality bar — coverage below the host's target, a benchmark not yet met,
 - You do not commit → you MUST state exactly what is left uncommitted and why.
 - Nothing changed → you MUST say that explicitly.
 - A quality bar is unmet → it MUST NOT be used as a reason to withhold the round's commits.
+
+**Gap record** — for an unmet quality bar: the commit body states plainly what is not yet met; a comment at the code site where the gap lives, when it has a site; an entry in the host's `work-state` document, located per `using-omnipowers`, fallback `.omnipowers/`.
 - Work is blocked → you MUST NOT present it as finished.
 The round's commits exist → you MUST push the current branch, MUST NOT ask whether to push or offer it as an option, and MUST NOT push a branch other than the one you worked on:
 
