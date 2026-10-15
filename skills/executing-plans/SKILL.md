@@ -7,109 +7,73 @@ description: Use when you have a written implementation plan (plan.md / a plan f
 
 > Normative keywords — MUST, MUST NOT, REQUIRED, SHALL, SHALL NOT, SHOULD, SHOULD NOT, MAY — are used as defined in BCP 14 (RFC 2119, RFC 8174), and only when capitalized.
 
-## Overview
+## Plan Discipline
 
-- You MUST NOT improvise around the plan or skip its verifications.
-- Host provides subagents (isolated worker agents) AND the plan's tasks are largely independent → use the `subagent-driven-development` skill instead.
-- Subagents unavailable, OR the plan's steps are tightly coupled and must run in one continuous context → use this skill.
-
-## Iron Law
-
-**EXECUTE THE PLAN STEP BY STEP, VERIFYING AT EACH CHECKPOINT. WHEN BLOCKED, STOP AND ASK — NEVER GUESS.**
+- When executing a plan → you MUST NOT improvise around the plan or skip its verifications.
 
 ## The Process
 
 ### Step 1: Load and Review the Plan
 
-1. You MUST read the entire plan file before taking any action.
-2. You wrote this plan in this session and ran the review its own skill requires → that review stands, and you MUST NOT repeat it. Go to step 5. Otherwise you MUST review it critically and identify every question, gap, ambiguity, or concern.
-3. A concern is MATERIAL when it could change what gets built, break a step, or invalidate a verification → you MUST raise it with the user and get resolution BEFORE starting execution, and you MUST NOT begin implementation while it is unresolved.
-4. A concern is cosmetic (a typo, a stylistic preference) → you MUST note it and MUST NOT block on it.
-5. No material concern remains → you MUST create a tracked checklist of the plan's steps, one entry per step, using the host's task/todo tool if one exists, otherwise an explicit written checklist you keep updated in your responses; then proceed.
+- Before taking any action → you MUST read the entire plan file.
+- You wrote this plan in this session and ran the review its own skill requires → you MUST NOT repeat that review.
+- You did not write this plan in this session or did not run the review its own skill requires → you MUST review it critically and identify every question, gap, ambiguity, or concern.
+- Material concern — a concern that could change what gets built, break a step, or invalidate a verification.
+- A material concern exists → you MUST raise it with the user and get resolution before starting execution.
+- A material concern is unresolved → you MUST NOT begin implementation.
+- Cosmetic concern — a typo or a stylistic preference.
+- A cosmetic concern exists → you MUST note it.
+- A cosmetic concern exists → you MUST NOT block on it.
+- No material concern remains → you MUST create a tracked checklist of the plan's steps, one entry per step, using the host's task/todo tool if one exists, otherwise an explicit written checklist you keep updated in your responses; then proceed.
 
 ### Step 2: Execute Each Step
 
-You MUST work the steps strictly in the order the plan defines them. For each step:
-
-1. Mark it in progress.
-2. Follow the step exactly as written. You MUST NOT merge, reorder, or shortcut steps.
-3. Run the verification the step specifies; whether it counts as passed is the `verification-before-completion` rule. You MUST NOT skip it. It failed → treat it as a blocker (see "When to Stop and Ask for Help").
-4. Mark the step completed only after its verification has passed.
-
-The plan instructs you to apply a particular technique, follow another procedure, or invoke a specific capability at a step → you MUST do so at that step rather than substituting your own approach.
+- When executing the plan → you MUST work the steps strictly in the order the plan defines them.
+- When executing a step → you MUST mark it in progress.
+- When executing a step → you MUST follow it exactly as written.
+- When executing a step → you MUST NOT merge, reorder, or shortcut steps.
+- Step verification — the verification specified by a step, evaluated under `verification-before-completion`.
+- A step specifies a verification → you MUST NOT skip it.
+- A step's verification fails → treat it as a blocker (see "When to Stop and Ask for Help").
+- When executing a step → you MUST mark it completed only after its verification has passed.
+- The plan instructs you to apply a particular technique, follow another procedure, or invoke a specific capability at a step → you MUST do so at that step rather than substituting your own approach.
 
 ### Step 3: Complete the Work
 
-Every step is complete and every verification has passed:
-
-1. The project's full verification — tests, type checks, linters, build, whatever it defines as its completeness gate — MUST have passed on the final tree; a run already made on that tree stands (`verification-before-completion`), otherwise run it and read the output.
-2. You MUST NOT claim the work is complete until that verification has passed on real, observed output.
-3. The final verification passes → you MUST integrate the branch by invoking the `finishing-a-development-branch` skill (verify tests, present the merge / PR / keep / discard options, execute the user's choice, clean up only what you created). That skill is not installed → run the host project's branch-completion process directly: full suite green, working tree clean, then merge or open the PR as the project requires.
-4. Report completion with the evidence: which steps were executed and the result of the final verification.
+- Every step is complete and every verification has passed → the project's full verification (tests, type checks, linters, build, whatever it defines as its completeness gate) MUST have passed on the final tree, accepting a run already made on that tree under `verification-before-completion`, otherwise running it and reading the output.
+- The final verification has not passed on real, observed output → you MUST NOT claim the work is complete.
+- The final verification passes → you MUST integrate the branch by invoking the `finishing-a-development-branch` skill (verify tests, present the merge / PR / keep / discard options, execute the user's choice, clean up only what you created).
+- That skill is not installed → run the host project's branch-completion process directly: full suite green, working tree clean, then merge or open the PR as the project requires.
 
 ## Continuous Execution
 
 - The plan and its goal are clear → you MUST execute in continuous work mode: run every step through to completion without pausing to check in.
-- Between steps you MUST NOT ask anything the `brainstorming` skill forbids asking — how, when, or whether to proceed — and MUST NOT stop for an unsolicited progress summary. You SHOULD narrate at most one short line.
-- A genuine blocker (see "When to Stop and Ask for Help") is the only permitted reason to stop before every step is complete → you MUST surface it with the `confirming-with-the-user` skill (plain-language options + your recommendation), get the decision, then resume continuous execution.
+- Between steps → you MUST NOT ask anything the `brainstorming` skill forbids asking — how, when, or whether to proceed.
+- Between steps → you MUST NOT stop for an unsolicited progress summary.
+- Between steps → you SHOULD narrate at most one short line.
+- Before every step is complete → you MUST stop only for a blocker listed under "When to Stop and Ask for Help", surface it with the `confirming-with-the-user` skill (plain-language options + your recommendation), get the decision, then resume continuous execution.
 
 ## Isolation
 
-Before any code is written the work MUST be in the host's isolation unit. The `using-git-worktrees` skill resolves that unit, including whether anyone needs asking, and creates it; this skill adds nothing to its rules.
+- Isolation unit — the host's unit of work resolved and created by `using-git-worktrees`, including whether anyone needs asking.
+- Before any code is written → the work MUST be in the host's isolation unit.
 
 ## When to Stop and Ask for Help
 
-You MUST stop executing immediately when any of the following occurs:
-
-- You hit a blocker (missing dependency, failing test, environment problem).
-- A step's instruction is unclear or you do not understand it.
-- The plan has a critical gap that prevents you from starting or continuing.
-- A verification fails repeatedly.
-
-Then, before surfacing it, you MUST leave the work recoverable without this conversation:
-
-1. Commit the coherent work already finished.
-2. Write the blocker — what is blocked, what you tried, what you need — into the host's work-state document if it keeps one, otherwise into the plan file beside the step that stalled.
-
-Then you MUST surface the blocker to the user using the `confirming-with-the-user` skill — plain language, concrete options, your recommendation — get the decision, then resume continuous execution.
-
-You MUST NOT guess, fabricate a missing step, or force your way past a blocker. You MUST NOT silently downgrade a step to a weaker version that you can complete.
+- Any of the following occurs → you MUST stop executing immediately:
+  - You hit a blocker (missing dependency, failing test, environment problem).
+  - A step's instruction is unclear or you do not understand it.
+  - The plan has a critical gap that prevents you from starting or continuing.
+  - A verification fails after a prior failure.
+- After stopping execution and before surfacing the blocker, you MUST leave the work recoverable without this conversation:
+  1. Commit the coherent work already finished.
+  2. Write the blocker — what is blocked, what you tried, what you need — into the host's work-state document if it keeps one, otherwise into the plan file beside the step that stalled.
+- After leaving the work recoverable → you MUST surface the blocker to the user using the `confirming-with-the-user` skill — plain language, concrete options, your recommendation — get the decision, then resume continuous execution.
+- When executing a plan → you MUST NOT guess, fabricate a missing step, or force your way past a blocker.
+- When executing a plan → you MUST NOT silently downgrade a step to a weaker version that you can complete.
 
 ## When to Revisit Earlier Steps
 
-You MUST return to Step 1 (Load and Review) when:
-
-- The user updates the plan in response to your feedback.
-- The fundamental approach turns out to need rethinking.
-
-You MUST review what changed and whatever the change bears on, and you MUST NOT continue executing against a materially changed plan without doing so. Re-reviewing the untouched remainder is not required.
-
-## Red Flags — STOP if you catch yourself thinking
-
-| Thought | What to do instead |
-| --- | --- |
-| "Reviewing the whole plan first wastes time." | Read the entire plan before any action; review it critically unless you wrote and reviewed it this session. |
-| "I wrote this plan, but I should review it again to be safe." | Its own review already ran. Start executing. |
-| "I'll batch these steps to save time." | Execute one step, verify, then the next. |
-| "The verification probably passes — I'll mark it done." / "Running every verification slows me down." | Run the verification and read its output before marking the step done. |
-| "This step is unclear, but I think it means X." / "Asking the user about this small ambiguity is annoying." | Stop and ask the user. |
-| "The plan says X, but Y is better — I'll do Y." / "I understand the intent, so the exact steps don't matter." | Raise the concern with the user; do not silently substitute. |
-| "I'll start on main, just this once." | `using-git-worktrees` resolves the unit. Be in it first. |
-| "The plan didn't cover this case, so I'll invent a step." / "I can fix the plan's gap myself without asking." | Stop and ask; the plan needs updating. |
-| "Tests fail, but it's probably flaky — I'll move on." / "It's faster to keep going than to stop at this blocker." | Stop, investigate, and ask if you cannot resolve it. |
-
-## Checklist
-
-Before reporting the work complete, confirm:
-
-- [ ] I read the entire plan, and reviewed it critically unless I wrote and reviewed it this session.
-- [ ] I raised every concern with the user and resolved them before execution.
-- [ ] I created a tracked checklist of the plan's steps (host task/todo tool, or an explicit written checklist kept updated in my responses).
-- [ ] The work is in the isolation unit `using-git-worktrees` resolved.
-- [ ] I executed every step in order, exactly as written.
-- [ ] I ran and read the output of every step's verification before marking it done.
-- [ ] I worked in continuous mode — no permission-to-proceed pauses between steps; I stopped only for a real blocker, surfaced via confirming-with-the-user.
-- [ ] I never guessed past a blocker — I stopped and asked when unclear.
-- [ ] I ran the project's full verification at the end and read its output.
-- [ ] I integrated the work (finishing-a-development-branch, or the host's branch-completion process).
-- [ ] My completion report cites the actual verification result as evidence.
+- The user updates the plan in response to your feedback, or the fundamental approach turns out to need rethinking → you MUST return to Step 1 (Load and Review).
+- When revisiting Step 1 → you MUST review what changed and whatever the change bears on.
+- The plan has materially changed and you have not reviewed what changed and whatever the change bears on → you MUST NOT continue executing against it.

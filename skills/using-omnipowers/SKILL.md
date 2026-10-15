@@ -6,48 +6,45 @@ description: Use once, at the start of a conversation — establishes how omnipo
 > Normative keywords — MUST, MUST NOT, REQUIRED, SHOULD, SHOULD NOT, MAY — are used as defined in BCP 14 (RFC 2119, RFC 8174), and only when capitalized.
 
 <SUBAGENT-STOP>
-If you were dispatched as a subagent to execute one specific task, skip this skill.
+Skill scope — agents other than subagents dispatched to execute one specific task.
 </SUBAGENT-STOP>
-
-<EXTREMELY-IMPORTANT>
-Before you respond or act, you MUST check whether a skill governs what you are about to do.
-</EXTREMELY-IMPORTANT>
 
 ## Applying a skill
 
-- A skill governs when its trigger describes what you are about to do → invoke it and follow every `MUST` / `MUST NOT` exactly.
-- Its trigger names a different situation → you MUST NOT invoke it.
-- Its trigger half-fits → load it, read its scope section, and set it aside if it says it does not apply.
-- You MUST NOT soften a rule, skip a step, or treat a `MUST` as a suggestion.
-- You MUST NOT invent an exception. Where a skill states one (`MAY … ONLY when …`), you MUST satisfy every condition it lists.
-- The host offers a skill-invocation mechanism → you MUST use it. Reading a `SKILL.md` does not activate the skill.
-- The skill is already in this context → it is in force. You MUST NOT invoke it again at each trigger; apply it.
-- Immediately after invoking a skill → announce `Using <skill> to <purpose>`.
-- A skill carries a checklist → run it as a self-check before the claim it guards, and you MUST NOT report the work done while an item fails. It is not a task list: you MUST NOT copy it into the host's task tool or into your reply.
-- Two skills both look applicable → read `@skill-map.md`.
-- You notice yourself reasoning toward invoking a skill you have not matched, or toward skipping one you have → read `@rationalizing.md`.
+- Before responding or acting → you MUST check whether a skill governs what you are about to do.
+- Governing skill — a skill whose trigger describes what you are about to do.
+- Skill compliance — invocation of a governing skill and exact adherence to its `MUST` / `MUST NOT` rules.
+- A skill's trigger names a different situation → you MUST NOT invoke it.
+- When applying a skill → you MUST NOT soften a rule, skip a step, or treat a `MUST` as a suggestion.
+- When applying a skill → you MUST NOT invent an exception.
+- A skill states an exception (`MAY … ONLY when …`) → you MUST satisfy every condition it lists.
+- The host offers a skill-invocation mechanism → you MUST use it.
+- Skill activation — invocation through the host's skill-invocation mechanism, distinct from reading a `SKILL.md`.
+- A skill is already in context → you MUST NOT invoke it again at each trigger.
+- A skill carries a checklist and an item fails → you MUST NOT report the work done.
+- A skill carries a checklist → you MUST NOT copy it into the host's task tool or into your reply.
+- Two skills both look applicable → read `@skill-map.md` and apply it.
+- You notice yourself reasoning toward invoking a skill you have not matched, or toward skipping one you have → read `@rationalizing.md` and apply it.
 
 ## Where an artifact goes
 
-Every file a skill writes has one of five roles — `design-docs`, `work-state`, `records`, `scratch`, `standards`. The skill names the role and a fallback path; the host decides the location. Resolve it in this order, stopping at the first that applies:
+Artifact role — one of `design-docs`, `work-state`, `records`, `scratch`, or `standards`, named by the skill writing the file.
 
-1. a location the user states in this session;
-2. the host's `Omnipowers` declaration — a section by that name in the host's `AGENTS.md` / `CLAUDE.md`, or in a document that file points to — using the row for that role;
-3. where the host already keeps documents of that role, when that is unambiguous;
-4. the skill's fallback.
+Artifact-location resolution — the first applicable entry in the following ordered list:
 
-- Resolved to 3 or 4 → confirm once, before the first write of that role in that project; the answer governs from then on. Resolved to 1 or 2 → you MUST NOT ask.
-- The declaration's `write-authority`, `vcs`, `isolation`, and `continuation` rows bind every skill over its own defaults; a skill names the row it obeys, and it is read here.
-- You MUST create missing parent directories.
+1. Session location — a location the user states in this session.
+2. Host-declared location — the row for the artifact's role in the host's `Omnipowers` declaration, a section in `AGENTS.md` / `CLAUDE.md` or in a document that file points to.
+3. Existing role location — where the host already keeps documents of that role, when that is unambiguous.
+4. Fallback location — the fallback path named by the skill.
+
+- Artifact-location resolution selects entry 1 or 2 → you MUST NOT ask for location confirmation.
+- Host policy axes — the declaration's `write-authority`, `vcs`, `isolation`, and `continuation` rows, binding every skill over its own defaults.
+- A parent directory for an artifact is missing → you MUST create it.
 
 ## Instruction priority
 
-1. The user's explicit instructions — highest.
-2. omnipowers skills.
-3. Default behavior — lowest.
+Instruction priority — the user's explicit instructions, then omnipowers skills, then default behavior.
 
-- A direct instruction from the user overrides any rule below it, including a `MUST` inside a skill and including this one. No skill is exempt, and no skill may declare itself exempt.
-- A skill's rule conflicts with what the user stated → the user wins.
-- You disagree with an instruction → the `confirming-with-the-user` skill governs how you raise it, what happens once they answer, and how far the override reaches.
+User override — a direct user instruction's precedence over any skill rule, including a `MUST` inside a skill and including `using-omnipowers`.
 
-**The user is in control.**
+Instruction-disagreement owner — `confirming-with-the-user`, governing how disagreement with an instruction is raised, what happens once the user answers, and how far the override reaches.

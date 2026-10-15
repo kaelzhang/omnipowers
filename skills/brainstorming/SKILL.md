@@ -13,68 +13,62 @@ description: "Use before building anything — a feature, a behavior change, sca
 STATE THE GOAL AND ITS DELIVERY CRITERIA IN ONE LINE, OR SETTLE THEM FIRST
 ```
 
-Before writing code you MUST be able to state, in one line, what the work must achieve and the observable condition under which it is done — and be confident the user would agree with both.
+Before writing code → you MUST be able to state, in one line, what the work must achieve and the observable condition under which it is done, and be confident the user would agree with both.
 
-- You can state both, and nothing in the list below applies → build. You MUST NOT ask for permission, a design review, or sign-off on a plan.
-- You cannot state both → put the gap to the user and settle it before building.
+You can state both, and none of the four user decisions below applies → you MUST NOT ask for permission, a design review, or sign-off on a plan.
 
-## What You MUST Settle With the User
+## User Decisions
 
-These four, and nothing else. Each is the user's to decide and yours to surface.
+User decisions — the goal and its delivery criteria; a blocker you cannot resolve; a serious risk; a disagreement with the request.
 
-1. **The goal and its delivery criteria.** What the work must achieve, and how you will both know it is done. Unclear, or resting on an assumption you made → ask.
-2. **A blocker you cannot resolve.** Missing access or credentials, information only the user has, a broken external dependency, a constraint that makes the goal unreachable. You MUST present it with the workaround you propose, and you MUST obtain approval of that workaround before applying it.
-3. **A serious risk.** The work as asked would break an existing contract, lose data, be hard to reverse, or carry a cost the user has not seen. You MUST name the risk, its consequence, and your recommendation.
-4. **A disagreement with the request.** You verified something in the project that contradicts what was asked — the capability already exists, the stated assumption does not hold, a materially better path exists. You MUST state what you verified and where, and your alternative.
+Serious risk — work that would break an existing contract, lose data, be hard to reverse, or carry a cost the user has not seen.
 
-You MUST present each through the `confirming-with-the-user` skill; it governs the form, that you object once, and that the user's answer settles it.
+Disagreement with the request — a verified project fact contradicting the request: the capability already exists, the stated assumption does not hold, or a materially better path exists.
 
-## What You MUST NOT Ask
+One of the four user decisions applies → you MUST settle it with the user.
 
-- **How the work will be done** — the approach, the architecture, the decomposition, the libraries, the file layout, the order of steps. You choose these.
-- **When to do it** — sequencing, staging, what comes first.
-- **Permission to proceed** on a goal already settled.
-- **Anything you can determine yourself.** Read the code, the docs, the configuration, the history. Investigate; do not interrogate.
-- **A decision already made.**
-- **A trivial, reversible choice with an obvious default.** Take the default and state it in passing.
+- The goal or its delivery criteria are unclear or rest on your assumption → you MUST settle them with the user before building.
+- A blocker cannot be resolved → you MUST present it with your proposed workaround, and you MUST obtain approval of that workaround before applying it.
+- A serious risk applies → you MUST name the risk, its consequence, and your recommendation.
+- A disagreement with the request applies → you MUST state what you verified and where, and your alternative.
 
-Two or more of these questions in a row → you are asking the user to do your job.
+Presenting one of the four user decisions → you MUST use the `confirming-with-the-user` skill.
 
-## Best Practice Is Mandatory
+## Questions Excluded
 
-You choose the approach, so you own it.
+During brainstorming → you MUST NOT ask the user about:
 
-- You MUST choose the approach a competent practitioner in this domain would choose, grounded in the established practice of the industry this project belongs to, and fitting the project's existing paradigm and conventions.
-- The project already has an established pattern for this → follow it. No research.
-- No established pattern, AND the choice binds beyond this work — a dependency, a public contract, a data schema, a wire protocol, an auth or concurrency decision — or is hard to reverse, AND you cannot name current practice with confidence → you MUST verify it against an authoritative source before settling. Recall MUST NOT be the basis for that class of decision.
-- Ordinary work in a settled domain → decide from what you know and build. You MUST NOT spend the user's time researching a question you can already answer.
+- how the work will be done: the approach, architecture, decomposition, libraries, file layout, or order of steps;
+- when to do it: sequencing, staging, or what comes first;
+- permission to proceed on a goal already settled;
+- anything you can determine yourself;
+- a decision already made;
+- a trivial, reversible choice with an obvious default.
+
+## Best Practice
+
+Choosing the approach → you MUST choose what a competent practitioner in this domain would choose, grounded in established practice of the project's industry and fitting the project's existing paradigm and conventions.
+
+- No established pattern exists, the choice binds beyond this work or is hard to reverse, and you cannot name current practice with confidence → you MUST verify it against an authoritative source before settling.
+- That decision requires authoritative verification → recall MUST NOT be its basis.
+- Ordinary work in a settled domain concerns a question you can already answer → you MUST NOT spend the user's time researching it.
 - The capability may already exist → you MUST search the codebase by domain concept, not just by keyword, before building it.
-- The design contradicts a decision the project has recorded → you MUST surface the contradiction rather than silently override it.
-- The request spans several independent subsystems → you MUST say so and decompose before starting.
-- You MUST NOT choose an approach because it is faster to implement, easier to test, or avoids a conversation. Implementation effort is not a design criterion.
-- You MUST NOT deliver a weaker version and present it as the goal. A shortcut you took knowingly MUST be stated to the user in the same message that delivers the work.
+- The design contradicts a recorded project decision → you MUST surface the contradiction rather than silently override it.
+- The request spans several independent subsystems → you MUST state that scope and decompose before starting.
+- An approach is faster to implement, easier to test, or avoids a conversation → you MUST NOT choose it on those grounds.
+- Delivering the work → you MUST NOT present a weaker version as the goal.
+- You knowingly took a shortcut → you MUST state it to the user in the message delivering the work.
 
 The design centres on a module interface and the alternatives are non-obvious → read `@design-it-twice.md` and apply it before settling on one.
 
-A design question that reasoning and research cannot settle MAY be answered with a throwaway prototype built under the `prototyping` skill's full rule-set.
+Reasoning and research cannot settle a design question → you MAY answer it with a throwaway prototype built under the `prototyping` skill's full rule-set.
 
-## Record the Goal
+## Goal Record
 
-The goal and its delivery criteria are settled → write them as a `design-docs` artifact, located per `using-omnipowers`, fallback `docs/design/YYYY-MM-DD-<topic>.md`.
+Goal record — the settled goal and its delivery criteria, a `design-docs` artifact located per `using-omnipowers`, fallback `docs/design/YYYY-MM-DD-<topic>.md`.
 
-Write it only when the goal took settling with the user, or the work outlives this round. A goal you could state unaided for work that lands this round → the commit message is its record, and you MUST NOT create a document for it.
+You could state the goal unaided and the work lands this round → you MUST NOT create a document for it.
 
-This is a record, not a gate. You MUST NOT wait for it to be reviewed or approved before building, and you MUST NOT re-review it once written.
+Before building → you MUST NOT wait for the goal record to be reviewed or approved.
 
-## Red Flags — STOP
-
-| Thought | What to do instead |
-|---|---|
-| "I'll ask which approach they prefer." | Choose by best practice. Ask only if the choice carries a serious risk. |
-| "I should get the design approved first." | The goal is what gets settled. The design is yours. |
-| "I'll write the spec and have them review it." | Settle the goal in conversation; the record follows the decision. |
-| "Should I start with the backend or the frontend?" | Sequencing is yours. |
-| "I'll confirm before each step." | The goal was settled once. Build to it. |
-| "They said X but the code already does X — I'll build it anyway." | State what you verified, and where. |
-| "This is simpler and it mostly works." | Not a design criterion. Choose what a competent practitioner would. |
-| "I can't tell what 'done' looks like, but I'll start and find out." | That is the one thing the gate exists for. Ask. |
+The goal record has been written → you MUST NOT re-review it.

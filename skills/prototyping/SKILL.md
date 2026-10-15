@@ -7,52 +7,40 @@ description: Use when asked to prototype, spike, or mock up a throwaway experime
 
 > Normative keywords — MUST, MUST NOT, REQUIRED, SHALL, SHALL NOT, SHOULD, SHOULD NOT, RECOMMENDED, MAY, OPTIONAL — are used as defined in BCP 14 (RFC 2119, RFC 8174), and only when capitalized.
 
-## Overview
+## Definitions
 
-- A prototype is throwaway code that answers one design question.
-- Code that does not help answer the written question does not belong in the prototype.
+Prototype — throwaway code that answers one written design question.
 
 ## The Question Comes First
 
-You MUST write the design question down — one or two sentences, at the top of the prototype's entry file or in a file next to it — **before writing any prototype code**.
+Before writing any prototype code → you MUST write the design question in one or two sentences at the top of the prototype's entry file or in a file next to it.
 
 ## Pick the Branch
 
 - Question about **state, logic, transitions, data shape, or API feel** → read @logic-prototype.md and apply it.
 - Question about **UI, layout, or information hierarchy** → read @ui-prototype.md and apply it.
-- The question could genuinely be either → you MUST ask the user which is being asked before building.
+- The question could belong to either branch listed above → you MUST ask the user which is being asked before building.
 
 ## Hygiene Rules
 
-Every prototype, on both branches, MUST obey all five:
+For every prototype on either branch, you MUST:
 
-1. **Clearly marked throwaway.** Name and place the prototype so a casual reader sees it is a prototype (the word `prototype` in the path or filename). Locate it near the code it is prototyping for, following the host project's existing conventions — never a new top-level structure.
-2. **One command to run.** You MUST wire the prototype into the host project's existing task runner (`package.json` scripts, `Makefile`, `justfile`, `pyproject.toml`, …) so the user starts it with a single command. The host has no task runner → the single command MUST be stated next to the written question.
-3. **In-memory state only.** State lives in memory and resets on restart. You MUST NOT wire the prototype to a real database or persistent store; you MAY touch persistence ONLY when the written question is itself about persistence, and then only against a scratch store whose name marks it as disposable (e.g. `PROTOTYPE-wipe-me`).
-4. **Skip all polish.** No tests, no abstractions, no error handling beyond what keeps the prototype runnable.
-5. **Surface internal state visibly.** After every action or variant switch, the prototype MUST show the full relevant state (printed or rendered).
+1. **Clearly marked throwaway.** Put the word `prototype` in the path or filename. Locate the prototype near the code it is prototyping for, following the host project's existing conventions; do not create a new top-level structure.
+2. **One command to run.** When the host project has a task runner → you MUST wire the prototype into that task runner (`package.json` scripts, `Makefile`, `justfile`, `pyproject.toml`, …) with a single command to start it. When the host has no task runner → the single command MUST be stated next to the written question.
+3. **In-memory state only.** Keep state in memory and reset it on restart. For prototype storage → you MUST NOT wire the prototype to a real database or persistent store. When the written question is itself about persistence → you MAY touch persistence ONLY against a scratch store whose name marks it as disposable.
+4. **Skip all polish.** Omit tests, abstractions, and error handling beyond what keeps the prototype runnable.
+5. **Surface internal state visibly.** After every action or variant switch → the prototype MUST show the full relevant state, printed or rendered.
 
 ## The User Drives
 
-- You MUST hand over a runnable artifact: the run command (or URL) and how to drive it.
-- You MUST NOT declare the question answered from your own run; the verdict is the user's observation, and only the user delivers it.
-- The user asks for new actions or variants while driving → add them; a prototype evolves freely inside the written question's scope.
+- At handover → you MUST provide a runnable artifact, its run command or URL, and instructions for driving it.
+- When declaring whether the question is answered → you MUST NOT declare it answered from your own run.
+
+Verdict — the user's observation, delivered only by the user.
 
 ## Capture Protocol
 
-The user delivers the verdict → you MUST capture it in two places:
+When the user delivers the verdict → you MUST capture it in two places:
 
-1. **The decision → the design spec.** Record the question, the verdict, and the rationale in the design spec being brainstormed — the durable design document the brainstorming skill produced, wherever this host project keeps such documents. No spec exists yet → the verdict still MUST be written into the host's design documents rather than left in the transcript.
-2. **The prototype → a throwaway branch.** Commit the prototype itself to a clearly-named throwaway branch (e.g. `prototype/<question-slug>`) as the primary source behind the decision. **Main stays clean**: no variants, switchers, or terminal shells reach the main branch.
-
-## Red Flags — STOP
-
-Stop on either trigger: you catch yourself thinking the excuse, or the condition is already true.
-
-| Excuse or condition | Reality |
-|---|---|
-| "The question is obvious — I'll skip writing it down" / no written question exists | Write it first. |
-| "It worked when I ran it — question answered" / about to announce the answer off your own run | The verdict is the user's observation; hand the artifact over. |
-| "While I'm in here, I'll build the real feature" / the prototype is growing features the written question never asked for | That is unscoped implementation; the real implementation goes through design and review, not a spike. |
-| "A few tests / a bit of error handling won't hurt" / adding tests, error handling, or abstractions to throwaway code | Skip it. |
-| "This prototype code is good enough to merge" / prototype code is heading into the main branch | The decision goes to the spec; the code goes to the throwaway branch. |
+1. **The decision → the design spec.** Record the question, verdict, and rationale in the design spec being brainstormed: the durable design document produced by the brainstorming skill, wherever the host project keeps such documents. When no spec exists yet → the verdict still MUST be written into the host's design documents.
+2. **The prototype → a throwaway branch.** Commit the prototype itself to a clearly named throwaway branch as the primary source behind the decision. Keep variants, switchers, and terminal shells off the main branch.

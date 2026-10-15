@@ -2,45 +2,45 @@
 
 > Normative keywords — MUST, MUST NOT, REQUIRED, SHALL, SHALL NOT, SHOULD, SHOULD NOT, RECOMMENDED, MAY, OPTIONAL — are used as defined in BCP 14 (RFC 2119, RFC 8174), and only when capitalized.
 
-Load this while choosing the approach under `brainstorming` when the design centres on a **module interface** and the alternatives are non-obvious.
+## Differentiate by Constraint
 
-## Differentiate by constraint
+Producing alternative designs under `brainstorming` → you MUST differentiate the attempts by constraint, assigning each attempt one design constraint orthogonal to the others.
 
-A second design produced by staring at the first is a variation, not an alternative — the first idea anchors everything after it.
+## Step 1 — Write the Shared Problem Statement
 
-You MUST differentiate the attempts by **constraint**: assign each attempt one design constraint orthogonal to the others. Pick constraints that pull in genuinely different directions for *this* module, for example:
+- Before producing any design → you MUST write a problem statement shared by all attempts: what the module must accomplish, who its callers are, and the hard external constraints.
+- Writing the shared problem statement → it MUST NOT contain a candidate design, a sketch, or a preferred direction.
 
-- "Optimize the caller's ergonomics — the common case reads as one obvious call, even if the implementation gets ugly."
-- "Optimize for testability through the interface alone — every behavior observable and forceable without reaching into internals."
-- "Minimize the interface surface at all costs — the fewest entry points and types that still cover every caller."
-- "Maximize room to evolve — adding the next likely capability changes no existing signature."
+## Step 2 — Produce the Designs Independently
 
-## Step 1 — Write the shared problem statement
+Producing the alternatives → you MUST produce two designs, one per constraint.
 
-- Before producing any design, you MUST write a problem statement that all attempts share: what the module must accomplish, who its callers are, and the hard external constraints (data shapes, protocols, invariants that are not yours to choose).
-- The problem statement MUST NOT contain a candidate design, a sketch, or a preferred direction.
+A third orthogonal constraint applies → you MAY add a third design.
 
-## Step 2 — Produce the designs independently
-
-You MUST produce two designs, one per constraint; a third MAY be added when a third genuinely orthogonal constraint applies. Each design MUST deliver:
+Producing each design → it MUST deliver:
 
 1. the interface itself — entry points, signatures, invariants, error modes;
 2. one caller-side usage example;
 3. what the implementation hides behind the interface.
 
-- The host provides subagents → dispatch one subagent per constraint, in parallel. Each subagent MUST receive only the shared problem statement plus its own constraint — no shared draft, no sibling's output, no hint of your own leaning.
-- The host has no subagents → degrade gracefully: produce the designs yourself, sequentially. Write the first design down completely, set it aside, then adopt the second constraint fresh, working from the problem statement as if the first attempt did not exist. You MUST NOT edit the first design while producing the second, and the second MUST NOT inherit the first's shape merely because it is already on the page.
+- Subagents receive design assignments → each subagent MUST receive only the shared problem statement plus its own constraint, with no shared draft, sibling's output, or hint of your leaning.
+- The host has no subagents and you are producing the second design → you MUST NOT edit the first design.
+- The host has no subagents and the first design is already on the page → the second MUST NOT inherit the first's shape merely on that basis.
 
-## Step 3 — Compare interfaces, not implementations
+## Step 3 — Compare Interfaces, Not Implementations
 
-You MUST compare the designs at the interface only — an elegant implementation MUST NOT rescue a shallow interface. Judge each design on:
+Depth — behavior hidden by each entry point relative to its interface surface.
 
-- **Depth** — how much behavior each entry point hides. A deep interface offers callers a small, simple surface over substantial functionality; an interface that mirrors its internals is shallow no matter how clean the code behind it.
-- **The deletion test** — delete the implementation and imagine rewriting it from the interface contract alone. The rewrite could freely change data structures and algorithms without any caller noticing → the interface hides real decisions. The rewrite would be forced to reproduce the old internals → the interface leaks them.
-- **Locality of change** — for the changes this module will plausibly face, which interface confines them behind the boundary, and which spills them into callers.
+Deletion test — whether rewriting the implementation from the interface contract permits changes to data structures and algorithms without caller changes, or requires reproducing the old internals.
 
-## Step 4 — Synthesize and hand back
+Locality of change — whether the interface confines anticipated changes behind the boundary or spills them into callers.
 
-- You MUST pick a winner and state, per criterion, why it won.
-- The winner MAY graft the runner-up's single best idea where it strengthens the winning shape; you MUST NOT average the designs into a compromise that satisfies neither constraint.
-- Carry the winner, and the runner-up with its trade-offs, back into the approaches you present at checklist item 4.
+Comparing the designs → you MUST compare them at the interface only.
+
+A design has an elegant implementation and a shallow interface → the implementation MUST NOT rescue the interface.
+
+## Step 4 — Synthesize and Hand Back
+
+- Selecting the result → you MUST pick a winner and state, per criterion, why it won.
+- The runner-up's single best idea strengthens the winning shape → the winner MAY graft that idea.
+- Synthesizing the designs → you MUST NOT average them into a compromise that satisfies neither constraint.

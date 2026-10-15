@@ -17,45 +17,40 @@ The task is to answer a question by investigation rather than by building → yo
 EVERY CLAIM TRACES TO THE PRIMARY SOURCE THAT OWNS IT
 ```
 
-- You MUST follow every claim back to the source that **owns** it: official documentation, the spec or standard, the source code itself, the project's changelog or release notes, or a benchmark/experiment you ran and recorded.
+- When researching → you MUST follow every claim back to the source that **owns** it: official documentation, the spec or standard, the source code itself, the project's changelog or release notes, or a benchmark/experiment you ran and recorded.
 - The owning source is reachable → you MUST NOT cite a paraphrase — a blog post, Stack Overflow answer, tutorial, or AI summary — as the authority for a claim.
-- Secondary sources MAY point the way: use them to discover *where* the owning source is, then verify the claim there and cite the owner.
-
-## Workflow
-
-1. **Pin the question.** Restate exactly what is being asked, including version/date constraints.
-2. **Identify the owning sources.** For each sub-question, name where the authoritative answer lives (docs, spec, repo, changelog) before reading anything else.
-3. **Verify claim by claim.** For each candidate claim, read the owning source and record the citation at the moment of verification — link plus version/date, or `file:line` for code, or the exact command for a benchmark you ran.
-4. **Write the artifact.** Produce the findings file per the output contract below.
+- When locating an owning source → secondary sources MAY point the way: use them to discover *where* the owning source is, then verify the claim there and cite the owner.
 
 ## Output Contract
 
-- Findings MUST land in a single Markdown file.
-- Research that settles a decision is a `design-docs` artifact: resolve its location per `using-omnipowers`, fallback `docs/research/YYYY-MM-DD-<topic>.md`.
-- Every claim in the file MUST carry its citation inline: a link (with the version or retrieval date when the source is versioned or volatile), a `file:line` reference for source code, or the command and environment for a measurement you ran.
+Pinned question — exactly what is being asked, including version/date constraints.
+
+- When delivering research findings → findings MUST land in a single Markdown file.
+- Research that settles a decision — a `design-docs` artifact with fallback `docs/research/YYYY-MM-DD-<topic>.md` under the location resolution of `using-omnipowers`.
+- A claim is in the findings file → it MUST carry its citation inline: a link (with the version or retrieval date when the source is versioned or volatile), a `file:line` reference for source code, or the command and environment for a measurement you ran.
 - A claim has no citation → it MUST NOT be presented as a finding; either verify it, move it to the leads section explicitly marked unverified, or drop it.
-- The file MUST answer the pinned question directly, near the top, before the supporting detail.
+- When delivering the findings file → the file MUST answer the pinned question directly, near the top, before the supporting detail.
 
 ## Conflicting Sources
 
 - Sources disagree → you MUST report the conflict honestly: what each source says, with each source's version and date.
-- You MUST NOT silently resolve the conflict by presenting one side as the answer.
-- You SHOULD state which source is more likely authoritative and why (newer version, closer to the implementation).
+- Sources disagree → you MUST NOT silently resolve the conflict by presenting one side as the answer.
+- Sources disagree → you SHOULD state which source is more likely authoritative and why (newer version, closer to the implementation).
 
 ## When You Cannot Reach the Sources
 
-- The environment has no web access, or the owning source is otherwise unreachable → the findings file MUST state prominently that it rests on built-in knowledge as of your training data, and each such claim MUST be flagged as unverified.
-- You MUST NOT present recall as verified research.
+- The environment has no web access, or the owning source is otherwise unreachable → the findings file MUST state prominently that it rests on built-in knowledge as of your training data.
+- The environment has no web access, or the owning source is otherwise unreachable → each such claim MUST be flagged as unverified.
+- When researching → you MUST NOT present recall as verified research.
 
 ## Scope Discipline
 
-- You MUST answer the question asked — that question, at that scope.
-- Adjacent discoveries made along the way go into a short **Leads** section at the end of the findings file, one line each.
-- You MUST NOT expand the investigation to chase a lead without the user asking for it.
+- When researching → you MUST answer the question asked — that question, at that scope.
+- The user has not asked to investigate a lead → you MUST NOT expand the investigation to chase it.
 
 ## Rationalizations — STOP
 
-| Excuse | Reality |
+| Excuse | Command |
 |--------|---------|
 | "The blog post explains it better than the docs" | Let it point you to the docs and cite those. |
 | "I already know the answer" | Verify it against the owner, or flag it as unverified recall. |
@@ -64,8 +59,8 @@ EVERY CLAIM TRACES TO THE PRIMARY SOURCE THAT OWNS IT
 
 ## Red Flags — STOP and Re-verify
 
-| Red flag | What it means |
+| Red flag | Command |
 |---|---|
-| A claim cites a blog/SO/AI summary while the official docs are reachable | The Iron Law is being violated — trace the claim to the owner. |
-| Findings written without opening a single source | You are presenting recall as research — verify or flag every claim. |
-| The findings file answers three questions when one was asked | Scope has ballooned — cut back to the question; move the rest to Leads. |
+| A claim cites a blog/SO/AI summary while the official docs are reachable | Trace the claim to the owner. |
+| Findings written without opening a single source | Verify or flag every claim. |
+| The findings file answers three questions when one was asked | Cut back to the question; move the rest to Leads. |

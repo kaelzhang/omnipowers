@@ -13,150 +13,184 @@ description: Use once per session, the first time you are about to stage or comm
 EVERY COMMIT IS ONE COHERENT CHANGE, CONTAINING ONLY PATHS YOU NAMED
 ```
 
-- Cannot name the paths → you have not decided what the change is; decide it before staging.
-
 ## Scope
 
-This skill governs forming **each individual commit**: what goes in it, how it is staged, what proves it, what its message says. It ends when the commit exists.
+Commit formation — deciding each commit's contents, staging, coherence check, and message, ending when the commit exists.
 
-- Merging, pushing, opening a PR, keeping or discarding the branch, cleaning up a worktree → `finishing-a-development-branch`. "Commit and push" splits: this skill makes the commit, that one handles everything after it.
-- Reviewing the change for defects, a checkpoint review of finished work → `code-auditing`. This skill checks that a commit coheres, not that the code is good.
-- Conflict markers, "both modified", a stopped rebase → `resolving-merge-conflicts`; this skill resumes at the concluding commit of that operation.
-- Any claim that work is done, fixed, or passing → `verification-before-completion`. The check required here MUST NOT be treated as having discharged that claim.
-- Creating an isolated workspace → `using-git-worktrees`.
+Post-commit operations — merging, pushing, opening a PR, keeping or discarding the branch, and cleaning up a worktree, governed by `finishing-a-development-branch`.
+
+Defect and checkpoint reviews — reviews governed by `code-auditing`.
+
+Conflict resolution — conflict markers, "both modified", or a stopped rebase, governed by `resolving-merge-conflicts` until the concluding commit.
+
+Completion claims — claims that work is done, fixed, or passing, governed by `verification-before-completion`.
+
+Workspace isolation — creating an isolated workspace, governed by `using-git-worktrees`.
+
+- Making a completion claim → you MUST NOT treat this skill's coherence check as having discharged that claim.
 
 ## The host owns the commands; this skill owns the discipline
 
-Every git command shown here is illustrative. A convention the host declares governs *form* — staging mechanics, message shape, what is tracked — and MUST NOT be read as relaxing the Iron Law.
+Illustrative commands — git commands shown in this skill, whose form yields to the host's declared staging mechanics, message shape, and tracking convention.
 
-You have not yet resolved this project's convention → read `@host-convention.md` and apply it before your first commit here.
+- The host declares a convention → you MUST NOT read it as relaxing the Iron Law.
 
+### Red flag — unresolved convention
+
+| Thought | Command |
+|---|---|
+| You have not yet resolved this project's convention | read `@host-convention.md` and apply it before your first commit here. |
 
 ## 1. Decide the commit unit
 
-- Each commit MUST represent one coherent logical change.
-- Code, tests, docs, configuration, schema, and fixtures that complete the *same* change MAY travel in one commit.
-- Tests and documentation MUST NOT be split from the implementation they describe.
-- The round touched more than one independently reviewable unit → read `@splitting-a-round.md` and split the commits by unit or phase before committing.
+- Forming a commit → it MUST represent one coherent logical change.
+- Code, tests, docs, configuration, schema, and fixtures complete the same change → they MAY travel in one commit.
+- Forming a commit → tests and documentation MUST NOT be split from the implementation they describe.
+- Pure renames, formatting-only passes, generated-artifact refreshes, dependency-lock refreshes, and large mechanical refactors can be verified independently → they MUST be committed separately from behavior changes.
+- Forming a mechanical commit → it MUST NOT hide a behavior change inside it.
+- Forming a commit → you MUST NOT include unrelated changes or pre-existing dirty work, including your earlier scratch edits, work another process or session left in the tree, or a drive-by fix.
 
-- Pure renames, formatting-only passes, generated-artifact refreshes, dependency-lock refreshes, and large mechanical refactors MUST be committed separately from behavior changes, unless they cannot be verified independently.
-- A mechanical commit MUST NOT hide a behavior change inside it.
-- You MUST NOT include unrelated changes or pre-existing dirty work — your own earlier scratch edits, work another process or session left in the tree, a drive-by fix you noticed. Leave them alone and say so in your final response.
+### Red flag — multiple commit units
+
+| Thought | Command |
+|---|---|
+| The round touched more than one independently reviewable unit | read `@splitting-a-round.md` and split the commits by unit or phase before committing. |
 
 ## 2. Stage explicitly by path
 
-- Files MUST be staged by explicit path.
-- These MUST NOT be used:
+- Staging files → files MUST be staged by explicit path.
+- Staging or committing → these MUST NOT be used:
   - `git add -A` / `git add --all` / `git add .` / `git add :/`
   - `git add -u` / `git add --update`
   - `git commit -a` / `--all` / `-am` / `-aF` / `-a --amend`
-- `git add <directory>` MAY be used ONLY when that directory is wholly owned by this commit's logical change. Otherwise name the files.
-- Hunk-level staging (`git add -p` / `--patch`) MUST NOT be used. A file holds two logical changes → complete and commit one at a time.
+- A directory is wholly owned by this commit's logical change → `git add <directory>` MAY be used ONLY under that condition.
+- Staging files → hunk-level staging (`git add -p` / `--patch`) MUST NOT be used.
 
 ## 3. Inspect before you commit
 
-Before every commit you MUST:
+Before every commit → you MUST:
 
-1. Run `git status --short` and account for **every** entry — each one is either part of this commit or deliberately left out. An entry you cannot explain → stop; do not commit past it.
+1. Run `git status --short` and account for every entry as part of this commit or deliberately left out.
 2. Read the full diff of what you are about to commit (`git diff --cached -- <paths>`).
 
-- You MUST NOT commit a diff containing credentials, tokens, private keys, or other secrets.
-- You SHOULD NOT commit debug prints, commented-out experiments, or machine-specific absolute paths.
-- Before adding an untracked file, decide whether it belongs in history at all. Build outputs, generated artifacts, dependency directories, logs, caches, coverage output, local environment files, and editor/OS metadata MUST NOT be committed.
+- A diff contains credentials, tokens, private keys, or other secrets → you MUST NOT commit it.
+- Forming a commit → you SHOULD NOT commit debug prints, commented-out experiments, or machine-specific absolute paths.
+- Forming a commit → build outputs, generated artifacts, dependency directories, logs, caches, coverage output, local environment files, and editor/OS metadata MUST NOT be committed.
 - You introduce something that produces such artifacts → its ignore rule MUST land in the same commit or earlier.
-- Which paths the host ignores is the host's convention: extend its existing ignore file rather than inventing a parallel one.
-- A code file in this commit, first added to the repository on or after 2026-01-01, exceeds 1000 lines → you MUST split it by responsibility before committing. A file added by this commit counts as added now; an existing file's first commit is `git log --diff-filter=A -- <file>`.
+- A code file in this commit, first added to the repository on or after 2026-01-01, exceeds 1000 lines → you MUST split it by responsibility before committing.
 - A documentation file (Markdown, docs) in this commit exceeds 2000 lines → you MUST split it by topic before committing.
-- The host declares a lower limit for a file type → that limit replaces the one above. A host limit higher than the one above MUST NOT be applied.
-- These file types MAY exceed both limits, and you SHOULD NOT split them for length: data files (JSON, YAML, CSV, TOML data), configuration files, lockfiles, generated code and generated artifacts, vendored third-party code, test fixtures, snapshots and golden files, database migrations, and static lookup tables.
+- A host limit is higher than the applicable limit above → it MUST NOT be applied.
+- A file is a data file (JSON, YAML, CSV, TOML data), configuration file, lockfile, generated code or artifact, vendored third-party code, test fixture, snapshot or golden file, database migration, or static lookup table → it MAY exceed both limits.
+- A file belongs to one of those exempt types → you SHOULD NOT split it for length.
+
+First-added date — the current date for a file added by this commit; for an existing file, the date of its first commit from `git log --diff-filter=A -- <file>`.
+
+Applicable file-length limit — the host's declared limit for the file type when lower than this skill's limit; otherwise this skill's limit.
 
 ## 4. Prove the commit coheres
 
-Before each commit you MUST run the smallest check that proves this commit's contents hold together, and you MUST read its output. Running it and reading it is the `verification-before-completion` gate, and its rule on when a result stands applies. Smallest means smallest *sufficient*, scaled to what changed and to the host's tooling:
+Smallest sufficient check — a check scaled to the changed contents and host tooling: whitespace/conflict-marker check (`git diff --check`) for prose or docs only; relevant tests plus host-required type, lint, or build checks for code; a parser or application check for configuration or schema.
 
-- prose or docs only — a whitespace/conflict-marker check (e.g. `git diff --check`) and a read of the result;
-- code — the relevant tests, plus whatever type, lint, or build check the host requires for that area;
-- configuration or schema — whatever parses or applies it.
+Verification gate — running the check and reading its output, governed by `verification-before-completion`, including its rule on when a result stands.
 
-- The check fails → you MUST either fix it or narrow the commit until what remains passes. A commit whose own contents do not hold together MUST NOT be made.
-- An unmet *quality bar* is not a failed check → step 7 governs it.
+- Before each commit → you MUST run the smallest check that proves its contents hold together.
+- Before each commit → you MUST read the check's output.
+- The check fails → you MUST either fix it or narrow the commit until what remains passes.
+- A commit's own contents do not hold together → it MUST NOT be made.
 
 ## 5. Commit with an explicit pathspec
 
-`git commit` MUST name the paths on the command line:
+- Running `git commit` → it MUST name the paths on the command line:
 
 ```bash
 git commit -m "<subject>" -- path/to/file path/to/other
 ```
 
-- Plain `git commit` with no pathspec MUST NOT be used — it takes the entire index, including paths staged by another process or left over from unrelated dirty work.
-- A pathspec commit records the **working-tree** content of the named paths, not what you staged. You MUST NOT edit those paths between reading the diff and committing; you did → re-stage and re-read before committing.
-- An amend that changes only the message names no paths. An amend that changes file content MUST carry a pathspec like any other commit. Both remain subject to History integrity below.
-- **The one exception.** Git refuses a pathspec while a merge, rebase, cherry-pick, or revert is in progress (`fatal: cannot do a partial commit during a merge`). Concluding one of those → read `@mid-operation-commit.md` and follow its checklist before committing; that commit takes the whole index.
+- Outside the mid-operation exception → plain `git commit` with no pathspec MUST NOT be used.
+- Between reading the diff and committing → you MUST NOT edit the named paths.
+- An amend changes file content → it MUST carry a pathspec like any other commit.
+
+Message-only amend — an amend naming no paths, subject to History integrity.
+
+Mid-operation exception — a concluding commit of an in-progress merge, rebase, cherry-pick, or revert for which Git refuses a pathspec (`fatal: cannot do a partial commit during a merge`), recording the whole index.
+
+### Red flag — concluding an operation
+
+| Thought | Command |
+|---|---|
+| Concluding one of those operations | read `@mid-operation-commit.md` and follow its checklist before committing. |
 
 ## 6. Write the message
 
-Follow the convention resolved above. Whatever its form:
+Obvious commit — a commit whose diff alone answers why, without requiring deliberation about whether it is obvious.
 
-- The subject MUST name **what the commit changes**, not merely where.
-- The message MUST stand alone. It MUST NOT depend on chat history, a conversation, a ticket only you can see, or your own session memory.
-- **Non-obvious commits MUST include a body** covering three things: the problem or gap in current behavior, the solution chosen, and the verification performed. A material design choice was made → the body SHOULD also name the alternative rejected and why. A commit is "obvious" only when the diff alone answers *why*; you have to think about whether it is obvious → it is not.
-- **Breaking changes MUST be marked** — by the host's marker if it has one, otherwise `!` after the type/scope in the subject or a `BREAKING CHANGE:` footer saying what breaks and what to do instead.
-
-**Tool attribution is prohibited.**
-
-- Commit messages MUST NOT credit a model, assistant, agent, CLI, harness, or runtime configuration — `Co-Authored-By:` naming a model or tool, `Generated-by:`, or any variant.
-- You MUST NOT add yourself, your model name, your tool name, or your configuration to a commit message.
+- Writing the subject → it MUST name what the commit changes, not merely where.
+- Writing the message → it MUST stand alone.
+- Writing the message → it MUST NOT depend on chat history, a conversation, a ticket only you can see, or your own session memory.
+- A commit is non-obvious → it MUST include a body covering the problem or gap in current behavior, the solution chosen, and the verification performed.
+- A material design choice was made → the body SHOULD also name the alternative rejected and why.
+- A commit contains breaking changes → they MUST be marked by the host's marker if it has one, otherwise `!` after the type/scope in the subject or a `BREAKING CHANGE:` footer saying what breaks and what to do instead.
+- Writing commit messages → they MUST NOT credit a model, assistant, agent, CLI, harness, or runtime configuration, including `Co-Authored-By:` naming a model or tool, `Generated-by:`, or any variant.
+- Writing a commit message → you MUST NOT add yourself, your model name, your tool name, or your configuration.
 - Your harness appends such a trailer by default → you MUST remove it before committing.
-- Such a trailer is already written and the commit is **not yet published** → you MUST amend it away.
-- Trailers crediting *people* — a human co-author, reviewer, or reporter — are the host's convention to require or forbid, and are unaffected by this rule.
+- Such a trailer is already written and the commit is not yet published → you MUST amend it away.
+
+Human attribution — trailers crediting a human co-author, reviewer, or reporter, governed by the host's convention.
 
 ## 7. End the round committed and pushed
 
-- A round of work that changes files MUST end with those changes committed **and pushed** before your final response, unless the user or the host's declared convention says otherwise. Keep working until the round is coherent, verified, and committed.
-- You do not commit → you MUST state exactly what is left uncommitted and why. Nothing changed → you MUST say that explicitly rather than leave it ambiguous.
-- An unmet quality bar — coverage below the host's target, a benchmark not yet met, a follow-up case not handled, a known blocker — MUST NOT be used as a reason to withhold the round's commits. Commit the coherent checkpoint and record the gap:
-  1. in the commit body, stating plainly what is not yet met;
-  2. at the code site, as a comment where the gap lives, when the gap has a site;
-  3. in the host's `work-state` document, located per `using-omnipowers`, fallback `.omnipowers/`.
-- Committing a checkpoint is never a claim that the work is complete. A blocker remains → commit first, then report the blocker and ask for direction. You MUST NOT present blocked work as finished.
-- Once the round's commits exist you MUST push the current branch to its remote, and you MUST NOT ask whether to push or offer it as an option:
-  - Push the **current branch** to its configured upstream. It has none → set one to the default remote under the same branch name (`git push -u origin <branch>`). You MUST NOT push a branch other than the one you worked on.
-  - The host declares a `vcs` convention covering when or where work is published → that convention governs over this rule.
-  - There is no remote at all → the round ends committed, and you MUST say so rather than reporting it as pushed.
-  - The push is rejected (the remote moved ahead) → you MUST integrate and retry, and you MUST NOT reach for `--force` (see History integrity).
-  - Report what landed: the branch, the remote, and the commits.
+Unmet quality bar — coverage below the host's target, a benchmark not yet met, a follow-up case not handled, or a known blocker, distinct from a failed coherence check.
+
+- A round changes files and neither the user nor the host's declared convention says otherwise → it MUST end with those changes committed and pushed before your final response.
+- You do not commit → you MUST state exactly what is left uncommitted and why.
+- Nothing changed → you MUST say that explicitly.
+- A quality bar is unmet → it MUST NOT be used as a reason to withhold the round's commits.
+- Work is blocked → you MUST NOT present it as finished.
+The round's commits exist → you MUST push the current branch, MUST NOT ask whether to push or offer it as an option, and MUST NOT push a branch other than the one you worked on:
+
+1. Push the current branch to its configured upstream; when none exists, set one to the default remote under the same branch name (`git push -u origin <branch>`).
+2. Report what landed: the branch, the remote, and the commits.
+
+- The host declares a `vcs` convention covering when or where work is published → that convention governs over this push rule.
+- The round's commits exist and there is no remote → you MUST say the round ended committed rather than reporting it as pushed.
+- The push is rejected after the remote moved ahead → you MUST integrate and retry.
+- The push is rejected after the remote moved ahead → you MUST NOT reach for `--force` (see History integrity).
 
 ## History integrity
 
-- You MUST NOT rewrite commits that others may already have — no amend, rebase, squash, or force-push over history published to a shared branch. Correct it with a new commit instead.
-- You MUST NOT force-push without the user's explicit instruction, even on a branch you believe is yours alone.
-- Unpublished local commits MAY be amended or reorganized freely.
+- Commits may already be held by others → you MUST NOT rewrite them through amend, rebase, squash, or force-push over history published to a shared branch.
+- The user has not explicitly instructed a force-push → you MUST NOT force-push, including on a branch you believe is yours alone.
+- Local commits are unpublished → they MAY be amended or reorganized freely.
 
 ## Red Flags — STOP
 
-Any of these → stop; you are about to violate the Iron Law.
-
-- about to type `git add -A`, `git add .`, `git add -u`, or `git commit -a`
-- about to run `git commit` with no pathspec outside the one named exception
-- reaching for `git add -p` to separate two changes inside one file
-- `git status` shows entries you cannot account for, and you commit anyway
-- you have not read the diff you are about to commit — or you edited those files after reading it
-- the commit message needs "and" to describe two unrelated things
-- a rename/format/generated-file diff with a behavior change tucked inside it
-- committing without running any check because "it's just a small change"
-- about to amend or force-push something already published
-- ending the round with commits sitting unpushed, or asking the user whether to push them
-- a model, agent, or tool attribution trailer in the message you are about to write
-- the round is ending and coherent changes are still uncommitted
+| Thought | Command |
+|---|---|
+| Cannot name the paths | decide the change before staging. |
+| About to type `git add -A`, `git add .`, `git add -u`, or `git commit -a` | stop. |
+| About to run `git commit` with no pathspec outside the named exception | stop. |
+| Reaching for `git add -p` to separate two changes inside one file | complete and commit one at a time. |
+| `git status` shows entries you cannot account for | stop before committing. |
+| You have not read the diff, or edited the paths after reading it | re-stage and re-read before committing. |
+| The message needs "and" to describe two unrelated things | stop. |
+| A rename/format/generated-file diff contains a behavior change | stop. |
+| "It's just a small change" | stop before committing without a check. |
+| About to amend or force-push something already published | stop. |
+| Ending the round with unpushed commits, or asking whether to push them | stop. |
+| A model, agent, or tool attribution trailer is in the message | stop. |
+| The round is ending with coherent changes uncommitted | stop. |
 
 ## Rationalizations
 
-You notice yourself reasoning toward a shortcut at commit time → read `@rationalizing.md` and check the thought against it before acting.
+### Red flag — shortcut reasoning
+
+| Thought | Command |
+|---|---|
+| You notice yourself reasoning toward a shortcut at commit time | read `@rationalizing.md` and check the thought against it before acting. |
 
 ## Before You Commit — checklist
 
-You MUST be able to check every box:
+Before committing → you MUST be able to check every box:
 
 - [ ] This commit is one coherent logical change, statable in one sentence
 - [ ] Tests, docs, and config that complete this change are in it; nothing unrelated is

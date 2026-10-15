@@ -13,18 +13,22 @@ description: Use when the user explicitly starts or ends continuous work mode �
 THE QUEUE IS CHECKED BY A COMMAND, NOT BY MEMORY — REPORTING IS THE LAST STEP, NEVER THE DELIVERABLE
 ```
 
-A rule that must be recalled while writing a completion summary is recalled least often, because that is the moment of finishing something. This mode replaces the recollection with a gate the host runs.
-
 ## When to Use
 
 - The user starts the mode in this session → you MUST arm it before the next unit of work.
 - The user ends it, or the goal it was armed for is delivered → you MUST disarm it.
-- The user has not asked for it → you MUST NOT arm it, MUST NOT install the gate, and MUST NOT ask whether to. An armed gate changes when the host lets a round end; the user's own words are the only thing that starts it.
+- The user has not asked for it → you MUST NOT arm it.
+- The user has not asked for it → you MUST NOT install the gate.
+- The user has not asked for it → you MUST NOT ask whether to.
 
 ## Arming the Mode
 
-1. **Install the gate.** The gate is absent → read `@installing-the-gate.md` and install it. The user starting the mode is the authorization: the gate is what the mode is, not a further decision. You MUST NOT ask consent for it, and you MUST NOT install it for any other reason. Name the file you changed when you confirm in step 3.
-2. **Write the sentinel** at `<project-root>/.omnipowers/continuous-mode`. The gate is inert while this file is absent, so the mode is armed and disarmed by this file alone:
+The gate is absent → read `@installing-the-gate.md` and install it.
+
+- The user starts the mode → you MUST NOT ask consent for gate installation.
+- The user has not started the mode → you MUST NOT install the gate.
+
+Sentinel — `<project-root>/.omnipowers/continuous-mode`, whose presence arms the mode and whose absence disarms it, with this template:
 
 ```
 goal=<one line: what this mode delivers>
@@ -35,94 +39,62 @@ defects=<path to a checklist file>           # optional, repeatable
 repo=<path to another repo to watch>         # optional, repeatable
 ```
 
-Below those, write the **acceptance list** — one `- [ ]` per line, at least one. Each item MUST be observable in the product, never a step you remember taking. You MUST write the list in one pass from what the user already stated: you MUST NOT research or design to produce it, and you MUST NOT add scope. Nothing in the request is observable → settle the delivery criteria with the user first, then arm. You MUST check items off as they land.
+Acceptance list — one `- [ ]` item per line below the sentinel fields, with at least one item; delivery means every item checked, and non-delivery means any item unchecked.
 
-`.omnipowers/` is not git-ignored → you MUST add it to `.gitignore` before writing the sentinel. A committed sentinel arms the mode for everyone who clones the project.
-
-3. **Confirm in one line** the goal you wrote into the sentinel, and continue working in the same reply. You MUST NOT end the round on the confirmation.
+- An item is written in the acceptance list → it MUST be observable in the product, never a step you remember taking.
+- Arming the mode → you MUST write the acceptance list in one pass from what the user already stated.
+- Arming the mode → you MUST NOT research or design to produce the acceptance list.
+- Arming the mode → you MUST NOT add scope to the acceptance list.
+- An acceptance item lands → you MUST check it off.
+- `.omnipowers/` is not git-ignored → you MUST add it to `.gitignore` before writing the sentinel.
+- The arming confirmation is sent → you MUST NOT end the round on the confirmation.
 
 ## The Order
 
-A task returns, or a round is about to end:
+Checkpoint (step 1) — at a task return or before a round ends, running `@checkpoint.sh`, or the command the gate reports.
 
-1. Run the checkpoint — `@checkpoint.sh`, or the command the gate reports.
-2. Run the Dispatch Block of the `keeping-work-in-flight` skill against the checkpoint's findings and the acceptance items still open — including its check that the next serial stretch is not splittable. That skill owns counting, splitting, and dispatching; this mode owns only that they happen before the reply.
-3. Clear what the checkpoint found and can be cleared now.
-4. **Then** write the report.
+Dispatch (step 2) — running the Dispatch Block of the `keeping-work-in-flight` skill against the checkpoint's findings and open acceptance items, including its check that the next serial stretch is not splittable.
 
-You MUST NOT read a returned report, and MUST NOT write any part of a reply, before steps 1 and 2. A report is the sentence that follows the work; it is not the work.
-
-## What the Checkpoint Reports
-
-- uncommitted changes, per module, in every watched repo;
-- commits that exist only locally, and branches never pushed;
-- untracked files that committed code already references;
-- open items on the declared defect checklists;
-- symbols this round defined that nothing outside their own file references — capability built with no way in.
-
-The checkpoint sees the filesystem and git. It cannot see what is still running → you MUST count that yourself in step 2.
+- Steps 1 and 2 have not run → you MUST NOT read a returned report.
+- Steps 1 and 2 have not run → you MUST NOT write any part of a reply.
+- Step 2 runs → you MUST count what is still running yourself.
 
 ## Ending a Round
 
-While the mode is armed, exactly three things end a round:
+Permitted round end — delivery of the goal with an empty checkpoint; a required decision the user owns about unclear goals or delivery criteria, a blocker, a serious risk, or a disagreement; or the user's stop.
 
-- the goal is delivered and the checkpoint is empty;
-- a decision the user owns is required — the goal or its delivery criteria are unclear, a blocker needs a ruling, a serious risk or a disagreement needs settling;
-- the user stops the mode.
-
-You MUST NOT end a round for any other reason. In particular:
-
-- You MUST NOT end a round to ask anything the `brainstorming` skill forbids asking. Work that is not blocked and needs no ruling is dispatched now, not offered.
-- You MUST NOT end a round on a progress summary, a completed task, or a delivered report.
-- You are writing "I have finished X, next I could do Y, would you like me to continue?" → Y is unblocked and needs no ruling → you MUST do Y instead of sending that sentence.
-
-The gate blocks a round end once per distinct checkpoint state and never twice for the same one. A finding you genuinely cannot clear MUST be named in the report; it MUST NOT be left silent because the gate let the round through.
+- The mode is armed → you MUST NOT end a round for any reason outside the permitted round ends.
+- The mode is armed → you MUST NOT end a round to ask anything the `brainstorming` skill forbids asking.
+- The mode is armed → you MUST NOT end a round on a progress summary, a completed task, or a delivered report.
+- You are writing "I have finished X, next I could do Y, would you like me to continue?" and Y is unblocked and needs no ruling → you MUST do Y instead of sending that sentence.
+- You cannot clear a finding → you MUST name it in the report.
+- You cannot clear a finding and the gate let the round through → you MUST NOT leave it silent.
 
 ## Disarming
 
-Disarming removes both halves: the sentinel, the owner file beside it, and the gate's marker, **and the gate itself** — its registration and its installed script. An inert gate is still a script the host runs at the end of every turn in a project whose work is finished. There is no exception: the mode is cheap to install again the next time the user starts it.
+Disarming — removing the sentinel, its adjacent owner file, the gate's marker, the gate's registration, and its installed script.
 
-You MUST disarm when any of these is true:
-
-- the goal the mode was armed for is delivered;
-- the user ends the mode;
-- the work turns into an unrelated task. You MUST NOT carry an armed mode into one.
-
-**The acceptance list decides when the mode ends — never the checkpoint**, whose queue is never empty in a healthy project.
-
-- Every item checked → delivered. You MUST disarm in that same round, even when the checkpoint still lists findings; name those as follow-up.
-- Any item unchecked → not delivered, whatever else is finished.
-- A finding is not an item. You MUST NOT promote one into the list or re-arm for it; only the user adds an item.
-- An item proves unreachable → that is a decision the user owns; surface it, and the mode ends with it.
-
-A disarmed gate cannot speak — the host shows nothing from a hook that lets the turn end — so removal MUST be decided while you are still running.
-
-The mode outliving its session is prevented, not merely discouraged. The gate claims the session on its first fire, and it refuses a mode that a different session armed or that has passed its `expires` life. It says which files to delete and blocks once, so a mode nobody owns costs one interruption and then clears.
+- The goal the mode was armed for is delivered → you MUST disarm.
+- The user ends the mode → you MUST disarm.
+- The work turns into an unrelated task → you MUST disarm.
+- The work turns into an unrelated task → you MUST NOT carry an armed mode into it.
+- Every acceptance item is checked → you MUST disarm in that same round, even when the checkpoint still lists findings.
+- A checkpoint finding exists → you MUST NOT promote it into the acceptance list or re-arm for it.
+- The mode is being disarmed → removal MUST be decided while you are still running.
 
 ## Red Flags — STOP if you catch yourself thinking
 
 | Thought | What to do instead |
 | --- | --- |
 | "I finished this round, I'll report and see what they say." | Run the checkpoint, dispatch, then report. |
-| "I'll check the queue when I write the summary." | The summary is the moment you will forget. Run the command first. |
-| "Asking whether to continue is the cautious thing to do." | It moves scheduling onto the user. Dispatch the unblocked work. |
-| "The gate let me through, so the queue must be clear." | The gate blocks once per state. Read what it printed. |
-| "The user is not watching, I'll pause here." | Nothing pauses a round except delivery, a ruling, or the user. |
+| "I'll check the queue when I write the summary." | Run the command first. |
+| "Asking whether to continue is the cautious thing to do." | Dispatch the unblocked work. |
+| "The gate let me through, so the queue must be clear." | Read what it printed. |
+| "The user is not watching, I'll pause here." | End the round only on delivery, a ruling, or the user's stop. |
 | "I'll arm the mode, it will help." | Arm it only when the user starts it. |
-| "The gate is complaining about a mode I never started." | It is a leftover. Ask the user, then delete the files it named. |
-| "The goal is delivered, I'll leave the mode on in case." | Disarm it. An armed mode gates the next, unrelated task. |
-| "The gate is harmless when disarmed, I'll leave it installed." | Remove it with the sentinel. Installing it again costs one step. |
-| "The checkpoint still lists things, so the mode is not done." | The goal decides. Report the rest as follow-up and disarm. |
-| "While I am in this mode I may as well fix these too." | Findings are follow-up. Only the user sets a goal. |
-| "Should I install the hook?" | They started the mode. Install it and say which file you changed. |
-
-## Checklist
-
-Before ending any round while the mode is armed:
-
-- [ ] The checkpoint ran this round, and I read its output.
-- [ ] The Dispatch Block ran before I read any report or wrote any reply.
-- [ ] Every finding is cleared, dispatched, or named in the report.
-- [ ] This round ends on delivery, a decision the user owns, or the user's stop — nothing else.
-- [ ] The mode is disarmed the moment its goal is delivered, whatever the checkpoint still lists.
-- [ ] Disarming removed the gate too — registration, script, and workbench files.
+| "The gate is complaining about a mode I never started." | Ask the user, then delete the files it named. |
+| "The goal is delivered, I'll leave the mode on in case." | Disarm it. |
+| "The gate is harmless when disarmed, I'll leave it installed." | Remove it with the sentinel. |
+| "The checkpoint still lists things, so the mode is not done." | Report the rest as follow-up and disarm. |
+| "While I am in this mode I may as well fix these too." | Leave goal-setting to the user. |
+| "Should I install the hook?" | Install it and say which file you changed. |

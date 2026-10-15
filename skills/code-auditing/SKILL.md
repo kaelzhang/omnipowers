@@ -7,148 +7,153 @@ description: Use when reviewing, auditing, or assessing code ("代码评审", "�
 
 > Normative keywords — MUST, MUST NOT, REQUIRED, SHALL, SHALL NOT, SHOULD, SHOULD NOT, MAY — are used as defined in BCP 14 (RFC 2119, RFC 8174), and only when capitalized.
 
-## Overview
+## Definitions
 
-This skill has two modes — **checkpoint review** of finished work before it advances (a branch, a task, a diff), and **standards audit** against the project's own checklist. Phase 1 routes; Phases 2, 3, and 4 apply to both.
+Checkpoint review — an independent review of finished work before it advances, governed by the work's requirements and the reviewer brief.
 
-**Iron Law: You MUST NOT claim code is reviewed without an independent pass over the actual code with evidence for every finding.**
+Standards audit — an assessment against the host project's checklist.
 
-Everything this skill creates MUST live inside the audited project, in the locations that project declares (fallback: `<project-root>/.omnipowers/`). This skill MUST NOT depend on any tool, service, or repository outside the audited project.
+Standards source — the host's `standards` artifact resolved per `using-omnipowers`; step 3 is a standards set the project publishes and expects contributors to follow; step 4 is the absence of published standards.
+
+Audit report — a `records` artifact with its location resolved per `using-omnipowers` and this fallback:
+
+```
+<project-root>/.omnipowers/reviews/<YYYY-MM-DD>-<HHMMSS>-<review-target>.md
+```
+
+`<project-root>` — the repository root, or the working directory outside a repository.
+
+`<review-target>` — a short kebab-case slug of what was reviewed.
+
+## Governing rules
+
+- Before claiming code is reviewed → you MUST NOT make that claim without an independent pass over the actual code with evidence for every finding.
+- For every artifact this skill creates → it MUST live inside the audited project, in the locations that project declares (fallback: `<project-root>/.omnipowers/`).
+- When using this skill → it MUST NOT depend on any tool, service, or repository outside the audited project.
 
 ## When to Use
 
-You MUST use this skill when:
+Completion of one task inside an unfinished plan — not a review trigger.
+
+When any of these conditions holds → you MUST use this skill:
 
 - a plan, a major feature, or a complex bug fix is complete;
 - work is about to be merged, opened as a pull request, released, handed over, depended on, or taken into a refactor;
 - you are asked to audit or assess a codebase, a PR, a diff, or a commit range;
 - you are stuck and a fresh perspective would help.
 
-- An ordinary commit on your own branch → not a review trigger.
-- One task inside a plan → not a review trigger. The skill executing the plan verifies each task; this skill reviews the finished plan.
-- Work committed onto a branch you will review as a range → review it then, once, against the whole range.
-- A review is warranted → you MUST NOT skip or shallow it because the change "is simple," "is small," or "obviously works." Only the absence of work about to advance lifts the review; size never does.
+A review is warranted → you MUST NOT skip or shallow it on the grounds that the change "is simple," "is small," or "obviously works."
 
 ## Phase 1 — Route: checkpoint review or standards audit
 
-Determine the mode from the target, then follow that branch.
-
-| The target is… | Mode | What governs the checks |
-|---|---|---|
-| Finished work advancing to the next step (a branch, a plan task, a feature, a PR, a diff before merge or refactor) | **Checkpoint review** | The work's own requirements + the reviewer brief |
-| The codebase, a subsystem, or a change being assessed against the project's standard | **Standards audit** | The project checklist (generated on first use) |
-
-Both apply — a finished branch in a project that has a checklist → you MUST run the checkpoint review and use the checklist as an additional lens.
+A finished branch has a project checklist → you MUST run the checkpoint review and use the checklist as an additional lens.
 
 ### 1a. Checkpoint review
 
-**Capture the range first.** The reviewed range MUST cover the entire body of work, not just the last commit:
+For a checkpoint review → the reviewed range MUST cover the entire body of work, not just the last commit:
 
 ```bash
 BASE_SHA=$(git merge-base HEAD <main-branch>)   # feature / pre-merge review
 HEAD_SHA=$(git rev-parse HEAD)
 ```
 
-- Exactly one commit is under review, as a single-task checkpoint → `BASE_SHA=$(git rev-parse HEAD~1)` is permitted; in every other case you MUST NOT use it.
-- The work is uncommitted → commit it, or stash it and review the stash. You MUST review a committed range.
+- The review is not an exactly-one-commit single-task checkpoint → you MUST NOT use `BASE_SHA=$(git rev-parse HEAD~1)`.
+- For a checkpoint review → you MUST review a committed range.
+- For a checkpoint review → you MUST review the work against what it was supposed to do.
+- No requirements source exists → you MUST state explicitly that the review ran without a requirements source (quality-axis only, degraded).
 
-**Find the requirements.** You MUST review the work against what it was supposed to do. Discover the requirements source in this order: the design document this work implements, wherever the project keeps them → the task brief the implementer worked from → the plan file → requirement references in the commit messages → ask the user. No source exists → you MUST state explicitly that the review ran without a requirements source (quality-axis only, degraded).
+#### Independent pass (checkpoint review)
 
-**Run an independent pass.** Checkpoint review → read `@reviewer-brief.md` and apply it.
+Checkpoint review → read `@reviewer-brief.md` and apply it.
 
-- **Subagents available:** you MUST dispatch one independent reviewer using that brief with the placeholders filled in; it MUST run read-only.
-- **No subagents:** you MUST perform the review yourself as a deliberate, separate pass — treat the diff as if written by someone else, work only from the requirements and the diff (never your memory of writing it), read the entire diff top to bottom before concluding, apply the full brief, and keep the pass read-only (record findings first; act in Phase 4). This fallback MUST NOT be a token gesture.
+- Subagents are available → you MUST dispatch one independent reviewer using that brief with the placeholders filled in.
+- An independent reviewer is dispatched → it MUST run read-only.
+- No subagents are available → you MUST perform the review yourself as a deliberate, separate pass: treat the diff as if written by someone else, work only from the requirements and the diff (never your memory of writing it), read the entire diff top to bottom before concluding, apply the full brief, and keep the pass read-only (record findings first; act in Phase 4).
+- The no-subagent fallback is used → it MUST NOT be a token gesture.
 
 ### 1b. Standards audit
 
-**First, find the criteria.** They are the host's `standards` artifact: resolve their source per `using-omnipowers`, where step 3 is a standards set the project already publishes and expects contributors to follow, and step 4 means the project publishes none.
+- Standards-source step 1, 2, or 3 applies → you MUST audit against that source.
+- Standards-source step 1, 2, or 3 applies → you MUST NOT generate a checklist of your own.
+- The published source leaves a checklist dimension below uncovered → you MAY audit that dimension against the portable baseline in `@code-smells.md`.
+- The portable baseline is used for an uncovered dimension → you MUST say so in the report.
 
-**1, 2, or 3 applies → you MUST audit against that source, and you MUST NOT generate a checklist of your own.** The published source leaves one of the dimensions below uncovered → you MAY audit that dimension against the portable baseline in `@code-smells.md`, and you MUST say so in the report.
+Standards-source step 4 applies → you MUST generate the checklist before auditing anything, using these steps:
 
-**4 applies → generate a checklist, and you MUST generate it before auditing anything:**
+1. Survey the project: read enough of it to ground the checklist in this codebase, covering languages, frameworks, architecture and layering, the domain, the security/trust surface, the concurrency model, data and schema, build/release, the test setup, and the project's own conventions (`CLAUDE.md` / `AGENTS.md` / docs / linters).
+2. Draft a multi-dimensional checklist specialized to this project; if the project has no code or behavior to which a dimension applies, drop it and state why.
+3. Optimize it by bounded iteration: apply at least three distinct improvement lenses — completeness / missing failure modes, project-fit / actionability, redundancy / granularity — each as its own round; run a further round only if the last one still found a real gap; stop at the first round that produces no material change.
+4. Write it in the resolved `standards` location, falling back to `<project-root>/.omnipowers/rules/CODE_AUDITING.md` when the project has none; give it a short header (project, generated date, dimension list) and group items by dimension.
+5. Present it with the resolved location and obtain approval, incorporating the user's edits, before auditing against it.
 
-1. **Survey the project.** Read enough of it to ground the checklist in THIS codebase: languages, frameworks, architecture and layering, the domain, the security/trust surface, the concurrency model, data and schema, build/release, the test setup, and the project's own conventions (`CLAUDE.md` / `AGENTS.md` / docs / linters).
-2. **Draft a multi-dimensional checklist.** It MUST cover at least these dimensions, each specialized to this project: correctness & logic; security & trust boundaries; error handling & failure modes; concurrency, ordering & resource lifecycle; performance & complexity; API / contract / backward compatibility; data, schema & migrations; tests & coverage (incl. a regression test for every fixed bug); readability, naming & maintainability; structure, layering & boundaries; dependencies & supply chain; documentation & comments. A dimension genuinely cannot apply → drop it and state why. Each item MUST be a concrete, checkable question, never a vague "is it good?".
-3. **Optimize it by bounded iteration.** Apply at least three distinct improvement lenses — completeness / missing failure modes, project-fit / actionability, redundancy / granularity — each as its own round; run a further round only if the last one still found a real gap. Stop at the first round that produces no material change, and you MUST NOT exceed **5** rounds.
-4. **Write it** where the project keeps its criteria — the `standards` location resolved above, falling back to `<project-root>/.omnipowers/rules/CODE_AUDITING.md` when the project has none (`<project-root>` is the repository root, or your working directory if it is not a repo). Give it a short header (project, generated date, dimension list) and group items by dimension.
-5. **Get approval before first use.** You MUST present it — with the location you resolved — and obtain approval, incorporating the user's edits, before auditing against it. You SHOULD treat it as a commit-worthy project artifact.
-
-**A generated checklist already exists → you MUST use it as-is for this audit**, and you MUST NOT rewrite it mid-audit; improvements go through Phase 5.
-
-Scope the depth to the target:
-
-- Whole-project audit → check every item against the whole codebase.
-- Change audit → consider every item, but focus the deep checks on the changed surface and its blast radius, ordered by risk. You MUST NOT re-audit unrelated code line by line.
+- When generating a checklist → it MUST cover at least these dimensions, each specialized to this project: correctness & logic; security & trust boundaries; error handling & failure modes; concurrency, ordering & resource lifecycle; performance & complexity; API / contract / backward compatibility; data, schema & migrations; tests & coverage (incl. a regression test for every fixed bug); readability, naming & maintainability; structure, layering & boundaries; dependencies & supply chain; documentation & comments.
+- For each generated checklist item → it MUST be a concrete, checkable question, never a vague "is it good?".
+- When optimizing a generated checklist → you MUST NOT exceed **5** rounds.
+- Before first use of a generated checklist → you MUST present it with its resolved location and obtain approval, incorporating the user's edits, before auditing against it.
+- For a generated checklist → you SHOULD treat it as a commit-worthy project artifact.
+- A generated checklist already exists → you MUST use it as-is for this audit.
+- A generated checklist already exists → you MUST NOT rewrite it mid-audit.
+- During a change audit → you MUST NOT re-audit unrelated code line by line.
 
 ## Phase 2 — Rigor (both modes)
 
-For everything you check, you MUST:
+For everything you check → you MUST:
 
 - inspect the actual code — read it, do not assume;
 - reach a verdict — **pass**, **fail**, **concern**, or **n/a**, with a one-line reason for n/a;
 - for every `fail` / `concern`, record a concrete `file:line`, the evidence, a **severity**, and a specific, actionable fix;
-- verify each finding against the real code and raise no speculative finding; you cannot verify one → say so and mark it unverified;
+- verify each finding against the real code and raise no speculative finding; if you cannot verify one, state that and mark it unverified;
 - apply YAGNI and context — before flagging "missing X", confirm X is needed; before flagging a pattern, check for a legacy / compatibility / intentional reason;
 - skip anything the project's tooling already enforces (linter, formatter, type checker);
 - be specific and non-performative — state the issue and the fix, with no praise or filler.
 
-**Report the two axes separately** — spec conformance (missing / unrequested / wrong, each quoting the requirement it violates) and code quality. A finding MUST NOT be re-ranked across axes.
+For every finding → it MUST NOT be re-ranked across the spec-conformance and code-quality axes.
 
 ## Phase 3 — Record the audit
 
-Scale the record to the audit:
-
-- A standards audit, a whole-project or subsystem assessment, a pre-release review, or any audit the user asked to have on file → a written file is REQUIRED.
-- A checkpoint review of a change about to merge → reporting the findings in your reply is sufficient; the file is OPTIONAL.
-
-Either way, the report MUST contain: the target and scope (including the reviewed range for a checkpoint review), the requirements or checklist reference, every verdict, all findings (each with `file:line` + severity + fix), and the overall assessment.
-
-An audit report is a `records` artifact: resolve its location per `using-omnipowers`, fallback:
-
-```
-<project-root>/.omnipowers/reviews/<YYYY-MM-DD>-<HHMMSS>-<review-target>.md
-```
-
-`<review-target>` is a short kebab-case slug of what was reviewed.
+- A standards audit, a whole-project or subsystem assessment, a pre-release review, or an audit the user asked to have on file is performed → a written file is REQUIRED.
+- A checkpoint review of a change about to merge is performed → the report file is OPTIONAL.
+- For every audit → the report MUST contain the target and scope (including the reviewed range for a checkpoint review), the requirements or checklist reference, every verdict, all findings (each with `file:line` + severity + fix), and the overall assessment.
 
 ## Phase 4 — Report and act
 
-You MUST output a concise summary to the session: the findings grouped by axis and severity, every `Critical` and `Important` finding (location + one-line fix), and the overall assessment (ship / fix-first / needs-rework). The session summary is REQUIRED in every mode.
-
-Phase 3 required a written record → its path MUST appear in the summary.
-
-The target is a pull request and you post findings to it → you SHOULD place each inline finding in its code comment thread rather than as one top-level comment.
-
-Then act on the findings:
-
-- **Critical** → you MUST fix it before proceeding.
-- **Important** → you MUST fix it before any further implementation work (the next task, a refactor, or a merge).
-- **Minor** → you MUST record it (task notes or an issue tracker) rather than silently dropping it.
-- A finding is wrong → you MUST push back with specific technical reasoning citing the code, the tests, or the requirement. You MUST NOT accept an incorrect finding just to close it out, and MUST NOT dismiss one without that reasoning.
+- For every audit → you MUST output a concise summary to the session: the findings grouped by axis and severity, every `Critical` and `Important` finding (location + one-line fix), and the overall assessment (ship / fix-first / needs-rework).
+- In every mode → the session summary is REQUIRED.
+- Phase 3 required a written record → its path MUST appear in the summary.
+- The target is a pull request and you post findings to it → you SHOULD place each inline finding in its code comment thread rather than as one top-level comment.
+- A finding is **Critical** → you MUST fix it before proceeding.
+- A finding is **Important** → you MUST fix it before any further implementation work (the next task, a refactor, or a merge).
+- A finding is **Minor** → you MUST record it in task notes or an issue tracker.
+- A finding is wrong → you MUST push back with specific technical reasoning citing the code, the tests, or the requirement.
+- A finding is incorrect → you MUST NOT accept it just to close it out.
+- A finding is wrong → you MUST NOT dismiss it without specific technical reasoning citing the code, the tests, or the requirement.
 
 ## Phase 5 — Evolve the checklist (gated; standards audits)
 
-After an audit that used or created a checklist, you MUST evaluate whether it should change and propose **bounded** edits. You MUST NOT change `CODE_AUDITING.md` without the user's approval.
-
-- A real defect the checklist did **not** lead you to catch → MUST become a **proposed new item**.
-- A finding type that recurs across audits → MUST be proposed for promotion (higher severity, or a hard project rule).
-- An item that produced false positives or proved unactionable → MUST be proposed for revision.
-
-Propose at most a few edits per audit. Present them in the summary; apply only what the user approves.
+- After an audit that used or created a checklist → you MUST evaluate whether it should change and propose **bounded** edits.
+- The user has not approved a change to `CODE_AUDITING.md` → you MUST NOT change it.
+- A real defect was not caught through the checklist → it MUST become a **proposed new item**.
+- A finding type recurs across audits → it MUST be proposed for promotion (higher severity, or a hard project rule).
+- An item produced false positives or proved unactionable → it MUST be proposed for revision.
 
 ## Severity
 
-| Severity | Meaning |
-|---|---|
-| **Critical** | Breaks correctness, security, or data integrity; MUST be fixed before shipping. |
-| **Important** | A real defect or risk; MUST be fixed before further implementation work. |
-| **Minor** | Style, clarity, or a non-urgent improvement; MAY be deferred, MUST be recorded. |
+Critical — a finding that breaks correctness, security, or data integrity.
+
+Important — a finding that is a real defect or risk.
+
+Minor — a finding about style, clarity, or a non-urgent improvement.
+
+- A finding is Critical → it MUST be fixed before shipping.
+- A finding is Important → it MUST be fixed before further implementation work.
+- A finding is Minor → it MAY be deferred.
+- A finding is Minor → it MUST be recorded.
 
 ## Red Flags — STOP
 
 | Red flag | Do this instead |
 | --- | --- |
-| "I'll just re-read my own reasoning." | Not a review. Run the independent pass of 1a. |
+| "I'll just re-read my own reasoning." | Run the independent pass of 1a. |
 | "No subagent here, so I'll skip it." | Run the no-subagent fallback pass. |
 | "I'll edit while I review." | Keep the pass read-only; act in Phase 4. |
 | "The Critical issue is probably fine." | Fix it before proceeding. |
@@ -162,17 +167,3 @@ Propose at most a few edits per audit. Present them in the summary; apply only w
 | "I already checked it as I wrote it." / "I'm the author, I know it's correct." | Review the finished diff cold, as a separate pass. |
 | "Minor issues don't matter, I'll drop them." | Record every Minor issue. |
 | "The checklist is close enough, I'll tweak it as I go." | Propose the edit in Phase 5; MUST NOT rewrite mid-audit. |
-
-## Verification Checklist
-
-Before treating code as reviewed, confirm every item:
-
-- [ ] The mode was chosen deliberately (checkpoint review, standards audit, or both)
-- [ ] For a checkpoint review: the range is committed, `BASE_SHA`/`HEAD_SHA` captured from the merge-base, and the requirements source named (or its absence stated)
-- [ ] For a standards audit: the checklist exists, is approved, and every item has a verdict
-- [ ] The real code was read; every finding carries `file:line` evidence
-- [ ] Spec and quality findings are reported separately, without cross-axis re-ranking
-- [ ] The full record is on disk AND the summary is in the session
-- [ ] Every Critical is fixed; every Important is fixed before further implementation work; every Minor is recorded
-- [ ] Any disputed finding was answered with specific technical reasoning
-- [ ] For a standards audit: checklist improvements were proposed (or none were warranted)

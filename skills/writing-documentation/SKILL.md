@@ -9,16 +9,20 @@ description: Use when creating or changing durable documentation — "write a RE
 
 ## Scope
 
-- Long-lived documentation — `README.md` files, architecture and engineering documents, service / product / operations docs, contributor and agent entrypoints, and any Markdown a future reader is expected to load in order to do work correctly → apply this skill.
-- Transient text — scratch plans, task notes, chat, commit messages, PR descriptions, review comments → this skill does not apply; that text SHOULD be clear and SHOULD link to the authoritative document when it depends on one, and carries no entrypoint obligation.
+Long-lived documentation — `README.md` files, architecture and engineering documents, service / product / operations docs, contributor and agent entrypoints, and Markdown a future reader is expected to load to do work correctly.
 
-**Not this skill:**
+Transient text — scratch plans, task notes, chat, commit messages, PR descriptions, and review comments; outside this skill's scope apart from the clarity and authoritative-link recommendations below.
 
-- Authoring a skill (a `SKILL.md` and its supporting files) → the `writing-skills` skill governs.
-- Compacting this session for the next agent → the `writing-handoffs` skill governs.
-- Writing an implementation plan → the `writing-plans` skill governs.
-- Producing a research findings file → the `researching` skill governs what it contains and how claims are cited; this skill applies only if that file joins a durable set.
-- Deciding what a domain term means, or whether a decision deserves a record → the `domain-modeling` skill governs. This skill shapes how the glossary and the records are **reached and written**, never what they say.
+- Writing transient text → it SHOULD be clear.
+- Transient text depends on an authoritative document → it SHOULD link to that document.
+
+### Other Skill Boundaries
+
+- `writing-skills` — the governing skill for authoring a skill (`SKILL.md` and its supporting files).
+- `writing-handoffs` — the governing skill for compacting this session for the next agent.
+- `writing-plans` — the governing skill for writing an implementation plan.
+- `researching` — the governing skill for a research findings file's contents and claim citations; this skill's scope includes such a file only when it joins a durable set.
+- `domain-modeling` — the governing skill for domain term meanings and decisions deserving records; this skill's scope covers how the glossary and records are reached and written.
 
 ## The Iron Law
 
@@ -26,20 +30,19 @@ description: Use when creating or changing durable documentation — "write a RE
 EVERY DOCUMENT IS REACHED FROM ITS SET'S ENTRYPOINT — NEVER BY SCANNING
 ```
 
-You MUST NOT write documentation that requires a reader to open every Markdown file in a directory to discover which one applies.
+- Writing documentation → you MUST NOT require a reader to open every Markdown file in a directory to discover which one applies.
 
 ## The Entrypoint Contract
 
-Every documentation set MUST have exactly **one** entrypoint, and that entrypoint MUST answer all four questions:
+- For every documentation set → the set MUST have exactly **one** entrypoint.
+- For every documentation set → its entrypoint MUST answer all four questions:
+  1. **What the set is responsible for** — one line, in terms of the work it governs.
+  2. **How files are selected** — the reader picks by task signal, or the whole set is required; state which.
+  3. **Exactly which files to read** — by exact path, spelled out.
+  4. **What to skip by default** — for task-selected sets, the neighbouring files a reader leaves unloaded unless the task expands into them.
+- Using either entrypoint template → the contract content MUST be present.
 
-1. **What the set is responsible for** — one line, in terms of the work it governs.
-2. **How files are selected** — the reader picks by task signal, or the whole set is required; state which.
-3. **Exactly which files to read** — by exact path, spelled out. "See the files in this directory" is not an answer.
-4. **What to skip by default** — for task-selected sets, the neighbouring files a reader leaves unloaded unless the task expands into them.
-
-Two shapes satisfy the contract. Heading names in the templates below are not fixed → use the host project's own heading conventions where it has them; what MUST be present is the content.
-
-**Shape A — task-signal resolver** (readers choose):
+### Shape A — task-signal resolver
 
 ```markdown
 # <Area>
@@ -53,7 +56,7 @@ Two shapes satisfy the contract. Heading names in the templates below are not fi
 | <a condition matched against the reader's actual task> | `<exact-file.md>` | `<neighbouring files left unloaded>` |
 ```
 
-**Shape B — required reading** (all mandatory):
+### Shape B — required reading
 
 ```markdown
 # <Area>
@@ -67,93 +70,60 @@ Read every document in this set before starting:
 - `<exact-file.md>` — <what it governs>
 ```
 
-- Some documents bind every reader and others are task-selected → state both shapes and mark which documents are unconditional.
-- You MUST NOT leave two live entrypoints for one set.
+- For one documentation set → you MUST NOT leave two live entrypoints.
 
 ## The Resolver Table
 
-- You MUST NOT make a generated index, manifest, machine-readable data file, or script the routing mechanism. Such artifacts MAY exist for other purposes; they MUST NOT be what the entrypoint sends the reader to.
-- Signals MUST be natural-language conditions describing what the reader is **about to do**, not restated document titles.
-- Paths MUST be exact and MUST resolve from the entrypoint's own directory.
-- Every document in the set MUST appear in at least one row — in `Read` or in `Skip unless the task expands`.
-- Each signal SHOULD resolve to a small load set; how small varies with how coarse the set's documents are.
-- A signal that pulls in most of the set MUST be split into narrower signals.
-- The entrypoint MUST state what to do when no signal matches: read the single smallest plausible document, or ask.
-- The task is a set-wide audit, restructure, or migration → reading the whole set is legitimate; that is a property of those tasks, not a fallback for ordinary ones.
+- Choosing a routing mechanism → you MUST NOT make a generated index, manifest, machine-readable data file, or script the routing mechanism.
+- For purposes other than routing → such artifacts MAY exist.
+- Writing an entrypoint → those artifacts MUST NOT be what the entrypoint sends the reader to.
+- Writing signals → signals MUST be natural-language conditions describing what the reader is **about to do**, not restated document titles.
+- Writing resolver paths → paths MUST be exact and MUST resolve from the entrypoint's own directory.
+- For every document in the set → the document MUST appear in at least one row, in `Read` or in `Skip unless the task expands`.
+- Writing a signal → the signal SHOULD resolve to a small load set.
+- A signal pulls in most of the set → the signal MUST be split into narrower signals.
+- Writing the entrypoint → the entrypoint MUST state what to do when no signal matches: read the single smallest plausible document, or ask.
 
 ## Path Resolution
 
-- Relative paths MUST resolve from the directory containing the document that carries them.
-- A path is written against any other base (repository root, workspace root, the reader's shell working directory) → that base MUST be stated immediately next to the path.
-- Placeholder patterns MAY describe a convention. A reference to an actual file MUST be a real path valid from the current document.
+- Writing relative paths → paths MUST resolve from the directory containing the document that carries them.
+- A path is written against another base (repository root, workspace root, or the reader's shell working directory) → that base MUST be stated immediately next to the path.
+- Describing a convention → placeholder patterns MAY describe it.
+- Referencing an actual file → the reference MUST be a real path valid from the current document.
 
 ## Signal Density
 
-- You SHOULD use the shortest prose that preserves the normative meaning, omit rationale unless it changes how the rule is applied, and omit examples that do not disambiguate. How much explanation a rule needs varies with how counterintuitive it is — that calibration is yours.
-- Each rule MUST have exactly one source. The same rule is stated normatively in two documents → keep one and make the other a cross-reference, subject to the limit below.
+- Writing documentation → you SHOULD use the shortest prose that preserves the normative meaning, omit rationale unless it changes how the rule is applied, and omit examples that do not disambiguate.
+- For each rule → the rule MUST have exactly one source, subject to the standalone-document limit below.
 
 ## The Limit of the No-Restatement Rule
 
-- A document designed to be loaded **alone** MUST carry everything needed to apply it correctly, even where a neighbour says the same thing.
-- Before removing any restatement you MUST determine whether the two documents are ever loaded together.
-- Either document is loaded alone → the restatement stays, and the entrypoint MUST name which copy is authoritative.
+- A document is designed to be loaded **alone** → it MUST carry everything needed to apply it correctly, even where a neighbour says the same thing.
+- Before removing any restatement → you MUST determine whether the two documents are ever loaded together.
+- Either document is loaded alone → the entrypoint MUST name which copy is authoritative.
 
 ## Same-Change Obligations
 
-- Adding, removing, splitting, renaming, or re-scoping a document MUST update that set's entrypoint **in the same change**.
-- Every documentation change MUST scan the changed document's neighbours in the same set for redundancy the change **introduced or exposed**, and resolve it in the same change, subject to the limit above.
-- The host project declares a commit, staging, or message convention → that convention governs how the change ships; this skill requires only that the entrypoint update ship *with* it.
+- Adding, removing, splitting, renaming, or re-scoping a document → the change MUST update that set's entrypoint **in the same change**.
+- Making a documentation change → the change MUST include scanning the changed document's neighbours in the same set for redundancy the change **introduced or exposed**, and resolving it in the same change, subject to the standalone-document limit above.
+- The entrypoint lies outside your write authority in this project → you MAY land a document change without the entrypoint update ONLY under this condition.
+- Using this exception, before treating the change as done → you MUST:
+  1. State the entrypoint's exact path and the exact row or line it now needs.
+  2. Obtain the user's explicit direction on how it gets updated.
+  3. Leave that request in your reply, not only in your reasoning.
 
-**The only exception.** You MAY land a document change without the entrypoint update ONLY when the entrypoint lies outside your write authority in this project. Then you MUST, before treating the change as done: (1) state the entrypoint's exact path and the exact row or line it now needs; (2) obtain the user's explicit direction on how it gets updated; (3) leave that request in your reply, not only in your reasoning. "I'll do it next time" and "the owner will notice" are not this exception.
+## Red Flag — Repair Required
 
-The set you are about to change has no entrypoint, has more than one, or has an entrypoint that no longer matches what is on disk → read `@repairing-a-doc-set.md` and apply it before making your change.
+- The set you are about to change has no entrypoint, has more than one, or has an entrypoint that no longer matches what is on disk → read `@repairing-a-doc-set.md` and apply it before making your change.
 
 ## Findings Outside Your Remit
 
-The redundancy, dead path, or structural defect you find lives outside what you were asked to change — another area's documentation, a document another team owns, a file the user did not put in scope → you MUST surface it to the user by exact path and exact overlap, naming the file and what is wrong with it in your reply, and you MUST NOT restructure it silently.
+- A redundancy, dead path, or structural defect you find lives outside what you were asked to change → you MUST surface it to the user by exact path and exact overlap, naming the file and what is wrong with it in your reply.
+- A redundancy, dead path, or structural defect you find lives outside what you were asked to change → you MUST NOT restructure it silently.
 
 ## Where Documentation Lives
 
-- A document describing an existing directory, package, or module SHOULD live in that directory. The host project deliberately centralizes its documentation → follow what it already does.
-- A new durable documentation set with no obvious home is a `design-docs` artifact: resolve its location per `using-omnipowers`, fallback `docs/`.
-- The entrypoint's **filename** is the host's convention, not this skill's: use the file the host's readers already open — commonly `README.md` for a directory, and the host's own contributor/agent entrypoint file for agent-facing sets. You MUST NOT introduce a second entrypoint filename alongside one the host already uses.
-- Documentation that is the host's own **standards** — its review checklists, coding rules, the criteria it holds work to — is maintained by the host. You MUST NOT restructure it on your own initiative; apply this skill there only on the user's explicit direction.
-
-## Red Flags — STOP
-
-- A document added, renamed, or deleted and the entrypoint untouched
-- "See the files in this directory", "read the docs under `docs/`", or any instruction to browse
-- An entrypoint that lists documents without exact paths
-- A generated index, manifest, or script proposed as the routing mechanism
-- One task signal that pulls in most of the set
-- A document in the set that no row of the table reaches
-- A root-relative path inside a nested document, with no base stated
-- The same rule stated normatively in two documents, neither marked authoritative
-- A rule replaced by a cross-reference in a document that is read alone
-- Restructuring a document you were not asked to touch because you noticed overlap in passing
-- A second entrypoint filename introduced next to the one the project already uses
-
-## Rationalizations — rejected
-
-| Thought | What to do instead |
-|---|---|
-| "It's obvious which file to read" | Route by exact path; the next reader holds a directory listing and a task, not the set. |
-| "I'll update the README in a follow-up" | Update the entrypoint in this change, or the change is not done. |
-| "A generated index stays in sync automatically" | Write the routing judgment as prose; nothing generates it. |
-| "One more row won't hurt the load set" | Split the signal. |
-| "Repeating the rule keeps this document self-contained" | Determine first whether the two are ever loaded together; read together → keep one copy. |
-| "Cross-referencing is always tighter" | Reader never loads the target → the pointer is a deleted rule; keep the copy. |
-| "I'll mention the overlap in my summary" | Name the exact path in your reply. |
-| "This directory only has three files" | Give the set its entrypoint now. |
-| "I'll restructure the neighbouring area while I'm in here" | Surface the finding by exact path; do not restructure it silently. |
-| "I can't edit their entrypoint, so I'll just ship mine" | State the path and the exact row it needs, and get direction. |
-
-## Before the Change Is Done
-
-- [ ] The set has one entrypoint, and it answers all four contract questions
-- [ ] Every document in the set is reachable from that entrypoint by an exact path
-- [ ] Task signals describe what the reader is doing, and no signal pulls in most of the set
-- [ ] Every path resolves from the document that contains it, or states its base
-- [ ] No rule is stated normatively twice without one copy named authoritative and a standalone-load reason
-- [ ] Neighbours scanned for redundancy this change introduced or exposed
-- [ ] Findings outside your remit surfaced to the user by exact path
+- A document describes an existing directory, package, or module, and the host project does not deliberately centralize its documentation → the document SHOULD live in that directory.
+- `design-docs` — the artifact role of a new durable documentation set with no obvious home; location resolution per `using-omnipowers`, fallback `docs/`.
+- The host already uses an entrypoint filename → you MUST NOT introduce a second entrypoint filename alongside it.
+- Documentation is the host's own **standards** (review checklists, coding rules, or criteria it holds work to) → you MUST NOT restructure it on your own initiative.

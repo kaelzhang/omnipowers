@@ -2,7 +2,7 @@
 
 > Normative keywords (MUST, MUST NOT, SHOULD, MAY, …) are used as defined in BCP 14 (RFC 2119, RFC 8174), and only when capitalized.
 
-Load this map when you are unsure which skill governs the current step, or when two adjacent skills both look applicable. Each entry is one line plus, where confusion is common, an anti-routing line. The map is an index — the skill's own `SKILL.md` is always the authority.
+Skill map — an index of skill scopes, subordinate to each skill's own `SKILL.md`.
 
 ## The main flow — building something
 
@@ -12,51 +12,41 @@ stress-testing-a-plan ─(build intent)→ brainstorming → writing-plans
         → finishing-a-development-branch
 ```
 
-- **brainstorming** — the pre-build gate on the GOAL, not the design: state the goal and its delivery criteria in one line, or settle them with the user first, along with any blocker, serious risk, or disagreement. How and when to build is the agent's. NOT for interrogating a plan with no build intended (that is stress-testing-a-plan).
-- **writing-plans** — turn a settled goal into a bite-sized implementation plan. NOT for executing it.
-- **executing-plans** — execute a written plan yourself, continuously, step-verified. When the host has subagents AND the plan's tasks are mostly independent → subagent-driven-development instead.
-- **subagent-driven-development** — execute a plan one fresh implementer+reviewer pair per task. NOT for tightly coupled plans (executing-plans) or ad-hoc parallel work (keeping-work-in-flight).
-- **finishing-a-development-branch** — the work is done and verified: merge / PR / keep / discard + cleanup. If the merge conflicts → resolving-merge-conflicts.
-- **using-git-worktrees** — the work needs isolation before it starts: detect existing isolation, prefer the host's native mechanism, verify a clean baseline. Owns the return to the mainline when the work is done. NOT the integration decision itself (finishing-a-development-branch).
+- **brainstorming** — the pre-build gate on the goal and its delivery criteria, including blockers, serious risks, and disagreements; excludes interrogation of a plan with no build intended (`stress-testing-a-plan`).
+- **writing-plans** — conversion of a settled goal into an implementation plan; excludes execution.
+- **executing-plans** — continuous, step-verified execution of a written plan by the agent; excludes plans with mostly independent tasks when the host has subagents (`subagent-driven-development`).
+- **subagent-driven-development** — plan execution with one fresh implementer and reviewer pair per task; excludes tightly coupled plans (`executing-plans`) and ad-hoc parallel work (`keeping-work-in-flight`).
+- **finishing-a-development-branch** — integration decisions and cleanup after work is done and verified: merge, PR, keep, or discard; merge conflicts belong to `resolving-merge-conflicts`.
+- **using-git-worktrees** — isolation before work starts, including existing-isolation detection, preference for the host's native mechanism, baseline verification, and return to the mainline; excludes the integration decision (`finishing-a-development-branch`).
 
 ## On-ramps — something is wrong
 
-- **fixing-bugs** — any bug, crash, flaky test, regression, build or perf problem: reproduce it red, name the root cause, fix the cause, then sweep every other site sharing it. Investigation depth loads on demand.
-- **resolving-merge-conflicts** — an in-progress merge/rebase with conflict markers: per-hunk intent archaeology, never invent behavior.
+- **fixing-bugs** — reproduction, root-cause identification, correction, and a sweep of sites sharing the cause for a bug, crash, flaky test, regression, build problem, or performance problem; investigation depth loaded on demand.
+- **resolving-merge-conflicts** — per-hunk intent reconstruction during an in-progress merge or rebase with conflict markers, without invented behavior.
 
 ## Design-time instruments
 
-- **designing-deep-modules** — module/interface shape: depth, the deletion test, the two-adapter rule. Serves the agent's own design choices; not a workflow of its own.
-- **prototyping** — a design question only running code can answer: throwaway artifact, user delivers the verdict. NOT a first draft of the feature.
-- **researching** — a question answered by investigation: primary sources, per-claim citations, findings file. NOT design itself.
-- **domain-modeling** — the project's language: glossary (CONTEXT.md), gated ADRs. Fires when terms drift or a recorded decision is being made — merely *reading* the glossary is not this skill.
+- **designing-deep-modules** — module and interface design criteria: depth, the deletion test, and the two-adapter rule; an instrument for design choices rather than a separate workflow.
+- **prototyping** — a throwaway artifact answering a design question that requires running code, with a verdict delivered by the user; excludes a first draft of the feature.
+- **researching** — investigation of a question using primary sources, per-claim citations, and a findings file; excludes design itself.
+- **domain-modeling** — the project's language in a glossary (`CONTEXT.md`) and gated ADRs, scoped to term drift and recorded decisions; merely reading the glossary is not this skill.
 
 ## Underneath everything — cross-cutting disciplines
 
-- **confirming-with-the-user** — HOW any single decision is put to the user (options, impacts, recommendation, prose). Every other skill's user-facing decisions ride on it.
-- **verification-before-completion** — evidence before any "done/fixed/passing" claim. Gates every completion claim in every flow.
-- **honoring-user-requirements** — the requirements ledger: every instruction the user gives is written down as stated, verified with evidence at each return and before any claim, and carried out exactly once confirmed. Appeals ride on confirming-with-the-user.
-- **keeping-work-in-flight** — the dispatch block: at every agent return and before any round ends, count what is running, dispatch one tracked call per idle ownership scope, then read. Also owns the independence gate for fan-out and the continuation of work past the round.
-- **continuous-work-mode** — the user starts it by name: install a stop-time gate so the queue is checked by a command before any round may end, and stop ending rounds to ask whether to continue. Explicit activation only; it mechanizes keeping-work-in-flight rather than replacing it.
-- **committing-work** — how each individual commit is formed: one coherent change, explicit paths, the smallest proving check, a standalone message. NOT integrating the branch afterwards (finishing-a-development-branch), NOT judging the code (code-auditing).
-- **code-auditing** — all code review and audit: a checkpoint review of finished work before it advances (merge-base range, reviewed against its requirements) OR a standards audit against the host's compounding checklist; Phase 1 routes between them, and both record + act on findings by severity.
+- **confirming-with-the-user** — presentation of a single decision to the user, including options, impacts, recommendation, and prose; owner of user-facing decisions across skills.
+- **verification-before-completion** — evidence requirements before every completion claim, including "done/fixed/passing" claims.
+- **honoring-user-requirements** — the requirements ledger: instructions recorded as stated, verified with evidence at each return and before claims, and carried out exactly once confirmed; appeals governed by `confirming-with-the-user`.
+- **keeping-work-in-flight** — counting running work, dispatching one tracked call per idle ownership scope, and then reading at each agent return and before round end; owner of the independence gate for fan-out and continuation past the round.
+- **continuous-work-mode** — explicit activation by the user of a stop-time command gate checking the queue before round end, without repeated requests to continue; mechanization of `keeping-work-in-flight`.
+- **committing-work** — formation of an individual commit as one coherent change, with explicit paths, the smallest proving check, and a standalone message; excludes integration (`finishing-a-development-branch`) and code judgment (`code-auditing`).
+- **code-auditing** — code review and audit, routed in Phase 1 between checkpoint review of finished work before it advances (merge-base range, reviewed against its requirements) and standards audit against the host's compounding checklist; findings recorded and acted on by severity.
 
 ## Crossing sessions
 
-- **writing-handoffs** — user asks to hand off: compact the session into a doc a zero-context agent resumes from. Explicit request only.
+- **writing-handoffs** — an explicitly requested handoff document for resumption by an agent with no session context.
 
 ## Standalone
 
-- **stress-testing-a-plan** — the user asks to have THEIR plan interrogated; zero artifacts; build intent hands off to brainstorming.
-- **writing-skills** — creating or editing any skill, test-first.
-- **writing-documentation** — durable project documentation: one entrypoint per set, task-signal routing to exact files, updated in the same change. NOT a skill (writing-skills), NOT a handoff (writing-handoffs), NOT the glossary or decision records themselves (domain-modeling).
-
-## Boundary rules (the chronic confusions)
-
-- Interrogating the user's plan (they answer) → **stress-testing-a-plan**; presenting them one decision (you propose) → **confirming-with-the-user**; about to build → **brainstorming**.
-- Any bug, from first symptom to verified fix → **fixing-bugs** (one skill: investigation and fix are one cycle).
-- Any code review or audit → **code-auditing** (it routes internally: checkpoint review vs standards audit).
-- Executing a plan with subagents per task → **subagent-driven-development**; parallel unrelated tasks → **keeping-work-in-flight**.
-- Counting and dispatching at a return → **keeping-work-in-flight** (always on); the user asking to stop being the scheduler → **continuous-work-mode** (installs the gate that forces the count, only when they say so).
-- Making a commit → **committing-work**; merging, pushing, or opening the PR afterwards → **finishing-a-development-branch**. "Commit and push" splits across both.
-- Writing a project document → **writing-documentation**; writing a `SKILL.md` → **writing-skills**. What a term means or whether a decision is worth recording → **domain-modeling**; how it is reached and structured → **writing-documentation**.
+- **stress-testing-a-plan** — explicitly requested interrogation of the user's plan, without artifacts; build intent belongs to `brainstorming`.
+- **writing-skills** — test-first creation or editing of a skill.
+- **writing-documentation** — durable project documentation with one entrypoint per set, task-signal routing to exact files, and updates in the same change; excludes skills (`writing-skills`), handoffs (`writing-handoffs`), and glossary or decision records (`domain-modeling`).

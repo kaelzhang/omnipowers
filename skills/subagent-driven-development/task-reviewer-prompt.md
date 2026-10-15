@@ -2,11 +2,6 @@
 
 > Normative keywords — MUST, MUST NOT, REQUIRED, SHALL, SHALL NOT, SHOULD, SHOULD NOT, MAY — are used as defined in BCP 14 (RFC 2119, RFC 8174), and only when capitalized.
 
-Load this file at the **review step** of `subagent-driven-development`:
-
-- You dispatch a task reviewer subagent → send the block below as its prompt.
-- Inline mode, you switch to the reviewer stance → switch to it deliberately and review against the brief and the package as a fresh reviewer who did not write the code.
-
 ```
 Review one task's implementation: first whether it matches its requirements,
 then whether it is well-built. This is a task-scoped gate, not a merge review —

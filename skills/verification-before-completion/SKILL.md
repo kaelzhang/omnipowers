@@ -14,24 +14,29 @@ NO COMPLETION CLAIM WITHOUT FRESH VERIFICATION EVIDENCE
 ```
 
 - Verifying command not run in this session, or its output not read → MUST NOT state that the thing it would prove passes, is fixed, or is complete.
-- The Iron Law has no exception.
 
-## The Gate (MANDATORY before any success claim)
+## The Gate
 
-About to state any status, or express satisfaction → MUST, in order:
+Gate event — about to state any status, express satisfaction, claim or imply success, completion, or correctness, commit, open a PR, mark a task done, or move to the next task.
+
+Standing evidence — a check that passed on this exact tree in this session, until a file it covered changes.
+
+Gate event → MUST, in order:
 
 1. **Identify** the command or check that would prove the claim.
-2. **Run** it to completion — never cut short, never a remembered one. Its scope is the claim's: a commit's coherence takes the smallest sufficient check, "tests pass" takes the suite.
-   **A result stands until a file it covered changes.** The same check has passed on this exact tree in this session → that run is the evidence, whichever skill or phase now asks for it; you MUST NOT re-run it for the asking. A fast-forward merge leaves the tree unchanged; a merge commit does not.
+2. **Run** it to completion or reuse standing evidence; never cut a run short or use a remembered run. **Match** its scope to the claim: the smallest sufficient check for a commit's coherence, the suite for "tests pass".
 3. **Read** the full output: the exit code and the actual pass/fail counts.
-4. **Compare** the output to the claim. Output confirms the claim → state the claim WITH the evidence. Output does not confirm it → state the actual status with the evidence.
+4. **Compare** the output to the claim:
+   - Output confirms the claim → state the claim WITH the evidence.
+   - Output does not confirm it → state the actual status with the evidence.
 
-MUST NOT skip a step.
+- A skill or phase requests a check with standing evidence → MUST NOT re-run it for the asking.
+- Gate event → MUST NOT skip a step.
 
 ## The Exit Code You Read Must Be the Command's
 
-- A command whose result you need MUST NOT run inside a pipeline. The shell reports the pipeline's status, not the command's, so a failed build reads as exit 0; and a reader that exits with its lines kills the producer with SIGPIPE partway through.
-- You MUST redirect the command's own output to a file, read its own exit code, then read the file:
+- A command's result is needed → the command MUST NOT run inside a pipeline.
+- A command's result is needed → MUST redirect the command's own output to a file, read its own exit code, then read the file:
 
 ```bash
 <command> > <file> 2>&1; echo "exit: $?"
@@ -62,7 +67,3 @@ Notice any of these → MUST stop and verify:
 - reading a check's result through a pipe (`| tail`, `| grep`, `| head`)
 - "just this once", or being tired and wanting it over
 - ANY wording that implies success when the check has not been run
-
-## Scope
-
-The Gate applies before ANY claim or implication of success, completion, or correctness — exact phrases, paraphrases, synonyms, and implications alike — and before committing, opening a PR, marking a task done, or moving to the next task.

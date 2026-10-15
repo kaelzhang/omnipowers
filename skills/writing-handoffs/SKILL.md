@@ -9,13 +9,13 @@ description: Use only when the user explicitly asks to hand off or compact this 
 
 ## Overview
 
-- You MUST write the handoff so that it alone — plus the artifacts it points to — is sufficient for an agent with zero access to this conversation to continue the work.
-- **Core principle:** the handoff carries *state* and *pointers*, never copies of content.
+- When writing a handoff → you MUST make the handoff and its referenced artifacts sufficient for an agent with zero access to this conversation to continue the work.
 
 ## User-Initiated Only
 
-- This skill MUST NOT fire on your own initiative. Only an explicit user request ("hand off", "compact this session", "write a continuation doc", or equivalent) triggers it.
-- You believe a handoff would help (context nearly exhausted, natural stopping point) → you MAY say so in one sentence. The user decides: you MUST NOT write the document until they ask.
+- Without an explicit user request to hand off or compact the session → this skill MUST NOT fire on your own initiative.
+- You believe a handoff would help → you MAY say so in one sentence.
+- Until the user asks for a handoff → you MUST NOT write the document.
 
 ## Scope — Purpose-Tailored
 
@@ -24,14 +24,21 @@ description: Use only when the user explicitly asks to hand off or compact this 
 
 ## Required Sections
 
-The document MUST contain all of the following, in this order:
+When writing the document → you MUST include all of the following sections, in this order, with the specified content:
 
-1. **Goal** — what the work is trying to achieve, and the definition of done. The successor MUST be able to tell from this section alone when to stop.
-2. **Current state — with evidence** — what is done and what is in progress. Every "done" claim MUST cite the verification you actually observed (the test command and its result, the review outcome, the command output). A claim you did not verify MUST be labeled unverified.
-3. **Artifact index** — every spec, plan, commit, diff, and file the work touches or depends on, referenced **by path, commit hash, or identifier**. You MUST NOT duplicate an artifact's content into the handoff. One line of *why it matters* per entry is the maximum.
-4. **Next steps** — concrete, ordered actions. Each step MUST be specific enough to start without re-deriving the analysis ("add the range check in `parse_window()` per plan step 4", not "continue the fix").
-5. **Open questions / blockers** — every unresolved decision, missing input, and external blocker. There are none → state "none" explicitly.
-6. **Suggested skills** — which skills the successor agent SHOULD invoke and for what. This section is REQUIRED; skill triggers do not survive the session boundary.
+1. **Goal** — what the work is trying to achieve, and the definition of done.
+   - When reading Goal alone → the successor MUST be able to tell when to stop.
+2. **Current state — with evidence** — what is done and what is in progress.
+   - For every "done" claim → you MUST cite the verification you actually observed (the test command and its result, the review outcome, the command output).
+   - For a claim you did not verify → you MUST label it unverified.
+3. **Artifact index** — every spec, plan, commit, diff, and file the work touches or depends on, referenced **by path, commit hash, or identifier**, with at most one line of relevance per entry.
+   - When writing the handoff → you MUST NOT duplicate an artifact's content into it.
+4. **Next steps** — concrete, ordered actions.
+   - For each step → you MUST make it specific enough to start without re-deriving the analysis.
+5. **Open questions / blockers** — every unresolved decision, missing input, and external blocker; "none" explicitly when there are none.
+6. **Suggested skills** — skills for the successor agent to invoke and their purposes.
+   - When resuming the work → the successor agent SHOULD invoke the suggested skills for their stated purposes.
+   - When writing the handoff → the Suggested skills section is REQUIRED.
 7. **Constraints** — every rule that binds the work: user preferences stated this session, project rules, locked decisions, things explicitly ruled out.
 
 ## Template
@@ -65,36 +72,21 @@ The document MUST contain all of the following, in this order:
 
 ## Redaction — Before Anything Touches Disk
 
-You MUST scan the material for secrets, credentials, API keys, tokens, connection strings, and PII, and redact each occurrence (e.g. `[REDACTED:api-key]`) **before** writing the file. This rule has no exception.
+Before writing the file → you MUST scan the material for secrets, credentials, API keys, tokens, connection strings, and PII, and redact each occurrence without exception.
 
 ## Location
 
-- A handoff is a `work-state` artifact: resolve its location per `using-omnipowers`, fallback `.omnipowers/handoffs/YYYY-MM-DD-<purpose>.md`, `<purpose>` a short kebab-case slug.
+- Handoff location — the `work-state` location resolved per `using-omnipowers`, with fallback `.omnipowers/handoffs/YYYY-MM-DD-<purpose>.md`, where `<purpose>` is a short kebab-case slug.
+- Handoff in an isolated workspace — a handoff written after the return to mainline governed by `using-git-worktrees`.
 - The host already keeps live work-state documents → you MUST update them and write the handoff as a pointer to them: the current state, blockers, and next action stated once, in the host's documents, and referenced here.
-- The work sits in an isolated workspace → the `using-git-worktrees` rule on returning to the mainline before a handoff applies; the handoff is written after that return.
-- After writing, you MUST report the file's path to the user.
+- After writing the handoff → you MUST report the file's path to the user.
 
 ## Writing Rules
 
-- **Zero-context test.** Read the draft as someone with no access to this conversation. You MUST NOT reference the conversation itself ("as discussed above", "the approach we agreed on", "see my earlier message") — restate the substance or point to an artifact.
-- **Compact.** Keep it as short as completeness allows.
-- **Facts over narrative.** Record decisions and their reasons, not the journey that produced them.
-
-## Red Flags — STOP
-
-- You are writing a handoff and the user never asked for one
-- A "done" item with no cited evidence
-- File contents, diffs, or plan text pasted into the handoff instead of referenced by path
-- Any sentence that only makes sense with the conversation open
-- No Suggested skills section, or no Constraints section
-- A secret, token, or personal detail in the draft
+- When writing the handoff → you MUST NOT reference the conversation itself ("as discussed above", "the approach we agreed on", "see my earlier message"); restate the substance or point to an artifact.
 
 ## Rationalizations — Rejected
 
 | Excuse | Reality |
 |--------|---------|
-| "Context is running low — I'll compact proactively" | Not your call. Suggest it in one sentence; write it ONLY when the user asks. |
-| "Pasting the plan in is easier than referencing it" | Reference by path. |
-| "The next agent will figure out which skills to use" | Triggers don't cross the session boundary. The Suggested skills section is REQUIRED. |
-| "It's basically done; evidence is overkill" | Cite what you observed, or label it unverified. |
-| "No secrets in this session, skip the scan" | Redaction runs before every write, without exception. |
+| "The next agent will figure out which skills to use" | The Suggested skills section is REQUIRED. |

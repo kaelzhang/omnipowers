@@ -2,8 +2,6 @@
 
 > Normative keywords — MUST, MUST NOT, REQUIRED, SHALL, SHALL NOT, SHOULD, SHOULD NOT, MAY — are used as defined in BCP 14 (RFC 2119, RFC 8174), and only when capitalized.
 
-Phase 1a of `code-auditing`, dispatching a reviewer subagent or running the fallback self-pass for a checkpoint review → give the reviewer the exact prompt below, or apply it to yourself; a sample completed review follows it. Fill every placeholder before use:
-
 - `{DESCRIPTION}` — a brief summary of what was built.
 - `{PLAN_OR_REQUIREMENTS}` — what it was supposed to do (the plan text, task text, or requirements).
 - `{BASE_SHA}` — the starting commit.

@@ -2,28 +2,23 @@
 
 > Normative keywords — MUST, MUST NOT, REQUIRED, SHALL, SHALL NOT, SHOULD, SHOULD NOT, MAY — are used as defined in BCP 14 (RFC 2119, RFC 8174), and only when capitalized.
 
-Load this when continuous work mode is being armed in a project that has no gate installed.
-
 ## What to install
 
-Copy `checkpoint.sh` into the host — its hook directory when it has one, otherwise `<project-root>/.omnipowers/bin/` — and make it executable. Register it to run when the agent is about to end its turn, invoked as `checkpoint.sh --gate`.
-
-Installing writes to the host's configuration. The user started the mode → that is the authorization, and you MUST NOT ask for it again; you MUST name the file you changed when you confirm the mode is armed.
+- The user started the mode → you MUST NOT ask for gate-installation authorization again.
+- You confirm the mode is armed → you MUST name the file you changed.
 
 ## The stop-time contract
 
-A gate is only a gate if refusing the stop actually returns control to the agent. Whatever the host's mechanism, the installation MUST satisfy all four:
+For every host mechanism, the installation MUST satisfy all four:
 
 - it runs when the agent is about to end its turn, not after;
 - a non-zero refusal prevents the turn from ending;
 - the text the gate prints reaches the agent, not only a log;
 - an unclearable finding cannot block forever.
 
-`checkpoint.sh --gate` satisfies the fourth itself: it blocks once per distinct checkpoint state and passes a repeat of the same state through. You MUST NOT install a variant that blocks unconditionally.
+- A gate variant blocks unconditionally → you MUST NOT install it.
 
 ## Claude Code
-
-Register a `Stop` hook in the project's `.claude/settings.json`:
 
 ```json
 {
@@ -40,16 +35,18 @@ Register a `Stop` hook in the project's `.claude/settings.json`:
 }
 ```
 
-Exit code `2` blocks the stop and sends the gate's stderr to the agent; exit `0` lets the turn end and sends nothing. The host offers a task-completion or subagent-stop event as well → you SHOULD register the same command there, so the check also runs when work returns rather than only when the turn ends.
+- The host offers a task-completion or subagent-stop event → you SHOULD register the same command there.
 
 ## A host with no hook mechanism
 
-No stop-time hook exists → the gate cannot be installed, and you MUST NOT claim the mode is mechanized. Run `checkpoint.sh` yourself as step 1 of every task return and every round end, and state in the arming confirmation that the check is manual in this project.
+- No stop-time hook exists → you MUST NOT claim the mode is mechanized.
 
 ## Removing the gate
 
-The mode ends → you MUST remove the gate in the same step that deletes the sentinel. Ending a single round is not the mode ending; delivering the goal it was armed for is.
+Gate removal — deleting the hook registration, the installed `checkpoint.sh`, and `.omnipowers/continuous-mode`, `.omnipowers/continuous-mode.owner`, and `.omnipowers/continuous-gate.last` from the workbench.
 
-Removal needs no more authorization than the install did, so you MUST NOT ask. Delete the hook registration, the installed `checkpoint.sh`, and everything the mode leaves in the workbench: `.omnipowers/continuous-mode`, `.omnipowers/continuous-mode.owner`, `.omnipowers/continuous-gate.last`. Removing the registration while leaving the sentinel behind is the one order that misleads: it reads as an armed mode that nothing enforces.
+Mode ending — delivery of the goal the mode was armed for, distinct from ending a single round.
 
-A gate MUST NOT outlive the work it was installed for. Nothing licenses leaving it: the next time the user starts the mode, installing it again is one step.
+- The mode ends → you MUST remove the gate in the same step that deletes the sentinel.
+- The gate is being removed → you MUST NOT ask for authorization.
+- The work the gate was installed for has ended → the gate MUST NOT outlive that work.

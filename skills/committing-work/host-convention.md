@@ -2,16 +2,21 @@
 
 > Normative keywords — MUST, MUST NOT, MAY — are used as defined in BCP 14 (RFC 2119, RFC 8174), and only when capitalized.
 
-Apply this once per project, the first time you commit in it. The resolved convention governs every commit after.
+Resolved convention — the project's staging mechanics, message form, and tracked-file policy, resolved at its first commit and governing subsequent commits, using the first applicable source in this order:
 
-Every git command shown here is illustrative. Resolve the concrete staging mechanics, the message form, and which files are tracked at all in this order, stopping at the first that applies:
+1. The user's statement in this session.
+2. The `vcs` row of the host's `Omnipowers` declaration, located per `using-omnipowers`.
+3. The host's contributor guide, commit template, commit-lint configuration, or consistent recent history.
+4. This skill's fallback.
 
-1. what the user states in this session;
-2. the `vcs` row of the host's `Omnipowers` declaration, located per `using-omnipowers`;
-3. what the host already does: its contributor guide, commit template, commit-lint configuration, or the consistent shape of its recent history;
-4. the fallback stated in this skill.
+Convention authority — form only, overriding skill defaults without relaxing the Iron Law or authorizing attribution trailers through silence.
 
-- A declared convention overrides this skill's defaults. It governs *form* only; it does not relax the Iron Law.
-- A convention that says nothing about attribution → does not authorize the trailers prohibited in step 6.
-- Step 3 yields no message convention → fallback subject is `type(scope): imperative summary`, imperative, naming what changed, no trailing period.
-- Need the full fallback — the closed list of allowed types, how to pick or omit a scope, the body's required content, the breaking-change markers → read `@message-convention.md` and apply it.
+Fallback subject — `type(scope): imperative summary`, imperative, naming what changed, with no trailing period, when the host has no message convention.
+
+Illustrative commands — git commands shown in this skill, subject to the resolved convention.
+
+## Red flag — fallback details needed
+
+| Thought | Command |
+|---|---|
+| Need the full fallback — the closed list of allowed types, how to pick or omit a scope, the body's required content, the breaking-change markers | read `@message-convention.md` and apply it. |
