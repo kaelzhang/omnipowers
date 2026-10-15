@@ -27,48 +27,28 @@ applies a skill at runtime, see `skills/using-omnipowers/SKILL.md`.
 
 ### Skills are normative, not advisory
 
-A skill exists to remove discretion where discretion is harmful. The majority of
-a skill's content MUST be a hard requirement, not a suggestion. Prose that reads
-as "mild" or "balanced" where a firm rule applies is a defect: it invites the
-agent to rationalize its way out of the rule.
-
-Constrain the **process**, never the **output**: a skill makes the agent run the
-same process every time, not produce the same result every time. A divergent
-skill (brainstorming, prototyping) must predictably *diverge* — over-constraining
-its output defeats it as surely as under-constraining its process.
+- The majority of a skill's content MUST be hard requirements, not suggestions.
+- A firm rule written as mild or balanced prose is a defect.
+- **Scope of a skill** — a skill constrains the **process** the agent runs, never the **output** it produces. A divergent skill (brainstorming, prototyping) is one whose output varies by design.
 
 ### Throughput is a requirement
 
-Every obligation is paid on every invocation, by an agent whose job is to ship code. An obligation that does not change the outcome of an ordinary task slows the agent for nothing, and that is a defect of the same rank as a missing rule.
+An obligation that does not change the outcome of an ordinary task is a defect.
 
-- A rule demands a run, a read, a write, or a review → it MUST accept one already made on the same input in this session. The owner of that acceptance is `verification-before-completion`; other skills point at it.
-- A rule fires per action (per commit, per return, per task) → its cost MUST be proportional to the action. A per-action rule that always costs the same as the largest case is a defect.
-- A skill produces a document → it MUST say when the work is too small for one, and what carries the record instead.
-- A description MUST NOT instruct re-invocation at each recurring moment. A skill loads once per session and governs from then on; `using-omnipowers` states this once.
+- A rule demands a run, a read, a write, or a review → it MUST accept one already made on the same input in this session. `verification-before-completion` owns that acceptance; other skills point at it.
+- A rule fires per action (per commit, per return, per task) → its cost MUST be proportional to the action.
+- A skill produces a document → it MUST state when the work is too small for one, and what carries the record instead.
+- A description MUST NOT instruct re-invocation at each recurring moment. `using-omnipowers` states once that a loaded skill governs for the session.
 - A checklist is a self-check before a claim. It is not a task list and is not reported.
-- Heavy material loads on a condition that is false on the ordinary task. A pointer whose condition is true every time is inline content with extra steps.
+- Heavy material loads on a condition that is false on the ordinary task.
 
 ### Classify every normative statement before writing it
 
-- **MANDATORY** → `MUST` / `MUST NOT` / `REQUIRED` / `SHALL` / `SHALL NOT`. Use
-  when the operation is **fragile** — the scenario is specific, exactly one
-  answer is correct, and deviation causes concrete damage — AND the rule
-  corresponds to a **nameable failure mode**: one you observed, or one you can
-  concretely argue an agent commits under pressure.
-- **RECOMMENDATION** → `SHOULD` / `SHOULD NOT` / `RECOMMENDED`. Use when the
-  principle applies but the right response **varies by situation**, or the domain
-  has **no single standard answer**.
-- **DISCRETIONARY** → `MAY` / `OPTIONAL`. Genuinely free choice.
-
-**Bias: match force to fragility, and MUSTs are failure-driven.** Where an
-operation is fragile and one answer is correct, write `MUST` / `MUST NOT` and
-never soften it to "consider" / "try to". Where the model's own judgment is
-reliable — calibration, style, weighing context — leave freedom: a `MUST` with
-no nameable failure mode is a defect, not rigor. It spends the reader's limited
-compliance budget, fights the model's improving judgment, and trains the agent
-to rationalize around the MUSTs that matter. Instruction-following degrades
-measurably as the number of simultaneous hard constraints grows — every
-unearned MUST taxes every earned one.
+- **MANDATORY** — `MUST` / `MUST NOT` / `REQUIRED` / `SHALL` / `SHALL NOT`, for an operation that is **fragile** (the scenario is specific, exactly one answer is correct, and deviation causes concrete damage) AND that corresponds to a **nameable failure mode**: one observed, or one concretely arguable as committed under pressure.
+- **RECOMMENDATION** — `SHOULD` / `SHOULD NOT` / `RECOMMENDED`, where the principle applies but the right response varies by situation, or the domain has no single standard answer.
+- **DISCRETIONARY** — `MAY` / `OPTIONAL`, a free choice.
+- **Softening** — writing a fragile, single-answer rule as "consider" or "try to". It is a defect.
+- A `MUST` with no nameable failure mode is a defect.
 
 ### Style: rules only
 
@@ -78,7 +58,7 @@ A skill states rules. Every sentence in a skill MUST be exactly one of:
 2. **A definition** a rule depends on — `<term> — <meaning>`, stated once.
 3. **A template** the reader reproduces exactly.
 
-Headings, the BCP 14 note, and red-flag tables of `<thought> | <command>` are structure, not sentences.
+Headings, the BCP 14 note, red-flag tables of `<thought> | <command>`, and conditional pointers of the form `<condition> → read @<file>.md and apply it` are structure, not sentences. A conditional pointer MUST keep that form.
 
 - Every other sentence MUST be deleted: why a rule exists, what follows from breaking it, how it was found, examples, scenarios, emphasis, restatement.
 - A condition MUST be checkable: a number, a named event, or a named state. "Large", "a few", "genuinely", "where appropriate" MUST NOT appear in a condition.
@@ -94,84 +74,40 @@ Rewriting into this style changes wording, never force:
 ### BCP 14 keyword convention
 
 Every skill MUST express normative force with the BCP 14 keywords, and MUST carry
-a one-line BCP 14 interpretation note so it is self-contained when loaded alone.
+a one-line BCP 14 interpretation note.
 
 ### The exception pattern — one auditable escape
 
-A MANDATORY rule MAY define exactly one escape hatch, and only when a specific,
-narrow situation genuinely prevents compliance. The escape MUST itself be
-mandatory and auditable — never a soft "if you can't, skip it". Canonical shape:
+A MANDATORY rule MAY define exactly one escape hatch, and only when a named situation prevents compliance. The escape MUST itself be mandatory and auditable. Canonical shape:
 
 > `MAY <skip> ONLY when <condition>`, gated by a `MUST` checklist + explicit user
-> permission + a durable record (e.g. a code comment).
-
-Worked example (`fixing-bugs`): the reproducing test is REQUIRED; it
-MAY be skipped ONLY when reproduction is genuinely impossible, and only after the
-agent (1) summarizes the complete reasons, (2) obtains the user's explicit
-permission, and (3) adds an explanatory comment in the relevant production code.
+> permission + a durable record (a code comment).
 
 ### Self-contained
 
-Each skill MUST stand alone: it depends on nothing outside its own directory. No
-reference to anything outside this repo, no cross-skill prefixed includes;
-supporting files live in the skill's own directory and are referenced from its
-`SKILL.md` only (e.g. `@testing-anti-patterns.md`). Self-contained means
-directory-local — it does NOT mean single-file (see Progressive disclosure).
+Each skill MUST stand alone: it depends on nothing outside its own directory — no reference outside this repo, no cross-skill prefixed includes. Supporting files live in the skill's own directory and are referenced from its `SKILL.md` only. **Self-contained** — directory-local, not single-file.
 
 ### Progressive disclosure — inline vs. supporting file
 
-A host loads a skill's `SKILL.md` into context every time the skill fires, but
-loads a supporting file only when the `SKILL.md` directs the agent to read it —
-so a supporting file costs no context until it is needed. Split a skill's content
-by **load frequency**:
-
-- **Inline in `SKILL.md`** — everything the agent needs on **every** invocation:
-  the rules (`MUST` / `MUST NOT`), the Iron Law, the core workflow, the triggers,
-  and the red-flag conditions. Load-bearing discipline MUST stay
-  inline — it MUST NOT be hidden behind a reference an agent could skip.
-- **Move to a same-directory supporting file** — content needed only in a
-  **specific sub-case**, or **heavy reference**, including a table that merely
-  elaborates a red-flag condition already stated inline: a deep technique used in a
-  minority of runs, a long worked example, a large lookup table, a reusable
-  tool/script. Reference it at the relevant point with a **conditional pointer**
-  ("when `<situation>`, read `@<file>.md` and apply it") so the agent loads it
-  exactly when it applies.
-
-Heuristic: a block over ~100 lines, or one needed in only a fraction of the
-skill's invocations, SHOULD be a supporting file; the discipline that must never
-be missed stays inline. When in doubt, ask "does the agent need this on every
-run?" — yes → inline; only sometimes → supporting file.
-
-The pointer's **wording**, not its target, decides whether the disclosed
-material is ever reached: a vague pointer ("more detail in X") gets skipped; a
-conditional imperative ("when `<situation>`, read `@<file>.md` and apply it")
-fires. A supporting file that never gets loaded is a disclosure failure — fix
-the pointer, do not reflexively inline the content back.
+- **Inline in `SKILL.md`** — content the agent needs on every invocation: the rules, the Iron Law, the core workflow, the triggers, and the red-flag conditions. Load-bearing discipline MUST stay inline and MUST NOT be hidden behind a reference an agent could skip.
+- **Supporting file** — content needed only in a specific sub-case, or heavy reference: a technique used in a minority of runs, a large lookup table, a reusable script, a table that elaborates a red-flag condition already stated inline. It is reached by a conditional pointer at the point it applies.
+- A block over 100 lines, or one needed in a minority of the skill's invocations, SHOULD be a supporting file.
+- **Conditional pointer** — `<condition> → read @<file>.md and apply it`. A pointer without a condition is a defect.
+- **Disclosure failure** — a supporting file that is never loaded; it is a defect of its pointer, not of its placement.
 
 ### Portable at runtime
 
-omnipowers is a skills library that OTHER projects install. A skill MUST run the
-same inside any project it is installed into. At runtime a skill MUST NOT depend
-on this repository or on its dev / test / optimize tooling (the `Makefile`, the
-install scripts, any eval or optimization harness, the test suite) or on any
-service outside the host project — that tooling exists only to author and improve
-the skills here and is not available downstream. Any state a skill needs MUST
-live inside the host project, and any self-improvement loop a skill defines MUST
-be self-contained and gated by the host project's user.
-
-Host-artifact dependencies split hard vs soft: a skill whose output is
-**incorrect** without a host artifact MUST state how to bootstrap that artifact;
-a skill that merely **sharpens** with one MUST NOT carry a bootstrap pointer or
-nag about its absence — consumers proceed silently.
+- A skill MUST run the same inside any host project.
+- At runtime a skill MUST NOT depend on this repository or its dev, test, or optimize tooling (the `Makefile`, the install scripts, any eval or optimization harness, the test suite), or on any service outside the host project.
+- Any state a skill needs MUST live inside the host project, and any self-improvement loop a skill defines MUST be self-contained and gated by the host project's user.
+- A skill's output is incorrect without a host artifact → the skill MUST state how to bootstrap that artifact.
+- A skill only sharpens with a host artifact → it MUST NOT carry a bootstrap pointer or remind the user of the artifact's absence.
 
 ### Host declaration — the skill decides what, the host decides where
 
 A skill MUST NOT hardcode where its output lives. The skill owns the artifact's
 **role**; the host project owns that role's **location**, its **write
-authority**, and its **version-control convention**. A hardcoded path is correct
-only in a project that has no conventions of its own; in every other project it
-silently creates a second home for something the host already files somewhere,
-and the two copies drift.
+authority**, and its **version-control convention**.
 
 **The five roles.** This list is closed. A skill MUST classify each artifact it
 produces as exactly one of these and MUST NOT invent a sixth:
@@ -197,11 +133,10 @@ fallback path, and points at that skill for the rest. The ladder:
 
 Resolving to 3 or 4 MUST be confirmed with the user before the first write of
 that role in that project, and their answer governs from then on. Resolving to 1
-or 2 MUST NOT ask — the host has already answered.
+or 2 MUST NOT ask.
 
 **The declaration.** The host writes it once, as Markdown, inside a file its
-agents already load. Never a new config file, and never a machine-readable
-format an agent has to parse — the reader is a model, not a parser:
+agents already load — never a new config file, never a machine-readable format:
 
 ````markdown
 ## Omnipowers
@@ -244,36 +179,18 @@ skill's own default:
 
 **`.omnipowers/` is a workbench, not an archive.** It is the fallback home for
 `work-state` and `scratch`, and nothing else. Durable artifacts MUST NOT
-accumulate there: an agent-only directory has no entry point in the host's
-documentation, so whatever is filed there is written and never read again.
-Everything a skill leaves in the workbench MUST be promoted to a durable role or
-deleted when the work finishes.
+accumulate there. Everything a skill leaves in the workbench MUST be promoted to a
+durable role or deleted when the work finishes.
 
 ### Cross-skill consistency
 
-A skill is written one at a time and read one at a time, but it runs alongside
-every other skill in the collection. These three checks catch what per-statement
-review structurally cannot.
-
-- **A mechanism the collection defers to is added or changed** — a policy axis, an
-  artifact role, a shared gate, a named moment — → you MUST sweep every existing
-  skill for rules written before it, in the same change. A rule that predates the
-  mechanism does not know it exists and will keep asking a question the mechanism
-  already answers.
-- **A requirement is stated in two skills** → it is a defect. Every requirement
-  has exactly one owning skill; another skill that depends on it names the owner
-  and adds nothing. Two statements drift, the later wins, and the earlier change
-  silently does not take effect. Within one skill, a rule restated in a second
-  section MUST be changed with the first.
-- **A rule fires at a fixed moment** — task start, round end, before a commit — →
-  you MUST read it together with every other rule that fires at that moment, as
-  the agent will meet them as one instruction. Check that they can all be
-  satisfied at once, and that none of them, read alone, forbids the moment from
-  ever arriving.
+- **A mechanism the collection defers to is added or changed** — a policy axis, an artifact role, a shared gate, a named moment — → you MUST sweep every existing skill for rules written before it, in the same change.
+- **A requirement is stated in two skills** → it is a defect. Every requirement has exactly one owning skill; another skill that depends on it names the owner and adds nothing. Within one skill, a rule restated in a second section MUST be changed with the first.
+- **A rule fires at a fixed moment** — task start, round end, before a commit — → you MUST read it together with every other rule that fires at that moment, and confirm they can all be satisfied at once and that none of them forbids the moment from arriving.
 
 ### Vocabulary
 
-Use these terms exactly; the _Avoid_ list prevents synonym drift.
+These terms are canonical; the _Avoid_ forms are not.
 
 - **skill** — one directory under `skills/` with a `SKILL.md`. _Avoid_: power, command, plugin.
 - **supporting file** — a same-directory file loaded via a conditional `@`-pointer. _Avoid_: sub-skill, attachment, resource.
@@ -290,15 +207,15 @@ For each statement in a skill:
 
 - [ ] Normative? Then it carries a BCP 14 keyword.
 - [ ] Invocation surface classified: guardrail → model-invoked; heavyweight orchestrator / outward side effects → explicit-invocation-only description.
-- [ ] Skill map synced: adding, renaming, removing, or re-scoping a skill updates `skills/using-omnipowers/skill-map.md` in the same change — a map that lies mis-routes worse than no map.
+- [ ] Skill map synced: adding, renaming, removing, or re-scoping a skill updates `skills/using-omnipowers/skill-map.md` in the same change.
 - [ ] Fragile operation + single correct answer + nameable failure mode → `MUST` / `MUST NOT`.
 - [ ] Every `MUST` traces to a failure observed or concretely arguable; no nameable failure → downgrade to `SHOULD` or delete.
-- [ ] Genuine judgment / no standard answer → `SHOULD` / `MAY`, and say why it varies.
+- [ ] Judgment varies by situation / no standard answer → `SHOULD` / `MAY`.
 - [ ] No softening of a real rule ("consider", "try to", "it's good practice").
 - [ ] Every sentence is a rule (condition → keyword command), a definition, or a template; nothing else.
 - [ ] Any exception uses the one-escape shape above.
 - [ ] Self-contained: carries the BCP 14 note; no reference outside this repo.
-- [ ] Progressive disclosure: every-invocation discipline stays inline; situational or heavy reference (>~100 lines, or used in a minority of runs) is a same-directory supporting file reached by a conditional `@`-pointer.
+- [ ] Progressive disclosure: every-invocation discipline stays inline; situational or heavy reference (over 100 lines, or used in a minority of runs) is a same-directory supporting file reached by a conditional pointer.
 - [ ] Portable at runtime: works in any host project; no dependency on this repo's tooling; all state stays inside the host project.
 - [ ] No hardcoded home: every artifact names one of the five roles and its fallback, and resolves the rest through `using-omnipowers`; the ladder is not restated.
 - [ ] Throughput: every run/read/write/review demand accepts a prior result on the same input; per-action cost is proportional; a document has a too-small case; heavy material is behind a condition that is false on the ordinary task.
