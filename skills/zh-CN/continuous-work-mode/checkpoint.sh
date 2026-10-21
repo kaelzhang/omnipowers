@@ -1,0 +1,1 @@
+../../en/continuous-work-mode/checkpoint.sh

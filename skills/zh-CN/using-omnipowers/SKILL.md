@@ -1,0 +1,50 @@
+---
+name: using-omnipowers
+description: 在对话开始时使用一次，确定 omnipowers 技能的运行方式；你 MUST 在回复前检查并调用所有适用技能
+---
+
+> 本文中全大写的规范关键词 MUST、MUST NOT、REQUIRED、SHALL、SHALL NOT、SHOULD、SHOULD NOT、RECOMMENDED、MAY、OPTIONAL 按 BCP 14（RFC 2119、RFC 8174）解释，且仅在全大写时具有规范含义。
+
+<SUBAGENT-STOP>
+技能范围 — 除受派发执行单一具体任务的 subagent 以外的 agent。
+</SUBAGENT-STOP>
+
+## 应用技能
+
+- 回复或行动前 → 你 MUST 检查是否有技能约束即将执行的工作。
+- 适用技能 — 触发条件描述了即将执行工作的技能。
+- 遵守技能 — 调用适用技能，并严格遵守它的 `MUST` / `MUST NOT` 规则。
+- 技能的触发条件指向另一种情形 → 你 MUST NOT 调用它。
+- 应用技能时 → 你 MUST NOT 弱化规则、跳过步骤或将 `MUST` 当作建议。
+- 应用技能时 → 你 MUST NOT 自创例外。
+- 技能写明例外（`MAY … ONLY when …`） → 你 MUST 满足列出的每个条件。
+- 宿主提供技能调用机制 → 你 MUST 使用它。
+- 技能激活 — 通过宿主的技能调用机制调用技能，与读取 `SKILL.md` 不同。
+- 技能已在上下文中 → 你 MUST NOT 在每次触发时重复调用。
+- 技能带有检查清单，且有一项未通过 → 你 MUST NOT 报告工作完成。
+- 技能带有检查清单 → 你 MUST NOT 将清单复制到宿主的任务工具或回复中。
+- 两个技能看起来都适用 → 读 `@skill-map.md` 并照做。
+- 你察觉自己正试图为调用未匹配的技能找理由，或为跳过已匹配的技能找理由 → 读 `@rationalizing.md` 并照做。
+
+## 产物放在哪里
+
+产物角色 — `design-docs`、`work-state`、`records`、`scratch` 或 `standards` 中的一种，由编写文件的技能指定。
+
+产物位置解析 — 以下有序列表中首个适用项：
+
+1. 会话位置 — 用户在本次会话中指定的位置。
+2. 宿主声明位置 — 宿主 `Omnipowers` 声明中对应产物角色的行；声明位于 `AGENTS.md` / `CLAUDE.md` 的章节中，或这些文件指向的文档中。
+3. 现有角色位置 — 宿主存放同角色文档的位置，且位置没有歧义。
+4. 回退位置 — 技能指定的回退路径。
+
+- 产物位置解析选中第 1 或第 2 项 → 你 MUST NOT 请求确认位置。
+- 宿主策略轴 — 声明中的 `write-authority`、`vcs`、`isolation` 和 `continuation` 行，对每个技能的约束优先于技能默认值。
+- 产物的父目录不存在 → 你 MUST 创建目录。
+
+## 指令优先级
+
+指令优先级 — 用户的明确指令优先，接着是 omnipowers 技能，最后是默认行为。
+
+用户覆盖 — 用户的直接指令优先于任何技能规则，包括技能中的 `MUST`，也包括 `using-omnipowers`。
+
+指令分歧的归属技能 — `confirming-with-the-user`，约束如何提出对指令的分歧、用户答复后的行动，以及覆盖范围。
