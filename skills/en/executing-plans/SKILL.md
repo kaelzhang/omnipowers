@@ -34,7 +34,6 @@ description: Use when you have a written implementation plan (plan.md / a plan f
 - When executing a step → you MUST NOT merge, reorder, or shortcut steps.
 - Step verification — the verification specified by a step, evaluated under `verification-before-completion`.
 - A step specifies a verification → you MUST NOT skip it.
-- A step's verification fails → treat it as a blocker (see "When to Stop and Ask for Help").
 - When executing a step → you MUST mark it completed only after its verification has passed.
 - The plan instructs you to apply a particular technique, follow another procedure, or invoke a specific capability at a step → you MUST do so at that step rather than substituting your own approach.
 

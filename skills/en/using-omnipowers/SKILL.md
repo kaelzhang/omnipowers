@@ -38,6 +38,7 @@ Artifact-location resolution — the first applicable entry in the following ord
 4. Fallback location — the fallback path named by the skill.
 
 - Artifact-location resolution selects entry 1 or 2 → you MUST NOT ask for location confirmation.
+- Artifact-location resolution selects entry 3 or 4 → you MUST confirm the location with the user before the first write of that role in that project; their answer governs that role from then on.
 - Host policy axes — the declaration's `write-authority`, `vcs`, `isolation`, and `continuation` rows, binding every skill over its own defaults.
 - A parent directory for an artifact is missing → you MUST create it.
 

@@ -67,7 +67,7 @@ The intermittent failure is a test waiting on an arbitrary delay → read `@cond
 
 ## Minimise — every remaining element load-bearing
 
-The loop goes red reliably → you MUST shrink the reproduction before Phase 3: remove inputs, data, config, steps, and code **one element at a time**, re-running the loop after each removal.
+The loop goes red reliably → you MUST shrink the reproduction before starting ROOT CAUSE: remove inputs, data, config, steps, and code **one element at a time**, re-running the loop after each removal.
 
 Minimal reproduction — a reproduction for which removing any remaining element makes the failure disappear.
 

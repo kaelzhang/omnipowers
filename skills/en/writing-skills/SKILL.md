@@ -22,7 +22,7 @@ description: Use when creating, editing, writing, hardening, verifying, or cutti
 - When producing a skill → it MUST run the same in any host project.
 - At runtime → the skill MUST NOT depend on authoring/test/optimize tooling.
 - When the skill needs state → it MUST keep that state inside the host project.
-- When producing an artifact → it MUST be classified as `design-docs`, `work-state`, `records`, `scratch`, or `standards`, with its location resolved in this order: the user's stated location, the host's declared mapping, the host's existing convention, the skill's fallback stated as a fallback.
+- When producing an artifact → it MUST be classified as `design-docs`, `work-state`, `records`, `scratch`, or `standards` and name its fallback path, with the rest of its location resolution left to `using-omnipowers`.
 - When producing a skill → it MUST yield to the host’s commit convention, isolation unit, and write-authority model.
 - When a skill violates these invariants → you MUST NOT use this skill to justify shipping it.
 

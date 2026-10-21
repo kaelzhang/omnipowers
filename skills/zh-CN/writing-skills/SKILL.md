@@ -22,7 +22,7 @@ description: 在创建、编辑、编写、加固、验证或删减任何技能�
 - 产出技能时 → 技能 MUST 在任何宿主项目中以同样方式运行。
 - 运行时 → 技能 MUST NOT 依赖编写、测试或优化工具。
 - 技能需要状态时 → 技能 MUST 将状态保存在宿主项目内。
-- 产出产物时 → 产物 MUST 归入 `design-docs`、`work-state`、`records`、`scratch` 或 `standards`，并按以下顺序确定位置：用户指定的位置、宿主声明的映射、宿主现有惯例、技能明确标为回退位置的路径。
+- 产出产物时 → 产物 MUST 归入 `design-docs`、`work-state`、`records`、`scratch` 或 `standards`，并写明回退路径；其余的位置解析交给 `using-omnipowers`。
 - 产出技能时 → 技能 MUST 遵循宿主的提交惯例、隔离单位和 write-authority 模型。
 - 技能违反这些不变量时 → 你 MUST NOT 用本技能为交付它辩护。
 
