@@ -32,7 +32,7 @@ import uuid
 from concurrent.futures import ThreadPoolExecutor
 
 REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
-SKILLS_DIR = os.path.join(REPO, "skills")
+SKILLS_DIR = os.path.join(REPO, "skills", "en")
 
 
 def _env():
@@ -255,7 +255,15 @@ def main() -> int:
     r.add_argument("--baseline", default="", help="file whose text the CONTROL arm carries; "
                    "turns the run into variant-vs-variant instead of skill-vs-no-skill")
     r.add_argument("--model", default="")
+    p.add_argument("--locale", default="en", help="skill locale (default: en)")
+    for parser in sub.choices.values():
+        parser.add_argument("--locale", default=argparse.SUPPRESS,
+                            help="skill locale (default: en)")
     args = p.parse_args()
+    global SKILLS_DIR
+    SKILLS_DIR = os.path.join(REPO, "skills", args.locale)
+    if os.path.basename(args.locale) != args.locale or not os.path.isdir(SKILLS_DIR):
+        p.error(f"unknown locale: {args.locale}")
     return cmd_run(args) if args.cmd == "run" else 2
 
 

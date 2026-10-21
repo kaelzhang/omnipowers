@@ -4,4 +4,4 @@
 .claude/
 __pycache__/
 .omnipowers/
-.install-targets
+.install.conf

@@ -22,6 +22,9 @@ trigger phase while the skills are installed** (a globally installed copy shadow
 the synthetic command and zeroes the measurement), and it **runs large skills
 serially**. Narrow it with `SKILLS=a,b` and `PHASE=triggers|compliance`.
 
+All fitness targets select `skills/en/` by default; pass `LOCALE=zh-CN` to
+measure `skills/zh-CN/` instead. The Python entrypoints accept `--locale`.
+
 ## The four measurements (per skill)
 
 1. **Trigger precision / recall** — `make fitness-triggers SKILL=<name> EVALSET=<file>`

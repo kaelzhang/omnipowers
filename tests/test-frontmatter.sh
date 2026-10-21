@@ -7,7 +7,8 @@ DIR="$(cd "$(dirname "$0")/.." && pwd)"
 echo "== frontmatter =="
 fail=0; ran=0
 
-for md in "$DIR"/skills/*/SKILL.md; do
+for md in "$DIR"/skills/*/*/SKILL.md; do
+  [ -f "$md" ] || continue
   name="$(basename "$(dirname "$md")")"
   ran=$((ran + 1))
   out="$(python3 - "$md" "$name" <<'PY'

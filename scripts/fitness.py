@@ -26,7 +26,7 @@ import subprocess
 import sys
 
 REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
-SKILLS_DIR = os.path.join(REPO, "skills")
+SKILLS_DIR = os.path.join(REPO, "skills", "en")
 
 
 def harness_dir() -> str:
@@ -356,7 +356,7 @@ def cmd_round(args) -> int:
                   flush=True)
             proc = subprocess.run(
                 [sys.executable, os.path.join(REPO, "scripts", "compliance.py"), "run",
-                 "--skill", skill, "--scenarios", sc,
+                 "--locale", args.locale, "--skill", skill, "--scenarios", sc,
                  "--fixtures-root", os.path.join(root, "fixtures"),
                  "--runs", str(args.runs), "--workers", str(workers),
                  "--timeout", str(args.compliance_timeout)]
@@ -392,7 +392,15 @@ def main() -> int:
     r.add_argument("--compliance-timeout", type=int, default=300, help="seconds per A/B run")
     r.add_argument("--workers", type=int, default=4)
     r.add_argument("--model", default="")
+    p.add_argument("--locale", default="en", help="skill locale (default: en)")
+    for parser in sub.choices.values():
+        parser.add_argument("--locale", default=argparse.SUPPRESS,
+                            help="skill locale (default: en)")
     args = p.parse_args()
+    global SKILLS_DIR
+    SKILLS_DIR = os.path.join(REPO, "skills", args.locale)
+    if os.path.basename(args.locale) != args.locale or not os.path.isdir(SKILLS_DIR):
+        p.error(f"unknown locale: {args.locale}")
     if args.cmd == "triggers":
         return cmd_triggers(args)
     if args.cmd == "validate":

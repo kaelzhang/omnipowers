@@ -5,7 +5,7 @@ story instead of stating a rule. Text inside fenced code blocks, inline code,
 and double quotes is exempt: templates and red-flag thoughts are reproduced
 verbatim, not stated.
 
-    python3 style_gate.py [path ...]     # default: skills/ and AGENTS.md
+    python3 style_gate.py [path ...]     # default: skills/en/ and AGENTS.md
 Exit 1 and one line per hit when anything is flagged.
 """
 import pathlib
@@ -29,7 +29,7 @@ EXEMPT = re.compile(r"`[^`]*`|\"[^\"]*\"|“[^”]*”|「[^」]*」")
 def targets(argv):
     if argv:
         return [pathlib.Path(a) for a in argv]
-    return sorted((ROOT / "skills").rglob("*.md")) + [ROOT / "AGENTS.md"]
+    return sorted((ROOT / "skills" / "en").rglob("*.md")) + [ROOT / "AGENTS.md"]
 
 
 def scan(path):

@@ -38,7 +38,7 @@ import sys
 from typing import Any, Dict, List, Optional, Tuple
 
 REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
-SKILLS_DIR = os.path.join(REPO, "skills")
+SKILLS_DIR = os.path.join(REPO, "skills", "en")
 ARTIFACT_DIR = os.path.join(REPO, ".skillopt-sleep")          # gitignored
 STATE_ROOT = os.path.join(ARTIFACT_DIR, "state")              # per-skill SkillOpt state
 INDEX_PATH = os.path.join(ARTIFACT_DIR, "driver-index.json")  # skill -> last staging dir

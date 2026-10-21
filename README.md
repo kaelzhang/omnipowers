@@ -1,3 +1,5 @@
+English | [简体中文](README.zh-CN.md)
+
 # omnipowers
 
 A collection of skills that improve coding effectiveness for AI coding agents.
@@ -6,29 +8,29 @@ A collection of skills that improve coding effectiveness for AI coding agents.
 
 | Skill | Use when |
 | --- | --- |
-| [using-omnipowers](skills/using-omnipowers/SKILL.md) | Starting any task or conversation — how omnipowers skills work; check for and invoke any applicable skill before responding |
-| [fixing-bugs](skills/fixing-bugs/SKILL.md) | Any bug, crash, test failure, regression, or unexpected behavior — you MUST reproduce it red and name the root cause before changing production code |
-| [honoring-user-requirements](skills/honoring-user-requirements/SKILL.md) | Every requirement the user states — you MUST record it as stated the moment it is said, verify it with evidence at each checkpoint, and carry it out exactly once confirmed |
-| [verification-before-completion](skills/verification-before-completion/SKILL.md) | About to claim work is complete/fixed/passing — you MUST run the verification and read its output before any success claim |
-| [code-auditing](skills/code-auditing/SKILL.md) | Work about to advance — a merge, PR, release, or handover — or any review you are asked for: a checkpoint review or a standards audit; evidence for every finding, Critical/Important fixed before proceeding. An ordinary commit is not a review trigger |
-| [brainstorming](skills/brainstorming/SKILL.md) | Before building — state the goal and its delivery criteria in one line, or settle them with the user first, together with any blocker, serious risk, or disagreement. How and when to build is the agent's, by best practice |
-| [writing-plans](skills/writing-plans/SKILL.md) | Turning a spec into a multi-step task — you MUST produce a complete, self-contained, bite-sized plan with zero placeholders before coding |
-| [executing-plans](skills/executing-plans/SKILL.md) | Executing a written plan — you MUST review it critically, then run each step in order and verify at every checkpoint |
-| [subagent-driven-development](skills/subagent-driven-development/SKILL.md) | Executing a plan of mostly-independent tasks — one task at a time, reviewing spec + quality of each before the next, with a broad whole-branch review at the end |
-| [keeping-work-in-flight](skills/keeping-work-in-flight/SKILL.md) | Every agent return and every round end — count what is running, dispatch one tracked call per idle scope before reading, and never leave work whose completion cannot wake you |
-| [using-git-worktrees](skills/using-git-worktrees/SKILL.md) | Feature work needing isolation — you MUST ensure an isolated workspace via the host's native worktree tool or a `git worktree` fallback |
-| [finishing-a-development-branch](skills/finishing-a-development-branch/SKILL.md) | Work complete and verified — verify tests, present structured merge/PR/keep/discard options, execute the choice, and clean up only what you created |
-| [writing-skills](skills/writing-skills/SKILL.md) | Creating or editing a skill — you MUST develop it test-first (watch an agent fail without it first); conforms to `AGENTS.md` |
-| [confirming-with-the-user](skills/confirming-with-the-user/SKILL.md) | Any decision or sign-off the user owns (a design, review proposals/findings, a trade-off) — present plain-language options with each option's impact and your recommendation, one decision at a time, in one language |
-| [stress-testing-a-plan](skills/stress-testing-a-plan/SKILL.md) | The user asks to have their plan interrogated ("poke holes", "grill me") — dependency-ordered questions, each with a recommended answer; no artifact; build intent hands off to brainstorming |
-| [domain-modeling](skills/domain-modeling/SKILL.md) | Building the project's language — a root `CONTEXT.md` glossary with banned synonyms, and ADRs gated by a three-part test; resolutions recorded the moment they land |
-| [designing-deep-modules](skills/designing-deep-modules/SKILL.md) | Designing a module or interface — depth as the target: the deletion test kills pass-throughs, the two-adapter rule kills speculative abstraction |
-| [prototyping](skills/prototyping/SKILL.md) | A design question only running code can answer — a throwaway artifact the user drives; the verdict is the user's observation, captured into the spec |
-| [researching](skills/researching/SKILL.md) | Answering a question by investigation — every claim traced to the primary source that owns it, delivered as a cited findings file |
-| [resolving-merge-conflicts](skills/resolving-merge-conflicts/SKILL.md) | An in-progress merge or rebase with conflicts — per-hunk intent archaeology; never invent behavior in a conflict hunk, never `--abort` to escape |
-| [writing-handoffs](skills/writing-handoffs/SKILL.md) | The user asks to hand off the session — compact it into an evidence-cited, pointer-not-copy document a zero-context agent can resume from |
-| [committing-work](skills/committing-work/SKILL.md) | Forming each commit — one coherent logical change, staged path by path, proven by the smallest sufficient check, with a message that stands alone and credits no tool |
-| [writing-documentation](skills/writing-documentation/SKILL.md) | Creating or restructuring durable documentation — one entrypoint per set that routes a reader by task to exact files, updated in the same change |
+| [using-omnipowers](skills/en/using-omnipowers/SKILL.md) | Starting any task or conversation — how omnipowers skills work; check for and invoke any applicable skill before responding |
+| [fixing-bugs](skills/en/fixing-bugs/SKILL.md) | Any bug, crash, test failure, regression, or unexpected behavior — you MUST reproduce it red and name the root cause before changing production code |
+| [honoring-user-requirements](skills/en/honoring-user-requirements/SKILL.md) | Every requirement the user states — you MUST record it as stated the moment it is said, verify it with evidence at each checkpoint, and carry it out exactly once confirmed |
+| [verification-before-completion](skills/en/verification-before-completion/SKILL.md) | About to claim work is complete/fixed/passing — you MUST run the verification and read its output before any success claim |
+| [code-auditing](skills/en/code-auditing/SKILL.md) | Work about to advance — a merge, PR, release, or handover — or any review you are asked for: a checkpoint review or a standards audit; evidence for every finding, Critical/Important fixed before proceeding. An ordinary commit is not a review trigger |
+| [brainstorming](skills/en/brainstorming/SKILL.md) | Before building — state the goal and its delivery criteria in one line, or settle them with the user first, together with any blocker, serious risk, or disagreement. How and when to build is the agent's, by best practice |
+| [writing-plans](skills/en/writing-plans/SKILL.md) | Turning a spec into a multi-step task — you MUST produce a complete, self-contained, bite-sized plan with zero placeholders before coding |
+| [executing-plans](skills/en/executing-plans/SKILL.md) | Executing a written plan — you MUST review it critically, then run each step in order and verify at every checkpoint |
+| [subagent-driven-development](skills/en/subagent-driven-development/SKILL.md) | Executing a plan of mostly-independent tasks — one task at a time, reviewing spec + quality of each before the next, with a broad whole-branch review at the end |
+| [keeping-work-in-flight](skills/en/keeping-work-in-flight/SKILL.md) | Every agent return and every round end — count what is running, dispatch one tracked call per idle scope before reading, and never leave work whose completion cannot wake you |
+| [using-git-worktrees](skills/en/using-git-worktrees/SKILL.md) | Feature work needing isolation — you MUST ensure an isolated workspace via the host's native worktree tool or a `git worktree` fallback |
+| [finishing-a-development-branch](skills/en/finishing-a-development-branch/SKILL.md) | Work complete and verified — verify tests, present structured merge/PR/keep/discard options, execute the choice, and clean up only what you created |
+| [writing-skills](skills/en/writing-skills/SKILL.md) | Creating or editing a skill — you MUST develop it test-first (watch an agent fail without it first); conforms to `AGENTS.md` |
+| [confirming-with-the-user](skills/en/confirming-with-the-user/SKILL.md) | Any decision or sign-off the user owns (a design, review proposals/findings, a trade-off) — present plain-language options with each option's impact and your recommendation, one decision at a time, in one language |
+| [stress-testing-a-plan](skills/en/stress-testing-a-plan/SKILL.md) | The user asks to have their plan interrogated ("poke holes", "grill me") — dependency-ordered questions, each with a recommended answer; no artifact; build intent hands off to brainstorming |
+| [domain-modeling](skills/en/domain-modeling/SKILL.md) | Building the project's language — a root `CONTEXT.md` glossary with banned synonyms, and ADRs gated by a three-part test; resolutions recorded the moment they land |
+| [designing-deep-modules](skills/en/designing-deep-modules/SKILL.md) | Designing a module or interface — depth as the target: the deletion test kills pass-throughs, the two-adapter rule kills speculative abstraction |
+| [prototyping](skills/en/prototyping/SKILL.md) | A design question only running code can answer — a throwaway artifact the user drives; the verdict is the user's observation, captured into the spec |
+| [researching](skills/en/researching/SKILL.md) | Answering a question by investigation — every claim traced to the primary source that owns it, delivered as a cited findings file |
+| [resolving-merge-conflicts](skills/en/resolving-merge-conflicts/SKILL.md) | An in-progress merge or rebase with conflicts — per-hunk intent archaeology; never invent behavior in a conflict hunk, never `--abort` to escape |
+| [writing-handoffs](skills/en/writing-handoffs/SKILL.md) | The user asks to hand off the session — compact it into an evidence-cited, pointer-not-copy document a zero-context agent can resume from |
+| [committing-work](skills/en/committing-work/SKILL.md) | Forming each commit — one coherent logical change, staged path by path, proven by the smallest sufficient check, with a message that stands alone and credits no tool |
+| [writing-documentation](skills/en/writing-documentation/SKILL.md) | Creating or restructuring durable documentation — one entrypoint per set that routes a reader by task to exact files, updated in the same change |
 
 ## Install
 
@@ -39,15 +41,17 @@ it auto-discovers every skill in this repo and installs into the agents you pick
 (Claude Code, Codex, Cursor, and more):
 
 ```bash
-npx skills add kaelzhang/omnipowers
+npx skills add https://github.com/kaelzhang/omnipowers/tree/main/skills/en
 ```
+
+The URL selects the locale: `skills/en` installs English skills, `skills/zh-CN` installs Simplified Chinese skills.
 
 Useful variants:
 
 ```bash
-npx skills add kaelzhang/omnipowers -g                       # user-level install
-npx skills add kaelzhang/omnipowers -a claude-code -a codex  # pick agents
-npx skills add kaelzhang/omnipowers --skill brainstorming    # pick skills
+npx skills add https://github.com/kaelzhang/omnipowers/tree/main/skills/en -g                       # user-level install
+npx skills add https://github.com/kaelzhang/omnipowers/tree/main/skills/en -a claude-code -a codex  # pick agents
+npx skills add https://github.com/kaelzhang/omnipowers/tree/main/skills/en --skill brainstorming    # pick skills
 npx skills update                                            # update later
 ```
 
@@ -58,10 +62,17 @@ so your edits auto-apply without reinstalling:
 
 ```bash
 make dev            # analyze Claude/Codex status, then install for both
+make dev LOCALE=zh-CN # install the Chinese locale
 make dev FORCE=1    # re-link even if already installed
 make status         # show what is installed
 make uninstall      # remove the symlinks
 ```
+
+The untracked `.install.conf` stores `targets=claude codex` and `locale=en` as
+key=value lines. Selection precedence is CLI / make variables (`TARGETS`, `LOCALE`),
+then environment (`OMNIPOWERS_TARGETS`, `OMNIPOWERS_LOCALE`), then `.install.conf`,
+then defaults (both hosts, English). `make status LOCALE=zh-CN` previews that locale;
+`make dev` switches this repo's existing links to the selected locale.
 
 Skills are discovered at:
 
@@ -73,7 +84,7 @@ Skills are discovered at:
 Because skills are symlinked, editing a skill's `SKILL.md` takes effect **without
 reinstalling**: Claude Code hot-reloads it live in the session; Codex auto-detects
 the change (restart Codex if it does not show). Re-run `make dev` only when
-you add a new skill.
+you add a new skill or switch locales.
 
 ## Where skills put things
 
@@ -130,6 +141,8 @@ make optimize-status SKILL=a               # review a staged proposal
 make optimize-adopt  SKILL=a               # apply it (a backup is kept)
 make optimize-list                         # skills + eval/config/staged state
 ```
+
+`make optimize` operates on `skills/en/` only.
 
 `make optimize` uses [SkillOpt-Sleep](https://github.com/microsoft/SkillOpt) — an
 external dependency; set `SKILLOPT_HOME` to a local clone. For each skill it

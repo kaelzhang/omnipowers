@@ -14,7 +14,7 @@ _r(){ [ -t 1 ] && printf '\033[31m%s\033[0m' "$1" || printf '%s' "$1"; }
 ok(){  PASS=$((PASS+1)); printf '  %s %s\n' "$(_g ✓)" "$1"; }
 bad(){ FAIL=$((FAIL+1)); printf '  %s %s\n' "$(_r ✗)" "$1"; }
 
-skill_md(){ cat "$OMNIPOWERS_ROOT/skills/$1/SKILL.md"; }
+skill_md(){ cat "$OMNIPOWERS_ROOT/skills/${2:-en}/$1/SKILL.md"; }
 
 assert_contains(){     # <text> <regex> <name>
   if printf '%s' "$1" | grep -qiE -- "$2"; then ok "$3"; else bad "$3 — missing /$2/"; fi; }

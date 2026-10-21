@@ -6,15 +6,15 @@ normative skills that improve coding effectiveness for AI coding agents.
 This file governs how skills in this repo are **authored and structured**. Any
 agent that adds or modifies a skill MUST follow the Skill authoring standard
 below. To install the skills, see `README.md`. For how an agent discovers and
-applies a skill at runtime, see `skills/using-omnipowers/SKILL.md`.
+applies a skill at runtime, see `skills/en/using-omnipowers/SKILL.md`.
 
 ## Repository layout
 
-- `skills/<name>/SKILL.md` — one self-contained skill per directory; the
-  frontmatter `name` MUST match the directory name.
-- `skills/<name>/*.md` — supporting files for that skill, included from its
+- `skills/<locale>/<name>/SKILL.md` — one self-contained skill per directory; the
+  frontmatter `name` MUST match the directory name. `<locale>` is `en` or `zh-CN`.
+- `skills/<locale>/<name>/*.md` — supporting files for that skill, included from its
   `SKILL.md` by same-directory reference only (e.g. `@testing-anti-patterns.md`).
-- `README.md` — what the collection is and how to install it.
+- `README.md`, `README.zh-CN.md` — what the collection is and how to install it.
 - `Makefile`, `scripts/` — install / dev tooling.
 - `FITNESS.md` — the periodic skill-fitness review: measurements and keep/simplify/merge/retire rules.
 - `LICENSE` — MIT.
@@ -182,6 +182,95 @@ skill's own default:
 accumulate there. Everything a skill leaves in the workbench MUST be promoted to a
 durable role or deleted when the work finishes.
 
+### Locales
+
+- **Locale** — one complete translation of the collection under `skills/<locale>/`. The locales are `en` and `zh-CN`; they have equal standing.
+- Every locale MUST hold the same skills, and every skill the same files, under the same names. Skill names, `name` fields, file names, `@` pointers, role names, policy-axis names, the `Omnipowers` section name, and paths MUST be identical in every locale.
+- A change to a file in one locale → the same change MUST land in every other locale in the same commit.
+- `tests/test-locale-parity.sh` → it MUST pass: per file, equal counts of each BCP 14 keyword, equal `@` pointer sets, equal code-block counts, equal `name` fields.
+- `README.md` and `README.zh-CN.md` are translations of each other → an edit MUST land in both in the same commit.
+- A script inside a skill exists once, in `en`; every other locale links to it with a relative symlink. Script output stays English.
+
+#### zh-CN writing rules
+
+- Prose MUST be Chinese. BCP 14 keywords MUST stay English and capitalized, and MUST be placed after the subject and before the action. `MUST NOT` and `SHOULD NOT` MUST NOT be split.
+- Prose MUST NOT carry a Chinese modal word: 必须, 务必, 应该, 应当, 不应, 不得, 禁止, 严禁, 不宜, 可以, 允许, 不必, 无须, 无需. Force is carried by the BCP 14 keyword alone; capability is written as 能 / 无法.
+- The BCP 14 note MUST read: `> 本文中全大写的规范关键词 MUST、MUST NOT、REQUIRED、SHALL、SHALL NOT、SHOULD、SHOULD NOT、RECOMMENDED、MAY、OPTIONAL 按 BCP 14（RFC 2119、RFC 8174）解释，且仅在全大写时具有规范含义。`
+- Each Chinese sentence MUST sit on one source line; a line break MUST NOT fall between two CJK characters.
+- Code blocks, commands, paths, identifiers, quoted program output, and file and skill names MUST stay as in `en`. Templates the reader reproduces MUST be translated, except their code.
+- A `description` MUST be Chinese, and MUST keep the Chinese trigger words and the English technical terms of the `en` description.
+- The text MUST read as written by a native speaker: no 该/其/之 officialese, no nominalized chains, no passive voice where an active subject exists.
+- A term in the glossary below MUST be translated as listed.
+
+#### zh-CN glossary
+
+| en | zh-CN |
+|---|---|
+| skill | 技能 |
+| supporting file | 辅助文件 |
+| conditional pointer | 条件指针 |
+| description | description（frontmatter 字段名，不译） |
+| collection | 技能集 |
+| host project / host | 宿主项目 / 宿主 |
+| host declaration | 宿主声明 |
+| role | 角色 |
+| workbench | 工作台（`.omnipowers/`） |
+| policy axis | 策略轴 |
+| round | 轮次 / 一轮 |
+| checkpoint | 检查点 |
+| gate | 闸门 |
+| sentinel | 哨兵文件 |
+| ledger | 台账 |
+| requirement | 要求 |
+| acceptance item | 验收项 |
+| delivery criteria | 交付标准 |
+| task | 任务 |
+| plan | 计划 |
+| spec | 规格 |
+| review / reviewer | 评审 / 评审者 |
+| implementer | 实现者 |
+| finding | 发现项 |
+| claim | 声明 |
+| evidence | 证据 |
+| verdict | 结论 |
+| blocker | 阻塞项 |
+| scope | 范围 |
+| dispatch | 派发 |
+| tracked (call / task) | 受追踪的（调用 / 任务） |
+| idle | 空闲 |
+| queue | 队列 |
+| you (the reader the skill addresses) | 你 |
+| agent / subagent | agent / subagent（不译） |
+| handoff | 交接 |
+| artifact | 产物 |
+| prototype | 原型 |
+| commit (n. / v.) | 提交 |
+| stage / staging | 暂存 |
+| push | 推送 |
+| branch | 分支 |
+| mainline | 主干 |
+| worktree | worktree（不译） |
+| merge / rebase | 合并 / rebase（不译） |
+| conflict / hunk | 冲突 / hunk（不译） |
+| isolation | 隔离 |
+| root cause | 根因 |
+| hypothesis | 假设 |
+| regression | 回归 |
+| reproduce / red / green | 复现 / 红 / 绿 |
+| fixture / harness | fixture / harness（不译） |
+| feedback loop | 反馈回路 |
+| sweep | 排查（同类问题） |
+| Iron Law | 铁律 |
+| red flag | 危险信号 |
+| rationalization | 自我开脱 |
+| escape hatch | 例外出口 |
+| module / interface / depth | 模块 / 接口 / 深度 |
+| deep module / shallow module | 深模块 / 浅模块 |
+| seam / adapter | 接缝 / 适配器 |
+| glossary / ADR | 术语表 / ADR |
+| context (agent context window) | 上下文 |
+| throughput | 吞吐 |
+
 ### Cross-skill consistency
 
 - **A mechanism the collection defers to is added or changed** — a policy axis, an artifact role, a shared gate, a named moment — → you MUST sweep every existing skill for rules written before it, in the same change.
@@ -192,7 +281,7 @@ durable role or deleted when the work finishes.
 
 These terms are canonical; the _Avoid_ forms are not.
 
-- **skill** — one directory under `skills/` with a `SKILL.md`. _Avoid_: power, command, plugin.
+- **skill** — one directory under `skills/<locale>/` with a `SKILL.md`. _Avoid_: power, command, plugin.
 - **supporting file** — a same-directory file loaded via a conditional `@`-pointer. _Avoid_: sub-skill, attachment, resource.
 - **host project** — the downstream project a skill is installed into. _Avoid_: client project, target repo, downstream (bare).
 - **collection** — this repository's shipped set of skills. _Avoid_: library, suite, framework.
@@ -207,7 +296,8 @@ For each statement in a skill:
 
 - [ ] Normative? Then it carries a BCP 14 keyword.
 - [ ] Invocation surface classified: guardrail → model-invoked; heavyweight orchestrator / outward side effects → explicit-invocation-only description.
-- [ ] Skill map synced: adding, renaming, removing, or re-scoping a skill updates `skills/using-omnipowers/skill-map.md` in the same change.
+- [ ] Skill map synced: adding, renaming, removing, or re-scoping a skill updates `skill-map.md` of `using-omnipowers` in every locale in the same change.
+- [ ] Locales synced: the same change landed in every locale; `make test` passes the locale parity and both style gates.
 - [ ] Fragile operation + single correct answer + nameable failure mode → `MUST` / `MUST NOT`.
 - [ ] Every `MUST` traces to a failure observed or concretely arguable; no nameable failure → downgrade to `SHOULD` or delete.
 - [ ] Judgment varies by situation / no standard answer → `SHOULD` / `MAY`.
