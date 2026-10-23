@@ -186,7 +186,9 @@ durable role or deleted when the work finishes.
 
 - **Locale** — one complete translation of the collection under `skills/<locale>/`. The locales are `en` and `zh-CN`; they have equal standing.
 - Every locale MUST hold the same skills, and every skill the same files, under the same names. Skill names, `name` fields, file names, `@` pointers, role names, policy-axis names, the `Omnipowers` section name, and paths MUST be identical in every locale.
-- A change to a file in one locale → the same change MUST land in every other locale in the same commit.
+- **Trigger word** — a quoted user phrase in a `description` that the skill fires on.
+- A change to a file in one locale, other than to a `description`'s trigger words → the same change MUST land in every other locale in the same commit.
+- A locale's `description` → its trigger words MAY differ from every other locale's.
 - `tests/test-locale-parity.sh` → it MUST pass: per file, equal counts of each BCP 14 keyword, equal `@` pointer sets, equal code-block counts, equal `name` fields.
 - `README.md` and `README.zh-CN.md` are translations of each other → an edit MUST land in both in the same commit.
 - A script inside a skill exists once, in `en`; every other locale links to it with a relative symlink. Script output stays English.
@@ -297,7 +299,7 @@ For each statement in a skill:
 - [ ] Normative? Then it carries a BCP 14 keyword.
 - [ ] Invocation surface classified: guardrail → model-invoked; heavyweight orchestrator / outward side effects → explicit-invocation-only description.
 - [ ] Skill map synced: adding, renaming, removing, or re-scoping a skill updates `skill-map.md` of `using-omnipowers` in every locale in the same change.
-- [ ] Locales synced: the same change landed in every locale; `make test` passes the locale parity and both style gates.
+- [ ] Locales synced: the same change landed in every locale, `description` trigger words excepted; `make test` passes the locale parity and both style gates.
 - [ ] Fragile operation + single correct answer + nameable failure mode → `MUST` / `MUST NOT`.
 - [ ] Every `MUST` traces to a failure observed or concretely arguable; no nameable failure → downgrade to `SHOULD` or delete.
 - [ ] Judgment varies by situation / no standard answer → `SHOULD` / `MAY`.
