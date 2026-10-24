@@ -14,6 +14,7 @@ Timed-out foreground call — a foreground call that exceeded its timeout and re
 
 - A foreground call exceeded its timeout → you MUST NOT assume it finished.
 - A form is session-detached → you MUST NOT use it.
+- Launching a subagent, a delegated command-line run, or any work whose result you need → you MUST NOT use the detached foreground form.
 
 ## Delegated command-line runs
 

@@ -42,6 +42,7 @@ agent、subagent 或后台任务返回，或轮次即将结束时 → 你 MUST �
 - 某种形式在几秒内报告完成，而进程仍在运行时 → 你 MUST NOT 使用它。
 
 - 选择后台形式、关闭委派运行的 stdin、轮询或结束委派运行时 → 读 `@dispatch-mechanics.md` 并照做。
+- 你是即将启动 `codex exec` 运行的 Claude Code agent 时 → 读 `@codex-from-claude-code.md` 并照做。
 
 ## 派发前
 

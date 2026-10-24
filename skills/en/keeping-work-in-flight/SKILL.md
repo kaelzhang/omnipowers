@@ -42,6 +42,7 @@ Independence test — `@fanning-out.md`, applicable when checking whether the ne
 - A form reports completion within seconds while its process runs on → you MUST NOT use it.
 
 - Choosing a background form, closing a delegated run's stdin, polling one, or ending one → read `@dispatch-mechanics.md` and apply it.
+- You are a Claude Code agent about to launch a `codex exec` run → read `@codex-from-claude-code.md` and apply it.
 
 ## Before You Dispatch
 
