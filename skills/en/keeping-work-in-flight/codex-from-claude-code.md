@@ -30,7 +30,8 @@ codex exec -m <model> -c model_reasoning_effort=<effort> -s <sandbox> -C <workdi
 
 - A round only reads → you SHOULD use `-s read-only`.
 - A round writes files, builds, or runs tests, and needs nothing listed in the next rule → you SHOULD use `-s workspace-write`.
-- A round starts a server or daemon it must observe, binds or connects to a Unix socket, counts processes, or uses the network → you MUST use `-s danger-full-access`.
+- A round, or a test or tool it runs, binds or connects a Unix socket, starts a server or daemon it must observe, counts processes, reads `sysctl`, or uses the network → you MUST use `-s danger-full-access`.
+- A test fails with `Operation not permitted` under `-s workspace-write` → you MUST NOT classify the failure as environmental before rerunning it under `-s danger-full-access`.
 - A round runs under `-s danger-full-access` → its brief MUST state why.
 - A round runs under `-s workspace-write` → its brief MUST instruct Codex to report "cannot prove" when `ps` or `sysctl` is denied, never a count of 0.
 

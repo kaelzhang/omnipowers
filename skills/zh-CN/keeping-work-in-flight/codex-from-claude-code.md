@@ -30,7 +30,8 @@ codex exec -m <model> -c model_reasoning_effort=<effort> -s <sandbox> -C <workdi
 
 - 轮次只读时 → 你 SHOULD 使用 `-s read-only`。
 - 轮次要写文件、构建或运行测试，且不需要下一条列出的任何能力时 → 你 SHOULD 使用 `-s workspace-write`。
-- 轮次要启动它需要观察的服务或守护进程、绑定或连接 Unix socket、统计进程数或使用网络时 → 你 MUST 使用 `-s danger-full-access`。
+- 轮次本身或它运行的测试、工具要绑定或连接 Unix socket、启动它需要观察的服务或守护进程、统计进程数、读取 `sysctl` 或使用网络时 → 你 MUST 使用 `-s danger-full-access`。
+- 测试在 `-s workspace-write` 下以 `Operation not permitted` 失败时 → 在用 `-s danger-full-access` 重跑之前，你 MUST NOT 把失败归为环境问题。
 - 轮次在 `-s danger-full-access` 下运行时 → 它的 brief MUST 写明理由。
 - 轮次在 `-s workspace-write` 下运行时 → 它的 brief MUST 要求 Codex 在 `ps` 或 `sysctl` 被拒时报告“cannot prove”，绝不报告数量为 0。
 
