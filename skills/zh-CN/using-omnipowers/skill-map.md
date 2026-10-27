@@ -12,12 +12,12 @@ stress-testing-a-plan ─(build intent)→ brainstorming → writing-plans
         → finishing-a-development-branch
 ```
 
-- **brainstorming** — 构建前围绕目标和交付标准的闸门，包含阻塞项、严重风险和分歧；不包含没有构建意图的计划追问（`stress-testing-a-plan`）。
+- **brainstorming** — 构建前围绕目标、交付标准和技术方案的闸门，以及按最佳实践、高效地安排怎么做和先后顺序；不包含没有构建意图的计划追问（`stress-testing-a-plan`）。
 - **writing-plans** — 将已确定目标转为实现计划；不包含执行。
 - **executing-plans** — agent 持续执行书面计划，逐步验证；宿主有 subagent 时，不包含以独立任务为主的计划（`subagent-driven-development`）。
 - **subagent-driven-development** — 执行计划，每个任务分配一对新的实现者和评审者；不包含紧密耦合的计划（`executing-plans`）或临时并行工作（`keeping-work-in-flight`）。
-- **finishing-a-development-branch** — 工作完成并验证后的集成决策和清理：合并、PR、保留或丢弃；合并冲突归 `resolving-merge-conflicts`。
-- **using-git-worktrees** — 工作开始前的隔离，包含检测现有隔离、优先使用宿主原生机制、验证基线和返回主干；不包含集成决策（`finishing-a-development-branch`）。
+- **finishing-a-development-branch** — 工作完成并验证后的集成和清理：不问用户地合并进主干，或在宿主 PR 流程下开 PR；合并冲突归 `resolving-merge-conflicts`。
+- **using-git-worktrees** — 工作开始前的隔离，包含检测现有隔离、优先使用宿主原生机制、验证基线和返回主干；不包含集成（`finishing-a-development-branch`）。
 
 ## 入口 — 出现问题
 
@@ -33,7 +33,7 @@ stress-testing-a-plan ─(build intent)→ brainstorming → writing-plans
 
 ## 贯穿全程 — 通用纪律
 
-- **confirming-with-the-user** — 向用户呈现单个决策，包含选项、影响、建议和文字表述；负责跨技能的用户决策。
+- **confirming-with-the-user** — 向用户呈现单个决策，包含选项、影响、建议和文字表述；负责跨技能界定哪些事由用户决定、哪些问题绝不提问。
 - **verification-before-completion** — 每次完成声明前的证据要求，包含“完成 / 已修复 / 通过”声明。
 - **honoring-user-requirements** — 要求台账：按原意记录指令，每次返回和作出声明前用证据验证，确认后严格执行；异议由 `confirming-with-the-user` 约束。
 - **keeping-work-in-flight** — 统计运行中的工作，为每个空闲的职责范围派发一次受追踪的调用，并在每次 agent 返回和轮次结束前读取；负责并行派发的独立性闸门和跨轮次延续。

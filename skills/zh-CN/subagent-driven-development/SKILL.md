@@ -232,7 +232,7 @@ git merge-base <base-branch> HEAD   # = MERGE_BASE (the commit the branch starte
 
 执行计划时 → 你 MUST NOT：
 
-- 未经用户明确同意就在 `main` / `master` 上开始实现。
+- 宿主的 `isolation` 声明和 `using-git-worktrees` 都没有放行时，就在 `main` / `master` 上开始实现。
 - 让工作者读取整个计划文件 — 改为交给它任务简报。
 - 省略背景上下文。
 - 忽略工作者的问题 — 完整回答后再继续工作。

@@ -69,17 +69,12 @@ Normal checkout — a workspace where `GIT_DIR == GIT_COMMON`, including a plain
 - on a branch — "Already in isolated workspace at PATH on branch NAME";
 - detached HEAD — "Already in isolated workspace at PATH (detached HEAD, externally managed); branch creation needed at finish time."
 
-### Consent gate (REQUIRED before creating a worktree)
+### Isolation decision (REQUIRED before creating a worktree)
 
 - The host declared an `isolation` unit → you MUST use it without asking.
 - The user declared a worktree preference (instructions, task, or this conversation) → you MUST honor it without asking.
-- The host declared no `isolation` unit and the user declared no worktree preference → you MUST ask for consent using this template:
-
-> "Would you like me to set up an isolated worktree? It protects your current branch from changes."
-
-- The host declared no `isolation` unit, the user declared no worktree preference, and the user has not agreed → you MUST NOT create a worktree.
-- The user declines → you MUST work in place and skip to Step 2.
-- Consent is declined or absent → you MUST NOT create a worktree.
+- The host declared no `isolation` unit and the user declared no worktree preference → you MUST create the isolated workspace through Step 1.
+- Deciding whether to create a worktree → you MUST NOT ask the user.
 
 ## Step 1 — Create the Isolated Workspace
 
@@ -160,8 +155,9 @@ The project's actual toolchain differs from these patterns (a lockfile-pinned pa
 - The suite already passed on this exact commit in this session or the project's CI → you MUST cite that baseline.
 - The project declares its own test command (a Makefile target, a lockfile-pinned runner, a configured script) → you MUST use that instead of `npm test`, `cargo test`, `pytest`, or `go test ./...`.
 
-- **Tests fail** → you MUST report the failures and ask the user whether to proceed or investigate first.
-- The baseline fails without an explanation, and the user has not explicitly decided whether to proceed or investigate → you MUST NOT start implementation.
+- **Tests fail** → you MUST record the failing tests and their output as the pre-existing baseline in the ready report.
+- **Tests fail** → you MUST NOT ask the user whether to proceed or investigate.
+- A baseline failure exists → you MUST NOT attribute it to your change in later verification.
 - **Tests pass** → you MUST report ready, stating the worktree's full path, the passing test count with zero failures, and the feature you are about to implement.
 
 ## Red Flags — STOP
@@ -173,5 +169,5 @@ When about to take any action listed below → you MUST stop:
 - Jumping to Step 1b without first checking for a native mechanism (Step 1a).
 - Choosing a directory out of priority order (declared preference, then existing project-local directory, then default).
 - Creating a project-local worktree without verifying it is ignored.
-- Creating a worktree without consent in a normal checkout.
-- Skipping the baseline test verification, or proceeding past a failing baseline without asking.
+- Asking the user whether to create a worktree.
+- Skipping the baseline test verification, or proceeding past a failing baseline without recording it.

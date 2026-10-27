@@ -13,15 +13,15 @@
 | [honoring-user-requirements](skills/zh-CN/honoring-user-requirements/SKILL.md) | 用户提出每一项要求时——你 MUST 当场按原意记录，在每个检查点用证据验证，确认后准确执行 |
 | [verification-before-completion](skills/zh-CN/verification-before-completion/SKILL.md) | 准备声明工作已完成、问题已修复或检查已通过时——你 MUST 先运行验证并阅读输出，再作出成功声明 |
 | [code-auditing](skills/zh-CN/code-auditing/SKILL.md) | 工作即将推进到合并、PR、发布或交接时，或用户要求检查点评审、标准审计等任何评审时；每个发现项都要有证据，继续前修复 Critical/Important 问题。普通提交不触发评审 |
-| [brainstorming](skills/zh-CN/brainstorming/SKILL.md) | 开始构建前——用一行写明目标和交付标准；尚未明确时，先与用户确定，并说清阻塞项、严重风险或分歧。如何构建、何时构建由代理按最佳实践决定 |
+| [brainstorming](skills/zh-CN/brainstorming/SKILL.md) | 开始构建前——用一行写明目标和交付标准，并与用户确定目标、有多个可行选项的技术方案、阻塞项、严重风险或分歧。先后顺序、时间和执行方式由代理按最佳实践、以最高效率决定 |
 | [writing-plans](skills/zh-CN/writing-plans/SKILL.md) | 将规格转为多步骤任务时——编码前，你 MUST 写出完整、自包含、步骤细小且没有占位符的计划 |
 | [executing-plans](skills/zh-CN/executing-plans/SKILL.md) | 执行书面计划时——你 MUST 先审慎评审，再按顺序执行每一步，并在每个检查点验证 |
 | [subagent-driven-development](skills/zh-CN/subagent-driven-development/SKILL.md) | 执行主要由独立任务组成的计划时——一次处理一个任务，每项任务通过规格和质量评审后再开始下一项，最后对整个分支做全面评审 |
 | [keeping-work-in-flight](skills/zh-CN/keeping-work-in-flight/SKILL.md) | 每次代理返回和每轮结束时——统计运行中的工作，阅读前为每个空闲范围派发一次受追踪的调用，不留下完成后无法唤醒你的工作 |
 | [using-git-worktrees](skills/zh-CN/using-git-worktrees/SKILL.md) | 功能开发需要隔离时——你 MUST 使用宿主的原生 worktree 工具，或以 `git worktree` 作为后备方案，确保工作区隔离 |
-| [finishing-a-development-branch](skills/zh-CN/finishing-a-development-branch/SKILL.md) | 工作已完成并通过验证时——验证测试，列出合并、PR、保留、丢弃的结构化选项，执行用户的选择，只清理自己创建的内容 |
+| [finishing-a-development-branch](skills/zh-CN/finishing-a-development-branch/SKILL.md) | 工作已完成并通过验证时——验证，不开 PR、不问用户地合并进主干（只有宿主声明了 PR 流程时才开 PR），只清理自己创建的内容 |
 | [writing-skills](skills/zh-CN/writing-skills/SKILL.md) | 创建或编辑技能时——你 MUST 先写测试，在没有技能时观察代理失败，再开发技能；遵循 `AGENTS.md` |
-| [confirming-with-the-user](skills/zh-CN/confirming-with-the-user/SKILL.md) | 遇到由用户决定或签字确认的事项时，如设计、评审提议或发现项、取舍——用一种语言、一次一个决策，以直白的选项说明影响并给出推荐 |
+| [confirming-with-the-user](skills/zh-CN/confirming-with-the-user/SKILL.md) | 遇到由用户决定的事项时，如目标、技术方案、评审发现项、取舍——负责界定哪些事由用户决定、哪些问题绝不提问；用一种语言、一次一个决策，以直白的选项说明影响并给出推荐 |
 | [stress-testing-a-plan](skills/zh-CN/stress-testing-a-plan/SKILL.md) | 用户要求盘问计划、挑漏洞（“poke holes”“grill me”）时——按依赖顺序提问，每个问题附推荐答案；不生成产物；进入构建意图后交给 brainstorming |
 | [domain-modeling](skills/zh-CN/domain-modeling/SKILL.md) | 建立项目术语时——根目录的 `CONTEXT.md` 术语表列出弃用的同义词，ADR 通过三项检验后建立；决定一经确定立即记录 |
 | [designing-deep-modules](skills/zh-CN/designing-deep-modules/SKILL.md) | 设计模块或接口时——以深度为目标：用删除测试去掉透传层，用双适配器规则去掉推测性的抽象 |

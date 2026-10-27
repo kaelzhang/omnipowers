@@ -194,16 +194,19 @@ Self-review finds issues → you MUST fix them inline. A fix adds or renames a t
 
 ## Execution Handoff
 
-- After saving the plan → you MUST report the saved path and present the execution options to the user, then wait for the user's choice.
-- The user has not selected an execution option → you MUST NOT begin executing the plan.
+- After saving the plan → you MUST report the saved path and the execution mode you chose, then begin executing.
+- After saving the plan → you MUST NOT ask the user to choose an execution mode or wait for a reply.
 
-**Report template:** "Plan complete and saved to `<the path you resolved>`. Two execution options:"
+**Report template:** "Plan complete and saved to `<the path you resolved>`. Executing with <execution mode>."
+
+Execution modes:
 
 1. **Per-task isolated execution** — implementation of one task at a time, each in a fresh context, with a review gate between tasks.
-2. **Inline batch execution** — implementation of the tasks in this session, with pauses at checkpoints for review.
+2. **Inline batch execution** — implementation of the tasks in this session, with a review of the diff at each checkpoint.
 
-- The user selects per-task isolated execution and the host environment provides a mechanism for dispatching an isolated worker per task (a subagent or parallel-agent facility) → you MAY use it: one worker per task, with a review of each task's diff before the next task begins.
-- The user selects per-task isolated execution and the host provides no such mechanism → you MUST degrade to the portable inline equivalent: implement each task to completion, run its tests, review its diff, and commit before reading the next task.
-- The user selects per-task isolated execution and the host provides no such mechanism → you MUST NOT read ahead into later tasks while implementing the current one.
+- Choosing the execution mode → you MUST choose it under `brainstorming`'s efficient execution.
+- You choose per-task isolated execution and the host environment provides a mechanism for dispatching an isolated worker per task (a subagent or parallel-agent facility) → you MAY use it: one worker per task, with a review of each task's diff before the next task begins.
+- You choose per-task isolated execution and the host provides no such mechanism → you MUST degrade to the portable inline equivalent: implement each task to completion, run its tests, review its diff, and commit before reading the next task.
+- You choose per-task isolated execution and the host provides no such mechanism → you MUST NOT read ahead into later tasks while implementing the current one.
 
-After the user selects either execution option → the implementer MUST execute strictly task-by-task in order, MUST complete the TDD cycle for each task, and MUST commit before moving on.
+After the execution mode is chosen → the implementer MUST execute strictly task-by-task in order, MUST complete the TDD cycle for each task, and MUST commit before moving on.

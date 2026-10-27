@@ -1,6 +1,6 @@
 ---
 name: brainstorming
-description: "Use before building anything — a feature, a behavior change, scaffolding, a refactor — you MUST state the goal and its delivery criteria (「终极目标」「交付标准」) in one line before writing code, and settle with the user only that, an unresolvable blocker, a serious risk, or a disagreement. How and when to build is yours."
+description: "Use before building anything — a feature, a behavior change, scaffolding, a refactor — you MUST state the goal and its delivery criteria (「终极目标」「交付标准」) in one line before writing code, and settle with the user the goal, any technical approach with more than one viable option, an unresolvable blocker, a serious risk, or a disagreement. Order and timing are yours."
 ---
 
 # Brainstorming
@@ -15,39 +15,19 @@ STATE THE GOAL AND ITS DELIVERY CRITERIA IN ONE LINE, OR SETTLE THEM FIRST
 
 Before writing code → you MUST be able to state, in one line, what the work must achieve and the observable condition under which it is done, and be confident the user would agree with both.
 
-You can state both, and none of the four user decisions below applies → you MUST NOT ask for permission, a design review, or sign-off on a plan.
+Before writing code → every technical approach decision the work requires MUST be settled under `confirming-with-the-user`.
+
+You can state both, every technical approach decision is settled, and no other decision `confirming-with-the-user` assigns to the user is open → you MUST NOT ask for permission, a design review, or sign-off on a plan.
 
 ## User Decisions
 
-User decisions — the goal and its delivery criteria; a blocker you cannot resolve; a serious risk; a disagreement with the request.
-
-Serious risk — work that would break an existing contract, lose data, be hard to reverse, or carry a cost the user has not seen.
-
-Disagreement with the request — a verified project fact contradicting the request: the capability already exists, the stated assumption does not hold, or a materially better path exists.
-
-One of the four user decisions applies → you MUST settle it with the user.
-
 - The goal or its delivery criteria are unclear or rest on your assumption → you MUST settle them with the user before building.
-- A blocker cannot be resolved → you MUST present it with your proposed workaround, and you MUST obtain approval of that workaround before applying it.
-- A serious risk applies → you MUST name the risk, its consequence, and your recommendation.
-- A disagreement with the request applies → you MUST state what you verified and where, and your alternative.
-
-Presenting one of the four user decisions → you MUST use the `confirming-with-the-user` skill.
-
-## Questions Excluded
-
-During brainstorming → you MUST NOT ask the user about:
-
-- how the work will be done: the approach, architecture, decomposition, libraries, file layout, or order of steps;
-- when to do it: sequencing, staging, or what comes first;
-- permission to proceed on a goal already settled;
-- anything you can determine yourself;
-- a decision already made;
-- a trivial, reversible choice with an obvious default.
+- A decision `confirming-with-the-user` assigns to the user arises → you MUST settle it under that skill before building against it.
+- Considering a question to the user → you MUST NOT ask anything `confirming-with-the-user` lists under What You MUST NOT Ask.
 
 ## Best Practice
 
-Choosing the approach → you MUST choose what a competent practitioner in this domain would choose, grounded in established practice of the project's industry and fitting the project's existing paradigm and conventions.
+Choosing or recommending a technical approach → you MUST choose what a competent practitioner in this domain would choose, grounded in established practice of the project's industry and fitting the project's existing paradigm and conventions.
 
 - No established pattern exists, the choice binds beyond this work or is hard to reverse, and you cannot name current practice with confidence → you MUST verify it against an authoritative source before settling.
 - That decision requires authoritative verification → recall MUST NOT be its basis.
@@ -59,13 +39,18 @@ Choosing the approach → you MUST choose what a competent practitioner in this 
 - Delivering the work → you MUST NOT present a weaker version as the goal.
 - You knowingly took a shortcut → you MUST state it to the user in the message delivering the work.
 
+Efficient execution — the order and execution that reach the settled goal in the least elapsed time: pieces of work with no dependency between them run in parallel under `keeping-work-in-flight`, and a result already obtained on the same input is reused under `verification-before-completion`.
+
+- Planning the order and execution of the work → you MUST choose efficient execution.
+- Choosing order or execution for speed → you MUST NOT lower the goal, the delivery criteria, or the technical approach.
+
 The design centres on a module interface and the alternatives are non-obvious → read `@design-it-twice.md` and apply it before settling on one.
 
 Reasoning and research cannot settle a design question → you MAY answer it with a throwaway prototype built under the `prototyping` skill's full rule-set.
 
 ## Goal Record
 
-Goal record — the settled goal and its delivery criteria, a `design-docs` artifact located per `using-omnipowers`, fallback `docs/design/YYYY-MM-DD-<topic>.md`.
+Goal record — the settled goal, its delivery criteria, and its technical approach decisions, a `design-docs` artifact located per `using-omnipowers`, fallback `docs/design/YYYY-MM-DD-<topic>.md`.
 
 You could state the goal unaided and the work lands this round → you MUST NOT create a document for it.
 

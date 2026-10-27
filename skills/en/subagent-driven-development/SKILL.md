@@ -232,7 +232,7 @@ git merge-base <base-branch> HEAD   # = MERGE_BASE (the commit the branch starte
 
 When executing the plan → you MUST NOT:
 
-- Start implementation on `main` / `master` without the user's explicit consent.
+- Start implementation on `main` / `master` when neither the host's `isolation` declaration nor `using-git-worktrees` has cleared it.
 - Make a worker read the whole plan file — hand it its task brief instead.
 - Omit scene-setting context.
 - Ignore a worker's question — answer it completely before letting work proceed.

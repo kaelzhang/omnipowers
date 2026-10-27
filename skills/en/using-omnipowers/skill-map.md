@@ -12,12 +12,12 @@ stress-testing-a-plan ─(build intent)→ brainstorming → writing-plans
         → finishing-a-development-branch
 ```
 
-- **brainstorming** — the pre-build gate on the goal and its delivery criteria, including blockers, serious risks, and disagreements; excludes interrogation of a plan with no build intended (`stress-testing-a-plan`).
+- **brainstorming** — the pre-build gate on the goal, its delivery criteria, and its technical approach, and best-practice, efficient planning of how and in what order to build; excludes interrogation of a plan with no build intended (`stress-testing-a-plan`).
 - **writing-plans** — conversion of a settled goal into an implementation plan; excludes execution.
 - **executing-plans** — continuous, step-verified execution of a written plan by the agent; excludes plans with mostly independent tasks when the host has subagents (`subagent-driven-development`).
 - **subagent-driven-development** — plan execution with one fresh implementer and reviewer pair per task; excludes tightly coupled plans (`executing-plans`) and ad-hoc parallel work (`keeping-work-in-flight`).
-- **finishing-a-development-branch** — integration decisions and cleanup after work is done and verified: merge, PR, keep, or discard; merge conflicts belong to `resolving-merge-conflicts`.
-- **using-git-worktrees** — isolation before work starts, including existing-isolation detection, preference for the host's native mechanism, baseline verification, and return to the mainline; excludes the integration decision (`finishing-a-development-branch`).
+- **finishing-a-development-branch** — integration and cleanup after work is done and verified: merge into the mainline without asking, or a PR under a host PR workflow; merge conflicts belong to `resolving-merge-conflicts`.
+- **using-git-worktrees** — isolation before work starts, including existing-isolation detection, preference for the host's native mechanism, baseline verification, and return to the mainline; excludes integration (`finishing-a-development-branch`).
 
 ## On-ramps — something is wrong
 
@@ -33,7 +33,7 @@ stress-testing-a-plan ─(build intent)→ brainstorming → writing-plans
 
 ## Underneath everything — cross-cutting disciplines
 
-- **confirming-with-the-user** — presentation of a single decision to the user, including options, impacts, recommendation, and prose; owner of user-facing decisions across skills.
+- **confirming-with-the-user** — presentation of a single decision to the user, including options, impacts, recommendation, and prose; owner of which decisions belong to the user and which questions are never asked, across skills.
 - **verification-before-completion** — evidence requirements before every completion claim, including "done/fixed/passing" claims.
 - **honoring-user-requirements** — the requirements ledger: instructions recorded as stated, verified with evidence at each return and before claims, and carried out exactly once confirmed; appeals governed by `confirming-with-the-user`.
 - **keeping-work-in-flight** — counting running work, dispatching one tracked call per idle ownership scope, and then reading at each agent return and before round end; owner of the independence gate for fan-out and continuation past the round.

@@ -1,6 +1,6 @@
 ---
 name: confirming-with-the-user
-description: Use whenever a decision or sign-off is on the table — you need the user's approval (a design, plan, findings, a trade-off), they ask you to review or decide something with them or to rule on it ("裁定"), or you disagree with what they asked for — you MUST present plain-language options with impacts and your recommendation, one decision at a time
+description: Use whenever a decision or sign-off is on the table — you need the user's decision (a goal, a technical approach, findings, a trade-off), they ask you to review or decide something with them or to rule on it ("裁定"), or you disagree with what they asked for — you MUST present plain-language options with impacts and your recommendation, one decision at a time
 ---
 
 # Confirming With the User
@@ -14,27 +14,46 @@ description: Use whenever a decision or sign-off is on the table — you need th
 - When a point needs the user's decision or sign-off → you MUST use this skill. This includes:
   - a goal or its delivery criteria that is not yet settled, before building against it;
   - review findings or proposals — problems found, optimization proposals, or recommended changes from any review or audit;
-  - a significant technical decision the user owns — one that binds them beyond this work: a core dependency, a public contract, a data schema;
+  - a technical approach decision with two or more viable options;
   - any scope, branch, or blocker decision the user owns;
   - the user asks you to review, confirm, weigh, or decide on a plan, design, approach, or proposal with them.
 
 ## What to Confirm
 
+Technical approach decision — a choice that sets the delivered result's structure and is costly to change afterwards: the architecture and module boundaries, a core dependency, a data model or schema, an external interface, or the choice among materially different strategies.
+
+Implementation detail — file layout, naming, the organisation of internal helper code, or a library confined to one module.
+
 You MUST confirm:
 
 - Goals and outcomes → confirm what the task or project must achieve and the definition of "done", before building against it.
 - An approach would break an existing contract, lose data, be hard to reverse, or carry a cost the user has not seen → surface the risk for the user to weigh.
-- A real choice between viable technical options cannot be settled on the merits → present the options and let the user pick.
+- A technical approach decision has two or more viable options → present them with your best-practice recommendation, and let the user pick before building against it.
 - Whether work should be done at all, or to what extent, is undecided → confirm.
-- A blocker cannot be resolved by you, including missing access or credentials, information only the user has, a decision only the user can make, or a broken external dependency → confirm the external blocker.
+- A blocker cannot be resolved by you, including missing access or credentials, information only the user has, a decision only the user can make, or a broken external dependency → confirm the external blocker with your proposed workaround, and apply the workaround only after approval.
 - An action is hard to undo or externally visible, including deleting data, force-pushing, rewriting history, messaging anyone, spending money, deploying to production, or publishing → confirm the action, except routinely pushing your own commits to the user's branch.
 - Routinely pushing your own commits to the user's branch → do not confirm the push.
-- An action destroys or rewrites published work, or changes a branch other people build on → confirm.
+- Merging your verified work into the mainline under `finishing-a-development-branch` → do not confirm the merge.
+- An action destroys or rewrites published work, or changes a branch other people build on → confirm, except merging your verified work into the mainline under `finishing-a-development-branch`.
 - A trade-off sacrifices something the user may value, including dropping coverage to hit a deadline, a breaking API change, or a notable performance or security trade-off → surface it instead of deciding it silently.
 - A requirement is unclear or two instructions contradict, and best practice plus the codebase cannot resolve it → confirm.
 - The only viable path requires violating a rule the user or the project set → confirm before crossing it.
 
-When a question concerns what `brainstorming` lists as never to be asked — how, when, what you can determine yourself, what is already decided, or a trivial choice with an obvious default → you MUST NOT ask for confirmation.
+- A technical approach decision has exactly one viable option under best practice → you MUST state it in one line before building against it.
+- A technical approach decision has exactly one viable option under best practice → you MUST NOT wait for a reply before building.
+
+## What You MUST NOT Ask
+
+Considering a question to the user → you MUST NOT ask about:
+
+- the order of steps, sequencing, staging, or what comes first;
+- when to do the work;
+- how to execute it: decomposition, execution mode, parallelism, or an implementation detail;
+- how finished work returns to the mainline;
+- permission to proceed on a goal, delivery criteria, and technical approach already settled;
+- anything you can determine yourself;
+- a decision already made;
+- a trivial, reversible choice with an obvious default.
 
 ## Disagreement
 
@@ -48,6 +67,14 @@ Conflict — a request contradicts a verified project state or an operating rule
 - When the user reaffirms the request after hearing the objection → you MUST NOT re-litigate it in later turns or reintroduce it in another form.
 - When the decision sets aside a skill rule or project rule → you MUST leave one factual record naming the overridden rule in the requirements ledger kept by `honoring-user-requirements`, and at the code site when the consequence has one.
 - When the user overrides a rule for one instance → you MUST NOT generalize it into a new default unless the user states a standing change.
+
+Scoped override — a user instruction that waives a named kind of confirmation for a stated span: a duration, a task, or a session.
+
+- A scoped override is in force → you MUST NOT ask for the kind of confirmation it names within its span.
+- A scoped override is in force → you MUST still make every confirmation it does not name.
+- The span of a scoped override ends → you MUST resume the confirmation it waived.
+- Recording a scoped override in the requirements ledger → the record MUST state its span.
+- Delivering work done under a scoped override that waived technical approach decisions → you MUST list each technical approach decision you made in the delivery message.
 
 ## What You MUST Present
 

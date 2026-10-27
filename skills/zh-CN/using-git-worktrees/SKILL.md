@@ -69,17 +69,12 @@ BRANCH=$(git branch --show-current)
 - 位于分支上 — “已在隔离工作区 PATH，分支为 NAME”；
 - 游离 HEAD — “已在隔离工作区 PATH（游离 HEAD，由外部管理）；完成时要创建分支。”
 
-### 同意闸门（创建 worktree 前 REQUIRED）
+### 隔离决定（创建 worktree 前 REQUIRED）
 
 - 宿主已声明 `isolation` 单位时 → 你 MUST 直接使用，不再询问。
 - 用户已声明 worktree 偏好（指令、任务或本次对话中）时 → 你 MUST 直接遵循，不再询问。
-- 宿主未声明 `isolation` 单位，且用户未声明 worktree 偏好时 → 你 MUST 使用以下模板征求同意：
-
-> “要我设置隔离 worktree 吗？这样能保护当前分支免受改动影响。”
-
-- 宿主未声明 `isolation` 单位，用户未声明 worktree 偏好，且用户尚未同意时 → 你 MUST NOT 创建 worktree。
-- 用户拒绝时 → 你 MUST 在原地工作，并跳到步骤 2。
-- 用户拒绝或尚未同意时 → 你 MUST NOT 创建 worktree。
+- 宿主未声明 `isolation` 单位，且用户未声明 worktree 偏好时 → 你 MUST 按步骤 1 创建隔离工作区。
+- 决定是否创建 worktree 时 → 你 MUST NOT 询问用户。
 
 ## 步骤 1 — 创建隔离工作区
 
@@ -162,8 +157,9 @@ if [ -f go.mod ];           then go mod download; fi
 - 测试套件已在本会话或项目 CI 的完全相同提交上通过时 → 你 MUST 引用这份基线。
 - 项目声明了自己的测试命令（Makefile 目标、锁文件固定的运行器、配置好的脚本）时 → 你 MUST 使用声明的命令，替代 `npm test`、`cargo test`、`pytest` 或 `go test ./...`。
 
-- **测试失败** → 你 MUST 报告失败，并询问用户是继续还是先调查。
-- 基线失败且原因不明，用户尚未明确决定继续还是调查时 → 你 MUST NOT 开始实现。
+- **测试失败** → 你 MUST 在就绪报告中把失败的测试及其输出记为已有的基线。
+- **测试失败** → 你 MUST NOT 问用户是继续还是先调查。
+- 存在基线失败时 → 你 MUST NOT 在之后的验证中把它算成你的改动造成的。
 - **测试通过** → 你 MUST 报告就绪，说明 worktree 完整路径、通过测试数且失败数为零，以及即将实现的功能。
 
 ## 危险信号 — 停下
@@ -175,5 +171,5 @@ if [ -f go.mod ];           then go mod download; fi
 - 尚未检查原生机制（步骤 1a）就跳到步骤 1b。
 - 未按优先级选择目录（已声明偏好、项目内现有目录、默认目录）。
 - 未验证 Git 已忽略目录就创建项目内 worktree。
-- 在普通 checkout 中未经同意创建 worktree。
-- 跳过基线测试验证，或未经询问就在基线失败后继续。
+- 询问用户要不要创建 worktree。
+- 跳过基线测试验证，或没有记录就在基线失败后继续。

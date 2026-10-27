@@ -61,10 +61,10 @@ Dispatch (step 2) — running the Dispatch Block of the `keeping-work-in-flight`
 
 ## Ending a Round
 
-Permitted round end — delivery of the goal with an empty checkpoint; a required decision the user owns about unclear goals or delivery criteria, a blocker, a serious risk, or a disagreement; or the user's stop.
+Permitted round end — delivery of the goal with an empty checkpoint; a decision `confirming-with-the-user` assigns to the user; or the user's stop.
 
 - The mode is armed → you MUST NOT end a round for any reason outside the permitted round ends.
-- The mode is armed → you MUST NOT end a round to ask anything the `brainstorming` skill forbids asking.
+- The mode is armed → you MUST NOT end a round to ask anything `confirming-with-the-user` lists under What You MUST NOT Ask.
 - The mode is armed → you MUST NOT end a round on a progress summary, a completed task, or a delivered report.
 - You are writing "I have finished X, next I could do Y, would you like me to continue?" and Y is unblocked and needs no ruling → you MUST do Y instead of sending that sentence.
 - You cannot clear a finding → you MUST name it in the report.

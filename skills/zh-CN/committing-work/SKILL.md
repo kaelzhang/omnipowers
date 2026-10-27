@@ -17,7 +17,7 @@ description: 每次会话仅在首次准备暂存或提交任何内容时使用�
 
 组织提交 — 确定每次提交的内容、暂存、完整性检查和提交说明，到提交生成时结束。
 
-提交后操作 — 合并、推送、创建 PR、保留或删除分支，以及清理 worktree，由 `finishing-a-development-branch` 约束。
+提交后操作 — 合并进主干、按宿主 PR 流程创建 PR，以及清理 worktree，由 `finishing-a-development-branch` 约束。
 
 缺陷与检查点评审 — 由 `code-auditing` 约束的评审。
 

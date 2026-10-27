@@ -41,13 +41,13 @@ description: Use when you have a written implementation plan (plan.md / a plan f
 
 - Every step is complete and every verification has passed → the project's full verification (tests, type checks, linters, build, whatever it defines as its completeness gate) MUST have passed on the final tree, accepting a run already made on that tree under `verification-before-completion`, otherwise running it and reading the output.
 - The final verification has not passed on real, observed output → you MUST NOT claim the work is complete.
-- The final verification passes → you MUST integrate the branch by invoking the `finishing-a-development-branch` skill (verify tests, present the merge / PR / keep / discard options, execute the user's choice, clean up only what you created).
+- The final verification passes → you MUST integrate the branch by invoking the `finishing-a-development-branch` skill (verify, merge into the mainline without a PR unless the host declares a PR workflow, clean up only what you created).
 - That skill is not installed → run the host project's branch-completion process directly: full suite green, working tree clean, then merge or open the PR as the project requires.
 
 ## Continuous Execution
 
 - The plan and its goal are clear → you MUST execute in continuous work mode: run every step through to completion without pausing to check in.
-- Between steps → you MUST NOT ask anything the `brainstorming` skill forbids asking — how, when, or whether to proceed.
+- Between steps → you MUST NOT ask anything `confirming-with-the-user` lists under What You MUST NOT Ask.
 - Between steps → you MUST NOT stop for an unsolicited progress summary.
 - Between steps → you SHOULD narrate at most one short line.
 - Before every step is complete → you MUST stop only for a blocker listed under "When to Stop and Ask for Help", surface it with the `confirming-with-the-user` skill (plain-language options + your recommendation), get the decision, then resume continuous execution.
