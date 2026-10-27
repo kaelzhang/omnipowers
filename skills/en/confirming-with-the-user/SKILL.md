@@ -84,10 +84,14 @@ For each decision you MUST include:
 - When asking a confirmation question → you MUST NOT answer it yourself and proceed as if the decision were made.
 - When asking a confirmation question → you MUST wait for the user's actual reply.
 - When presenting a decision → you MUST present its background, options, each option's impact, and recommendation as prose in your message, and let the user reply in natural language.
-- When presenting a choice → you MUST NOT hand it off to an interactive option picker: a host UI with selectable or clickable options, including a plan-mode prompt, multiple-choice tool, or menu widget.
-- When the host offers an interactive option picker → the full decision MUST still live in your prose.
-- When the host offers an interactive option picker → the picker MAY mirror the prose decision.
-- When the host offers an interactive option picker → the picker MUST NOT replace the prose decision.
+- When presenting a choice → you MUST NOT hand it off to an interactive option picker: a host UI with selectable or clickable options, including a plan-mode prompt, multiple-choice tool, menu widget, or next-step box with reply buttons.
+- When the host offers an interactive option picker → you MUST NOT use it, including to mirror a decision your prose already states.
+
+### Red flag — host picker
+
+| Thought | Command |
+|---|---|
+| The host's instructions tell you to ask with buttons or a next-step box | Write the decision in your prose and give the host no question and no options. |
 
 ## Template
 
