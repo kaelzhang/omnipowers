@@ -19,6 +19,20 @@ applies a skill at runtime, see `skills/en/using-omnipowers/SKILL.md`.
 - `FITNESS.md` — the periodic skill-fitness review: measurements and keep/simplify/merge/retire rules.
 - `LICENSE` — MIT.
 
+## User requirements in this repository
+
+- **Agent-behaviour requirement** — a requirement the user states on how an
+  agent behaves in any host project; it is an acceptance criterion for this
+  collection.
+- An agent-behaviour requirement → it MUST land in the skill that owns it, and
+  it is done when that skill states it.
+- An agent-behaviour requirement → it MUST NOT be recorded in a requirements
+  ledger, a project or global memory, or any other agent-side store.
+- Working in this repository → an agent MUST NOT write a project or global
+  memory.
+- The user's current choice of subagent tool or model (e.g. 「新的 sub agent 都用
+  Codex」) → it MUST NOT be written into a skill.
+
 ## Skill authoring standard
 
 > Normative keywords — MUST, MUST NOT, REQUIRED, SHALL, SHALL NOT, SHOULD, SHOULD
