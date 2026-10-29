@@ -17,6 +17,7 @@ applies a skill at runtime, see `skills/en/using-omnipowers/SKILL.md`.
 - `README.md`, `README.zh-CN.md` — what the collection is and how to install it.
 - `Makefile`, `scripts/` — install / dev tooling.
 - `FITNESS.md` — the periodic skill-fitness review: measurements and keep/simplify/merge/retire rules.
+- `docs/design/standing-requirements.md` — the user's standing requirements for this repository that no skill or this file states.
 - `LICENSE` — MIT.
 
 ## User requirements in this repository
