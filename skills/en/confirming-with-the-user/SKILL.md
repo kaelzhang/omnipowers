@@ -90,7 +90,7 @@ For each decision you MUST include:
 - When presenting context → you MUST NOT rely on internal codes, jargon, or unexplained references the user has to decode.
 - When the decision approves, adopts, chooses, or rejects a concrete artifact (change, diff, proposal, name, plan, or set of findings) → you MUST reproduce the artifact in full and in plain language inside the confirmation.
 - When presenting the decision's object → you MUST NOT refer to it only by a number, label, filename, or "the X above".
-- When the artifact was produced in another language, in code, or in jargon → you MUST restate it in the user's language.
+- When the artifact was produced in another language, in code, or in jargon → you MUST restate it in the output language `using-omnipowers` defines.
 - When an option's impact is not self-evident → you MUST include a concrete example: a real case, sample input/output, or before/after.
 - When the impact is already obvious on its face → an example is OPTIONAL.
 - When the impact is already obvious on its face → you MUST NOT pad the decision with a degenerate example.
@@ -101,9 +101,7 @@ For each decision you MUST include:
 
 ## How You MUST Present It
 
-- When writing a confirmation → you MUST write the whole confirmation in the language the user is writing to you in.
-- When explaining a decision → you MUST NOT switch languages mid-explanation in a way that impedes understanding.
-- When writing ordinary words → you MUST NOT mix languages.
+- When writing a confirmation → you MUST follow the output-language rules of `using-omnipowers`.
 - When explaining a decision → you MUST explain in accessible terms.
 - When a term is unavoidable → you MUST define it in passing on first use.
 - When presenting independent decisions → you MUST NOT bundle them into one tangled question.

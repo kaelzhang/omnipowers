@@ -42,6 +42,16 @@ Artifact-location resolution — the first applicable entry in the following ord
 - Host policy axes — the declaration's `write-authority`, `vcs`, `isolation`, and `continuation` rows, binding every skill over its own defaults.
 - A parent directory for an artifact is missing → you MUST create it.
 
+## Output language
+
+User-visible text — every line of yours the user can read: replies, progress notes between tool calls, status recaps, reports, questions, and confirmations, excluding code, paths, identifiers, commands, and quoted output.
+
+Output language — the language the user names for your output; otherwise the language the user writes to you in.
+
+- Writing user-visible text → you MUST write it in the output language.
+- Writing ordinary words in user-visible text → you MUST NOT mix languages.
+- The host asks for a recap "in the project's own words", or a compaction summary, a brief, a report, or tool output is in another language → you MUST still write user-visible text in the output language.
+
 ## Instruction priority
 
 Instruction priority — the user's explicit instructions, then omnipowers skills, then default behavior.

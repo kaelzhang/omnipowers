@@ -23,6 +23,8 @@ Work ledger — one `work-state` artifact per piece of work holding that work's 
 
 Open entry — a work ledger entry not yet checked off.
 
+Entrypoint requirement — a requirement the user states in an agent entrypoint the host loads into your context: the user's global or the project's `CLAUDE.md` / `AGENTS.md`.
+
 The standing ledger:
 
 ```markdown
@@ -46,7 +48,8 @@ The work ledger:
 ## Loading
 
 - A session starts, the context is compacted or resumed, or you start a new piece of work → you MUST read the standing ledger and every open entry of the work ledger before acting.
-- A ledger entry differs from your memory or from a compaction summary → you MUST follow the ledger.
+- The context is compacted or resumed → you MUST read every entrypoint requirement in its original text before acting.
+- A ledger entry or an entrypoint requirement differs from your memory or from a compaction summary → you MUST follow the ledger or the entrypoint's original text.
 - Writing the brief for a subagent or a delegated run → you MUST copy into it, in the user's words, every standing entry and open entry its task could affect.
 
 ## Recording
@@ -67,9 +70,9 @@ Appeal — a disagreement with a requirement or a proposal of a better way, gove
 
 ## Verification
 
-- Before ending any round and before any claim that work is complete, fixed, or ready → you MUST read every standing entry and every open entry and, for each, write one line of evidence that it is honored, or mark it **violated**.
-- At a task return → you MUST read every standing entry and open entry that task's work could have affected and, for each, write one line of evidence that it is honored, or mark it **violated**.
-- Writing evidence for a standing entry → you MUST write it in the work ledger, not in the standing ledger.
+- Before ending any round and before any claim that work is complete, fixed, or ready → you MUST read every standing entry, every open entry, and every entrypoint requirement and, for each, write one line of evidence that it is honored, or mark it **violated**.
+- At a task return → you MUST read every standing entry, open entry, and entrypoint requirement that task's work could have affected and, for each, write one line of evidence that it is honored, or mark it **violated**.
+- Writing evidence for a standing entry or an entrypoint requirement → you MUST write it in the work ledger, not in the standing ledger or the entrypoint.
 - An entry is violated → you MUST fix it before any other work, then re-verify.
 - An entry has no evidence yet → you MUST NOT claim the work done.
 - An entry has no evidence yet → you MUST NOT report the round without naming it.
