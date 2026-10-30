@@ -16,8 +16,8 @@ stress-testing-a-plan ─(build intent)→ brainstorming → writing-plans
 - **writing-plans** — conversion of a settled goal into an implementation plan; excludes execution.
 - **executing-plans** — continuous, step-verified execution of a written plan by the agent; excludes plans with mostly independent tasks when the host has subagents (`subagent-driven-development`).
 - **subagent-driven-development** — plan execution with one fresh implementer and reviewer pair per task; excludes tightly coupled plans (`executing-plans`) and ad-hoc parallel work (`keeping-work-in-flight`).
-- **finishing-a-development-branch** — integration and cleanup after work is done and verified: merge into the mainline without asking, or a PR under a host PR workflow; merge conflicts belong to `resolving-merge-conflicts`.
-- **using-git-worktrees** — isolation before work starts, including existing-isolation detection, preference for the host's native mechanism, baseline verification, and return to the mainline; excludes integration (`finishing-a-development-branch`).
+- **finishing-a-development-branch** — integration and cleanup after work is done and verified: merge into the target branch (an integration branch or the mainline) without asking, or a PR under a host PR workflow, then removal of every merged worktree; merge conflicts belong to `resolving-merge-conflicts`.
+- **using-git-worktrees** — isolation before work starts, including existing-isolation detection, preference for the host's native mechanism, baseline verification, and return to the target branch; excludes integration (`finishing-a-development-branch`).
 
 ## On-ramps — something is wrong
 

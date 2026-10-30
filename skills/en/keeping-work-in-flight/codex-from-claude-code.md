@@ -23,7 +23,7 @@ codex exec -m <model> -c model_reasoning_effort=<effort> -s <sandbox> -C <workdi
 - Choosing `-m` and `model_reasoning_effort` → you MUST take them from the user's or the host's instruction.
 - `<workdir>` is outside a git repository Codex trusts → the command MUST carry `--skip-git-repo-check`.
 - A round writes files → `-C` MUST point at that round's own worktree.
-- A round depends on mainline changes made after its worktree was created → you MUST bring them into its worktree before dispatching it.
+- A round depends on target-branch changes made after its worktree was created → you MUST bring them into its worktree before dispatching it.
 - Launching rounds concurrently → each round's `-o` file and report file MUST be distinct paths.
 
 ## Sandbox
@@ -76,5 +76,5 @@ Writing a Codex round's brief → the brief MUST state:
 - Rounds run concurrently and the build tool is cargo → each worktree MUST set its own `CARGO_TARGET_DIR`.
 - Two rounds would change files of the same package → you MUST NOT run them concurrently.
 - A round needs another round's unmerged branch → you MUST merge that branch into the round's worktree before dispatching it.
-- A round needs another round's unmerged branch → you MUST NOT merge that branch into the mainline for that purpose.
+- A round needs another round's unmerged branch → you MUST NOT merge that branch into its target branch for that purpose.
 - Choosing how many rounds run at once → you SHOULD limit the count by the machine's load.

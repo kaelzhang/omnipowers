@@ -23,7 +23,7 @@ codex exec -m <model> -c model_reasoning_effort=<effort> -s <sandbox> -C <workdi
 - 选择 `-m` 和 `model_reasoning_effort` 时 → 你 MUST 按用户或宿主的指令取值。
 - `<workdir>` 不在 Codex 信任的 git 仓库内时 → 命令 MUST 带上 `--skip-git-repo-check`。
 - 轮次要写文件时 → `-C` MUST 指向这个轮次自己的 worktree。
-- 轮次依赖它的 worktree 创建之后主干上的改动时 → 你 MUST 在派发前把这些改动带进它的 worktree。
+- 轮次依赖它的 worktree 创建之后目标分支上的改动时 → 你 MUST 在派发前把这些改动带进它的 worktree。
 - 同时启动多个轮次时 → 每个轮次的 `-o` 文件和报告文件 MUST 是不同的路径。
 
 ## 沙箱
@@ -76,5 +76,5 @@ codex exec -m <model> -c model_reasoning_effort=<effort> -s <sandbox> -C <workdi
 - 多个轮次同时运行且构建工具是 cargo 时 → 每个 worktree MUST 设置自己的 `CARGO_TARGET_DIR`。
 - 两个轮次会改同一个包的文件时 → 你 MUST NOT 让它们同时运行。
 - 一个轮次需要另一个轮次尚未合并的分支时 → 你 MUST 在派发前把那条分支合并进这个轮次的 worktree。
-- 一个轮次需要另一个轮次尚未合并的分支时 → 你 MUST NOT 为此把那条分支合并进主干。
+- 一个轮次需要另一个轮次尚未合并的分支时 → 你 MUST NOT 为此把那条分支合并进它的目标分支。
 - 决定同时运行多少个轮次时 → 你 SHOULD 按机器负载限制数量。

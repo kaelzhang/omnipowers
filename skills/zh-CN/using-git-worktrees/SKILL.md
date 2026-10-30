@@ -39,14 +39,14 @@ description: 开始功能工作或执行计划，且工作要与当前分支或 
 - 宿主指定仅留在主干的路径时 → 这些路径 MUST NOT 复制到隔离工作区。
 - 宿主声明仅留在主干的路径时 → 你 MUST 在主干 checkout 中读写这些路径，不在 worktree 中读写。
 
-## 返回主干（MANDATORY）
+## 返回目标分支（MANDATORY）
 
-返回主干流程 — `finishing-a-development-branch`；未安装这个技能时，使用宿主自身的分支完成流程。
+分支返回流程 — `finishing-a-development-branch`，它定义目标分支并移除 worktree；未安装这个技能时，使用宿主自身的分支完成流程。
 
-- 工作完成并验证后 → 你 MUST 将工作带回主干，按宿主要求合并，或推送并发起评审。
+- 工作完成并验证后 → 你 MUST 经分支返回流程将工作带回目标分支，按宿主要求合并，或推送并发起评审。
 - 工作仅存在于隔离工作区时 → 你 MUST NOT 报告完成。
-- 向另一个 agent、另一个会话或用户交接前 → 你 MUST 先返回主干。
-- 任何交接前 → 你 MUST NOT 将返回主干的责任推给接收方。
+- 向另一个 agent、另一个会话或用户交接前 → 你 MUST 先返回目标分支。
+- 任何交接前 → 你 MUST NOT 将返回目标分支的责任推给接收方。
 
 ## 步骤 0 — 检测现有隔离（REQUIRED：首先执行）
 
@@ -97,11 +97,11 @@ BRANCH=$(git branch --show-current)
 
 选择 worktree 目录时 → 你 MUST 按此优先级确定目录，并将结果赋给 `LOCATION`：
 
-1. **已声明偏好。**用户指定了 worktree 目录时 → 你 MUST 直接使用，不再询问。
-2. **项目内现有目录。**用户未指定 worktree 目录时 → 你 MUST 用 `ls -d .worktrees 2>/dev/null` 或 `ls -d worktrees 2>/dev/null` 检测现有目录。
-   用户未指定 worktree 目录，且 `.worktrees` 或 `worktrees` 恰有一个存在时 → 你 MUST 使用存在的目录。
-   用户未指定 worktree 目录，且两者都存在时 → 你 MUST 使用 `.worktrees`。
-3. **默认目录。**用户未指定 worktree 目录，且 `.worktrees` 和 `worktrees` 都不存在时 → 你 MUST 默认使用项目根目录下的 `.worktrees/`。
+1. **已声明偏好。**宿主的 `isolation` 声明或用户指定了 worktree 目录时 → 你 MUST 直接使用，不再询问。
+2. **项目内现有目录。**两者都未指定 worktree 目录时 → 你 MUST 用 `ls -d .worktrees 2>/dev/null` 或 `ls -d worktrees 2>/dev/null` 检测现有目录。
+   两者都未指定 worktree 目录，且 `.worktrees` 或 `worktrees` 恰有一个存在时 → 你 MUST 使用存在的目录。
+   两者都未指定 worktree 目录，且两个目录都存在时 → 你 MUST 使用 `.worktrees`。
+3. **默认目录。**两者都未指定 worktree 目录，且 `.worktrees` 和 `worktrees` 都不存在时 → 你 MUST 默认使用项目根目录下的 `.worktrees/`。
 
 #### 安全验证（仅限项目内目录）
 

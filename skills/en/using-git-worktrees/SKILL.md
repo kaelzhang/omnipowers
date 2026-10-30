@@ -39,13 +39,13 @@ Host isolation declaration — the host's `isolation` row, located per `using-om
 - The host names mainline-only paths → those paths MUST NOT be copied into an isolated workspace.
 - The host declares mainline-only paths → you MUST read and write them in the mainline checkout, never in the worktree.
 
-## Returning to the Mainline (MANDATORY)
+## Returning to the Target Branch (MANDATORY)
 
-Mainline-return process — `finishing-a-development-branch`, or the host's own branch-completion process when that skill is not installed.
+Branch-return process — `finishing-a-development-branch`, which defines the target branch and removes the worktree, or the host's own branch-completion process when that skill is not installed.
 
-- The work is complete and verified → you MUST return it to the mainline — merged, or pushed and opened for review as the host requires.
+- The work is complete and verified → you MUST return it to its target branch through the branch-return process — merged, or pushed and opened for review as the host requires.
 - The work sits only in an isolated workspace → you MUST NOT report it as done.
-- Before any handoff to another agent, another session, or the user → you MUST return to the mainline first.
+- Before any handoff to another agent, another session, or the user → you MUST return to the target branch first.
 - Before any handoff → you MUST NOT defer that return to the recipient.
 
 ## Step 0 — Detect Existing Isolation (REQUIRED first)
@@ -97,9 +97,9 @@ Native worktree mechanism — a host-provided tool, command, or flag for worktre
 
 When selecting the worktree directory → you MUST resolve it by this priority and bind the result to `LOCATION`:
 
-1. **Declared preference.** The user specified a worktree directory → you MUST use it without asking.
-2. **Existing project-local directory.** The user specified no worktree directory → you MUST detect an existing directory with `ls -d .worktrees 2>/dev/null` or `ls -d worktrees 2>/dev/null`. The user specified no worktree directory, and exactly one of `.worktrees` or `worktrees` exists → you MUST use it. The user specified no worktree directory, and both exist → you MUST use `.worktrees`.
-3. **Default.** The user specified no worktree directory, and neither `.worktrees` nor `worktrees` exists → you MUST default to `.worktrees/` at the project root.
+1. **Declared preference.** The host's `isolation` declaration or the user names a worktree directory → you MUST use it without asking.
+2. **Existing project-local directory.** Neither names a worktree directory → you MUST detect an existing directory with `ls -d .worktrees 2>/dev/null` or `ls -d worktrees 2>/dev/null`. Neither names a worktree directory, and exactly one of `.worktrees` or `worktrees` exists → you MUST use it. Neither names a worktree directory, and both exist → you MUST use `.worktrees`.
+3. **Default.** Neither names a worktree directory, and neither `.worktrees` nor `worktrees` exists → you MUST default to `.worktrees/` at the project root.
 
 #### Safety verification (project-local directories only)
 

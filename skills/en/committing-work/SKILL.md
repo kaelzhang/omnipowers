@@ -17,7 +17,7 @@ EVERY COMMIT IS ONE COHERENT CHANGE, CONTAINING ONLY PATHS YOU NAMED
 
 Commit formation — deciding each commit's contents, staging, coherence check, and message, ending when the commit exists.
 
-Post-commit operations — merging into the mainline, opening a PR under a host PR workflow, and cleaning up a worktree, governed by `finishing-a-development-branch`.
+Post-commit operations — merging into the target branch, opening a PR under a host PR workflow, and cleaning up a worktree, governed by `finishing-a-development-branch`.
 
 Defect and checkpoint reviews — reviews governed by `code-auditing`.
 

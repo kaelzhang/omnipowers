@@ -33,8 +33,8 @@ You MUST confirm:
 - A blocker cannot be resolved by you, including missing access or credentials, information only the user has, a decision only the user can make, or a broken external dependency → confirm the external blocker with your proposed workaround, and apply the workaround only after approval.
 - An action is hard to undo or externally visible, including deleting data, force-pushing, rewriting history, messaging anyone, spending money, deploying to production, or publishing → confirm the action, except routinely pushing your own commits to the user's branch.
 - Routinely pushing your own commits to the user's branch → do not confirm the push.
-- Merging your verified work into the mainline under `finishing-a-development-branch` → do not confirm the merge.
-- An action destroys or rewrites published work, or changes a branch other people build on → confirm, except merging your verified work into the mainline under `finishing-a-development-branch`.
+- Merging your verified work into its target branch under `finishing-a-development-branch` → do not confirm the merge.
+- An action destroys or rewrites published work, or changes a branch other people build on → confirm, except merging your verified work into its target branch under `finishing-a-development-branch`.
 - A trade-off sacrifices something the user may value, including dropping coverage to hit a deadline, a breaking API change, or a notable performance or security trade-off → surface it instead of deciding it silently.
 - A requirement is unclear or two instructions contradict, and best practice plus the codebase cannot resolve it → confirm.
 - The only viable path requires violating a rule the user or the project set → confirm before crossing it.
@@ -49,7 +49,7 @@ Considering a question to the user → you MUST NOT ask about:
 - the order of steps, sequencing, staging, or what comes first;
 - when to do the work;
 - how to execute it: decomposition, execution mode, parallelism, or an implementation detail;
-- how finished work returns to the mainline;
+- how finished work returns to its target branch;
 - permission to proceed on a goal, delivery criteria, and technical approach already settled;
 - anything you can determine yourself;
 - a decision already made;

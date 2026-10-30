@@ -41,7 +41,7 @@ description: Use when you have a written implementation plan (plan.md / a plan f
 
 - Every step is complete and every verification has passed → the project's full verification (tests, type checks, linters, build, whatever it defines as its completeness gate) MUST have passed on the final tree, accepting a run already made on that tree under `verification-before-completion`, otherwise running it and reading the output.
 - The final verification has not passed on real, observed output → you MUST NOT claim the work is complete.
-- The final verification passes → you MUST integrate the branch by invoking the `finishing-a-development-branch` skill (verify, merge into the mainline without a PR unless the host declares a PR workflow, clean up only what you created).
+- The final verification passes → you MUST integrate the branch by invoking the `finishing-a-development-branch` skill (verify, merge into its target branch without a PR unless the host declares a PR workflow, remove every merged worktree).
 - That skill is not installed → run the host project's branch-completion process directly: full suite green, working tree clean, then merge or open the PR as the project requires.
 
 ## Continuous Execution

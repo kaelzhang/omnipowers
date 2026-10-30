@@ -16,8 +16,8 @@ stress-testing-a-plan ─(build intent)→ brainstorming → writing-plans
 - **writing-plans** — 将已确定目标转为实现计划；不包含执行。
 - **executing-plans** — agent 持续执行书面计划，逐步验证；宿主有 subagent 时，不包含以独立任务为主的计划（`subagent-driven-development`）。
 - **subagent-driven-development** — 执行计划，每个任务分配一对新的实现者和评审者；不包含紧密耦合的计划（`executing-plans`）或临时并行工作（`keeping-work-in-flight`）。
-- **finishing-a-development-branch** — 工作完成并验证后的集成和清理：不问用户地合并进主干，或在宿主 PR 流程下开 PR；合并冲突归 `resolving-merge-conflicts`。
-- **using-git-worktrees** — 工作开始前的隔离，包含检测现有隔离、优先使用宿主原生机制、验证基线和返回主干；不包含集成（`finishing-a-development-branch`）。
+- **finishing-a-development-branch** — 工作完成并验证后的集成和清理：不问用户地合并进目标分支（集成分支或主干），或在宿主 PR 流程下开 PR，然后移除每个已合并的 worktree；合并冲突归 `resolving-merge-conflicts`。
+- **using-git-worktrees** — 工作开始前的隔离，包含检测现有隔离、优先使用宿主原生机制、验证基线和返回目标分支；不包含集成（`finishing-a-development-branch`）。
 
 ## 入口 — 出现问题
 
