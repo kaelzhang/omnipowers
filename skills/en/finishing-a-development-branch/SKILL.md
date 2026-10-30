@@ -25,6 +25,8 @@ Integration branch — a branch other branches merge into before it reaches the 
 
 Main checkout — the repository's primary working tree, `git -C "$(git rev-parse --git-common-dir)/.." rev-parse --show-toplevel`.
 
+Target checkout — the working tree where the target branch is checked out (`git worktree list --porcelain` shows `branch refs/heads/<target-branch>`); otherwise the main checkout.
+
 Host PR workflow — a host `vcs` or `isolation` declaration requiring changes to reach the target branch through a pull request.
 
 - The target branch is an integration branch and not the mainline → merging into it ends this branch, and this skill applies in full.
@@ -58,14 +60,16 @@ Before merging → you MUST account for everything this work left in the host's 
 
 ```bash
 MAIN_ROOT=$(git -C "$(git rev-parse --git-common-dir)/.." rev-parse --show-toplevel)
-cd "$MAIN_ROOT"
+TARGET_ROOT=$(git worktree list --porcelain | awk -v b="branch refs/heads/<target-branch>" '/^worktree /{p=substr($0,10)} $0==b{print p}')
+TARGET_ROOT=${TARGET_ROOT:-$MAIN_ROOT}
+cd "$TARGET_ROOT"
 git rev-parse --abbrev-ref --symbolic-full-name @{u} >/dev/null 2>&1 && git pull
 git merge <feature-branch>
 ```
 
-- Merging → you MUST run the merge from the main checkout, never from inside a worktree about to be removed.
-- The main checkout is on a branch other than the target branch → you MUST NOT switch it.
-- The main checkout holds uncommitted changes you did not make → you MUST NOT stash, reset, or overwrite them.
+- Merging → you MUST run the merge from the target checkout, never from inside a worktree about to be removed.
+- The target checkout is on a branch other than the target branch → you MUST NOT switch it.
+- The target checkout holds uncommitted changes you did not make → you MUST NOT stash, reset, or overwrite them.
 - The work sits on a detached HEAD → you MUST create a branch at that commit before merging it.
 - The host declares a merge form (merge commit, rebase, fast-forward, squash) → you MUST use it.
 - The host declares no merge form → you SHOULD use the form the target branch's existing history uses.
@@ -100,7 +104,7 @@ Merged worktree — a linked worktree that meets every condition:
 5. no task, subagent, or session is running in it.
 
 ```bash
-cd "$MAIN_ROOT"
+cd "$TARGET_ROOT"
 git worktree list --porcelain
 # for each <path> on <branch> in the worktree directory:
 test "$(git reflog show --format=%gs refs/heads/<branch> | grep -vc '^branch: Created from')" -gt 0  # 2
@@ -112,8 +116,8 @@ git branch -d <branch>
 git worktree prune
 ```
 
-- The merge is pushed, or the target branch tracks no remote → you MUST remove every merged worktree whose target is this branch's target branch, then delete its branch, from the main checkout.
-- This branch has no worktree → you MUST delete it with `git branch -d` from the main checkout.
+- The merge is pushed, or the target branch tracks no remote → you MUST remove every merged worktree whose target is this branch's target branch, then delete its branch, from the target checkout.
+- This branch has no worktree → you MUST delete it with `git branch -d` from the target checkout.
 - Deciding whether a worktree is a merged worktree → you MUST NOT use which session created it, or whether the context was compacted since, as a criterion.
 - A worktree fails any condition → you MUST NOT remove it.
 - Removing a worktree → you MUST NOT pass `--force` to `git worktree remove` or use `git branch -D`.
@@ -140,10 +144,11 @@ You catch yourself thinking any thought in this table → you MUST stop and corr
 | "I merged into an integration branch, not the mainline, so this skill does not apply." | The branch ends at that merge; run every step. |
 | "Tests probably pass — I ran them earlier." | A run on this exact tree stands; no such run → run it now and read the output. |
 | "There's no test command, so there's nothing to check." | Run the smallest proving check and name it in the report. |
-| "The main checkout has someone's edits; I'll stash them." | Leave them; merge only what is yours. |
+| "The target checkout has someone's edits; I'll stash them." | Leave them; merge only what is yours. |
 | "I'll keep the branch around in case." | Merge it; an unmerged branch is not finished work. |
 | "The merge is done — I'll remove the worktree now." | The merged-tree check passes first. |
-| "I'm inside the worktree; `git worktree remove` will sort it out." | `cd` to the main checkout first. |
+| "I'm inside the worktree; `git worktree remove` will sort it out." | `cd` to the target checkout first. |
+| "`git branch -d` says not fully merged, yet the branch is an ancestor of the target; I'll use `-D`." | Run `git branch -d` from the target checkout. |
 | "This worktree is in the way, I'll just remove it." | Remove it only when it meets every merged-worktree condition. |
 | "An earlier session created that merged worktree, so its provenance is uncertain." | Provenance is not a condition; check the five conditions. |
 
@@ -156,5 +161,5 @@ Before calling the work finished → you MUST be able to check every applicable 
 - [ ] The work was merged into the target branch, or a PR was opened under a declared host PR workflow.
 - [ ] Nothing was asked of the user about integration or cleanup.
 - [ ] The target branch was pushed where it tracks a remote.
-- [ ] Every merged worktree was removed, worktree before branch, from the main checkout; every other worktree was kept.
+- [ ] Every merged worktree was removed, worktree before branch, from the target checkout; every other worktree was kept.
 - [ ] The report names the merge commit, the check, what was promoted and deleted, and what was removed.

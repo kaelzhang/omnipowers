@@ -109,7 +109,7 @@ BRANCH=$(git branch --show-current)
 - 检查 Git 是否忽略选定的项目内目录时 → 你 MUST 只检查选定目录（`$LOCATION`），而非固定对两个候选名称做 OR 检查。
 
 ```bash
-git check-ignore -q "$LOCATION" 2>/dev/null
+git check-ignore -q "$LOCATION/" 2>/dev/null
 ```
 
 - Git 未忽略选定的项目内目录时 → 你 MUST 将目录加入 `.gitignore`，并在创建 worktree 前提交这项改动。

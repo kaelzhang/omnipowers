@@ -25,6 +25,8 @@ description: 分支或 worktree 的工作完成并验证、分支即将结束时
 
 主检出目录 — 仓库的主工作树，`git -C "$(git rev-parse --git-common-dir)/.." rev-parse --show-toplevel`。
 
+目标检出目录 — 检出了目标分支的那个工作树（`git worktree list --porcelain` 显示 `branch refs/heads/<target-branch>`）；没有这样的工作树时，是主检出目录。
+
 宿主 PR 流程 — 宿主的 `vcs` 或 `isolation` 声明要求改动经 pull request 进入目标分支。
 
 - 目标分支是集成分支而不是主干 → 合入它就是本分支的结束，本技能完整适用。
@@ -58,14 +60,16 @@ description: 分支或 worktree 的工作完成并验证、分支即将结束时
 
 ```bash
 MAIN_ROOT=$(git -C "$(git rev-parse --git-common-dir)/.." rev-parse --show-toplevel)
-cd "$MAIN_ROOT"
+TARGET_ROOT=$(git worktree list --porcelain | awk -v b="branch refs/heads/<target-branch>" '/^worktree /{p=substr($0,10)} $0==b{print p}')
+TARGET_ROOT=${TARGET_ROOT:-$MAIN_ROOT}
+cd "$TARGET_ROOT"
 git rev-parse --abbrev-ref --symbolic-full-name @{u} >/dev/null 2>&1 && git pull
 git merge <feature-branch>
 ```
 
-- 合并时 → 你 MUST 在主检出目录里执行合并，绝不在即将移除的 worktree 里执行。
-- 主检出目录当前不在目标分支上时 → 你 MUST NOT 切换它的分支。
-- 主检出目录里有不是你做的未提交改动时 → 你 MUST NOT 对它们 stash、reset 或覆盖。
+- 合并时 → 你 MUST 在目标检出目录里执行合并，绝不在即将移除的 worktree 里执行。
+- 目标检出目录当前不在目标分支上时 → 你 MUST NOT 切换它的分支。
+- 目标检出目录里有不是你做的未提交改动时 → 你 MUST NOT 对它们 stash、reset 或覆盖。
 - 工作位于 detached HEAD 上时 → 你 MUST 先在这个提交上创建分支，再合并。
 - 宿主声明了合并方式（合并提交、rebase、快进、squash）时 → 你 MUST 使用这种方式。
 - 宿主没有声明合并方式时 → 你 SHOULD 沿用目标分支现有历史采用的方式。
@@ -100,7 +104,7 @@ worktree 目录 — 宿主的 `isolation` 声明为 worktree 指定的目录；�
 5. 没有任务、subagent 或会话正在它里面运行。
 
 ```bash
-cd "$MAIN_ROOT"
+cd "$TARGET_ROOT"
 git worktree list --porcelain
 # for each <path> on <branch> in the worktree directory:
 test "$(git reflog show --format=%gs refs/heads/<branch> | grep -vc '^branch: Created from')" -gt 0  # 2
@@ -112,8 +116,8 @@ git branch -d <branch>
 git worktree prune
 ```
 
-- 合并已推送，或目标分支不跟踪远端时 → 你 MUST 在主检出目录里移除目标与本分支相同的每个已合并的 worktree，再删除它的分支。
-- 本分支没有 worktree 时 → 你 MUST 在主检出目录里用 `git branch -d` 删除它。
+- 合并已推送，或目标分支不跟踪远端时 → 你 MUST 在目标检出目录里移除目标与本分支相同的每个已合并的 worktree，再删除它的分支。
+- 本分支没有 worktree 时 → 你 MUST 在目标检出目录里用 `git branch -d` 删除它。
 - 判断一个 worktree 是否已合并时 → 你 MUST NOT 把它由哪个会话创建、之后是否压缩过上下文当作判断依据。
 - worktree 不满足任一条件时 → 你 MUST NOT 移除它。
 - 移除 worktree 时 → 你 MUST NOT 给 `git worktree remove` 加 `--force`，也不用 `git branch -D`。
@@ -140,10 +144,11 @@ git worktree prune
 | “我合入的是集成分支不是主干，所以本技能不适用。” | 分支在这次合并时结束；执行每个步骤。 |
 | “测试大概通过——我之前运行过。” | 已在当前这棵代码树上运行过的结果仍有效；尚未在这棵代码树上运行过 → 现在运行并阅读输出。 |
 | “没有测试命令，所以没什么可查的。” | 运行能证明改动成立的最小检查，并在报告里写明。 |
-| “主检出目录里有别人的改动，我先 stash 掉。” | 不动它们，只合并你自己的工作。 |
+| “目标检出目录里有别人的改动，我先 stash 掉。” | 不动它们，只合并你自己的工作。 |
 | “分支先留着，以防万一。” | 合并它；没合并的分支不算完成的工作。 |
 | “合并完了——现在就移除 worktree。” | 先让合并后的检查通过。 |
-| “我在 worktree 里面，`git worktree remove` 会处理好。” | 先 `cd` 到主检出目录。 |
+| “我在 worktree 里面，`git worktree remove` 会处理好。” | 先 `cd` 到目标检出目录。 |
+| “`git branch -d` 说没有完全合并，可这个分支明明是目标分支的祖先；我改用 `-D`。” | 在目标检出目录里运行 `git branch -d`。 |
 | “这个 worktree 碍事，直接移除。” | 只有满足已合并 worktree 的每个条件时才移除。 |
 | “那个已合并的 worktree 是早先的会话建的，来源不明。” | 来源不是条件；逐一检查五个条件。 |
 
@@ -156,5 +161,5 @@ git worktree prune
 - [ ] 工作已合并进目标分支，或在宿主声明的 PR 流程下开了 PR。
 - [ ] 没有就集成或清理问过用户任何问题。
 - [ ] 目标分支跟踪远端时，已推送目标分支。
-- [ ] 每个已合并的 worktree 都已移除，先移除 worktree 再删分支，并在主检出目录里执行；其他 worktree 都已保留。
+- [ ] 每个已合并的 worktree 都已移除，先移除 worktree 再删分支，并在目标检出目录里执行；其他 worktree 都已保留。
 - [ ] 报告写明了合并提交、所做的检查、提升和删除的内容，以及移除的内容。

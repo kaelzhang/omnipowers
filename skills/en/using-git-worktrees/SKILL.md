@@ -107,7 +107,7 @@ When selecting the worktree directory → you MUST resolve it by this priority a
 - When checking whether the chosen project-local directory is git-ignored → you MUST run the check against the single directory you selected (`$LOCATION`), not a fixed OR over both candidate names.
 
 ```bash
-git check-ignore -q "$LOCATION" 2>/dev/null
+git check-ignore -q "$LOCATION/" 2>/dev/null
 ```
 
 - The chosen project-local directory is not git-ignored → you MUST add it to `.gitignore` and commit that change before creating the worktree.
