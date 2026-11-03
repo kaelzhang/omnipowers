@@ -8,6 +8,7 @@
 # install permanently. Arm it by writing the sentinel:
 #
 #   mkdir -p .omnipowers && cat > .omnipowers/continuous-mode <<EOF
+#   goal=<one line: what this mode delivers>
 #   base=<sha of the commit the mode started from>
 #   defects=<path to a checklist file>     # repeatable, optional
 #   repo=<path to another repo to watch>   # repeatable, optional
@@ -35,47 +36,32 @@ block_once() {
   return 0
 }
 
-BASE=""; EXPIRES=24; STARTED=""; GOAL=""; DEFECTS=(); REPOS=("$ROOT")
+BASE=""; GOAL=""; DEFECTS=(); REPOS=("$ROOT")
 if [ -f "$SENTINEL" ]; then
   while IFS='=' read -r k v; do
     case "$k" in
       base)    BASE="$v" ;;
       goal)    GOAL="$v" ;;
-      started) STARTED="$v" ;;
-      expires) EXPIRES="$v" ;;
       defects) DEFECTS+=("$v") ;;
       repo)    REPOS+=("$v") ;;
     esac
   done < "$SENTINEL"
 fi
 
-# An armed mode that outlives the session that armed it would block a stranger.
-# Ownership is claimed on the gate's first fire, so arming costs no bookkeeping.
+# The mode belongs to the session that armed it; another session's stop is
+# none of its business. Ownership is claimed on the gate's first fire, so
+# arming costs no bookkeeping. The mode lives until its goal is delivered or
+# the user ends it: there is no expiry, and the gate never asks whether to go on.
 if [ "$MODE" = gate ]; then
   hook_session=""
   [ -t 0 ] || hook_session=$(head -c 4096 2>/dev/null \
     | sed -n 's/.*"session_id"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' | head -1)
-  stale=""
   if [ -n "$hook_session" ]; then
     if [ ! -f "$OWNER" ]; then
       mkdir -p "$(dirname "$OWNER")" && printf '%s' "$hook_session" > "$OWNER"
     elif [ "$(cat "$OWNER" 2>/dev/null)" != "$hook_session" ]; then
-      stale="it was armed by a different session"
+      exit 0
     fi
-  fi
-  if [ -z "$stale" ] && [ -n "$STARTED" ]; then
-    age=$(( ( $(date +%s) - STARTED ) / 3600 ))
-    [ "$age" -gt "$EXPIRES" ] && stale="it was armed ${age}h ago, past its ${EXPIRES}h life"
-  fi
-  if [ -n "$stale" ]; then
-    block_once "stale:$stale" || exit 0
-    {
-      echo "Continuous work mode is armed, but $stale."
-      echo "Ask the user whether it still applies. It does not → delete these and the mode is off:"
-      echo "  $SENTINEL"
-      echo "  $OWNER"
-    } >&2
-    exit 2
   fi
 fi
 [ -n "$BASE" ] || BASE=$(git -C "$ROOT" rev-parse HEAD 2>/dev/null)

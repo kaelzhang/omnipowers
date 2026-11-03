@@ -33,8 +33,6 @@ Sentinel — `<project-root>/.omnipowers/continuous-mode`, whose presence arms t
 ```
 goal=<one line: what this mode delivers>
 base=<the commit the mode starts from>
-started=<current epoch seconds>
-expires=<hours before the mode goes stale>   # optional, default 24
 defects=<path to a checklist file>           # optional, repeatable
 repo=<path to another repo to watch>         # optional, repeatable
 ```
@@ -48,6 +46,17 @@ Acceptance list — one `- [ ]` item per line below the sentinel fields, with at
 - An acceptance item lands → you MUST check it off.
 - `.omnipowers/` is not git-ignored → you MUST add it to `.gitignore` before writing the sentinel.
 - The arming confirmation is sent → you MUST NOT end the round on the confirmation.
+
+## The Goal
+
+Goal — the sentinel's `goal=` line together with its acceptance list.
+
+- The mode is armed → you MUST NOT ask the user whether to continue, keep, pause, or end the mode.
+- The user changes the goal while the mode is armed → you MUST rewrite the `goal=` line and the acceptance list to the new goal and keep the mode armed.
+- You judge that work outside the goal belongs in it → you MAY propose to the user, under `confirming-with-the-user`, setting it as the new goal.
+- A proposed goal has no answer from the user → you MUST NOT change the sentinel.
+- The user accepts a proposed goal → you MUST rewrite the `goal=` line and the acceptance list to it and keep the mode armed.
+- An acceptance item is open and its work is unblocked → you MUST NOT end a round only to propose a new goal.
 
 ## The Order
 
@@ -79,7 +88,8 @@ Disarming — removing the sentinel, its adjacent owner file, the gate's marker,
 - The work turns into an unrelated task → you MUST disarm.
 - The work turns into an unrelated task → you MUST NOT carry an armed mode into it.
 - Every acceptance item is checked → you MUST disarm in that same round, even when the checkpoint still lists findings.
-- A checkpoint finding exists → you MUST NOT promote it into the acceptance list or re-arm for it.
+- A checkpoint finding exists and the user has not accepted it as the goal → you MUST NOT promote it into the acceptance list or re-arm for it.
+- The mode is disarmed on delivery → you MUST NOT ask whether to keep the mode on.
 - The mode is being disarmed → removal MUST be decided while you are still running.
 
 ## Red Flags — STOP if you catch yourself thinking
@@ -89,12 +99,13 @@ Disarming — removing the sentinel, its adjacent owner file, the gate's marker,
 | "I finished this round, I'll report and see what they say." | Run the checkpoint, dispatch, then report. |
 | "I'll check the queue when I write the summary." | Run the command first. |
 | "Asking whether to continue is the cautious thing to do." | Dispatch the unblocked work. |
+| "Should I keep continuous work mode on?" | Never ask; work toward the goal, or disarm on delivery. |
 | "The gate let me through, so the queue must be clear." | Read what it printed. |
 | "The user is not watching, I'll pause here." | End the round only on delivery, a ruling, or the user's stop. |
 | "I'll arm the mode, it will help." | Arm it only when the user starts it. |
-| "The gate is complaining about a mode I never started." | Ask the user, then delete the files it named. |
+| "The gate is complaining about a mode I never started." | Ask the user, then delete the sentinel and its owner file. |
 | "The goal is delivered, I'll leave the mode on in case." | Disarm it. |
 | "The gate is harmless when disarmed, I'll leave it installed." | Remove it with the sentinel. |
 | "The checkpoint still lists things, so the mode is not done." | Report the rest as follow-up and disarm. |
-| "While I am in this mode I may as well fix these too." | Leave goal-setting to the user. |
+| "While I am in this mode I may as well fix these too." | Propose it as the new goal; change the goal only on the user's yes. |
 | "Should I install the hook?" | Install it and say which file you changed. |

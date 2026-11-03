@@ -37,7 +37,7 @@ stress-testing-a-plan ─(build intent)→ brainstorming → writing-plans
 - **verification-before-completion** — 每次完成声明前的证据要求，包含“完成 / 已修复 / 通过”声明。
 - **honoring-user-requirements** — 长期台账、工作台账，以及用户写在宿主入口文件里的要求：每次会话开始、上下文压缩和开始新工作时先读再行动；按原意记录指令，每次返回和作出声明前用证据验证，确认后严格执行；异议由 `confirming-with-the-user` 约束。
 - **keeping-work-in-flight** — 统计运行中的工作，为每个空闲的职责范围派发一次受追踪的调用，并在每次 agent 返回和轮次结束前读取；负责并行派发的独立性闸门和跨轮次延续。
-- **continuous-work-mode** — 用户明确激活的结束前命令闸门，在轮次结束前检查队列，不重复请求继续；将 `keeping-work-in-flight` 机制化。
+- **continuous-work-mode** — 用户明确激活的结束前命令闸门，在轮次结束前检查队列，围绕一个运行期间用户能修改的目标启用，从不请求继续；将 `keeping-work-in-flight` 机制化。
 - **committing-work** — 将一次独立提交组织成连贯变更，使用明确路径、能证明变更的最小检查和独立可读的消息；不包含集成（`finishing-a-development-branch`）和代码判断（`code-auditing`）。
 - **code-auditing** — 代码评审和审计，在阶段 1 分流：已完成工作推进前的检查点评审（评审从 merge-base 开始的差异范围，并对照要求检查），或对照宿主持续积累的检查清单审计标准符合性；按严重程度记录并处理发现项。
 
