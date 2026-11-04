@@ -73,7 +73,7 @@ add() { FINDINGS+=("$1"); }
 #    everything else below: the mode is not done while one is open.
 UNMET=0
 if [ -f "$SENTINEL" ]; then
-  UNMET=$(grep -c '^[[:space:]]*[-*] \[ \]' "$SENTINEL" 2>/dev/null || echo 0)
+  UNMET=$(grep -c '^[[:space:]]*[-*] \[ \]' "$SENTINEL" 2>/dev/null); UNMET=${UNMET:-0}
   while IFS= read -r item; do
     [ -n "$item" ] && add "unmet: ${item#*] }"
   done < <(grep '^[[:space:]]*[-*] \[ \]' "$SENTINEL" 2>/dev/null)
@@ -147,7 +147,7 @@ done
 for d in ${DEFECTS[@]+"${DEFECTS[@]}"}; do
   [ -f "$ROOT/$d" ] || [ -f "$d" ] || continue
   path="$d"; [ -f "$ROOT/$d" ] && path="$ROOT/$d"
-  n=$(grep -c '^\s*[-*] \[ \]' "$path" 2>/dev/null || echo 0)
+  n=$(grep -c '^\s*[-*] \[ \]' "$path" 2>/dev/null); n=${n:-0}
   [ "$n" -gt 0 ] && add "open items in $d: $n"
 done
 
