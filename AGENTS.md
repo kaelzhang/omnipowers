@@ -57,6 +57,11 @@ An obligation that does not change the outcome of an ordinary task is a defect.
 - A checklist is a self-check before a claim. It is not a task list and is not reported.
 - Heavy material loads on a condition that is false on the ordinary task.
 
+### Length is a cost
+
+- Any change to the collection → you MUST check whether it makes the collection more bloated, and MUST look for a wording that leaves the whole collection more concise.
+- A shorter wording states the same rules → you MUST use it.
+
 ### Classify every normative statement before writing it
 
 - **MANDATORY** — `MUST` / `MUST NOT` / `REQUIRED` / `SHALL` / `SHALL NOT`, for an operation that is **fragile** (the scenario is specific, exactly one answer is correct, and deviation causes concrete damage) AND that corresponds to a **nameable failure mode**: one observed, or one concretely arguable as committed under pressure.
@@ -333,3 +338,4 @@ For the change as a whole:
 - [ ] A mechanism the collection defers to was added or changed → every skill predating it was swept in this change.
 - [ ] The requirement you added or changed is stated in exactly one skill; every other skill that needs it names that owner.
 - [ ] A rule firing at a fixed moment was read against the others firing at that moment: all satisfiable together, and none forbids the moment from arriving.
+- [ ] The change was checked for bloat, and the shortest wording of the whole collection that states the same rules was used.
