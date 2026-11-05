@@ -104,7 +104,9 @@ For each decision you MUST include:
 - When writing a confirmation → you MUST follow the output-language rules of `using-omnipowers`.
 - When explaining a decision → you MUST explain in accessible terms.
 - When a term is unavoidable → you MUST define it in passing on first use.
-- When presenting independent decisions → you MUST NOT bundle them into one tangled question.
+- Two or more decisions await the user → you MUST present only one per message, and MUST present the next only after the user has settled the one before it.
+- The user asks to be sent every pending decision → it is not a request for one message, and you MUST still present them one at a time.
+- The user settles a decision → before presenting the next, you MUST re-check every remaining decision against the answer, and MUST drop each one the answer settled or made moot.
 - When presenting options → you MUST label them (A / B / C or 1 / 2 / 3) to permit a single-word or short-phrase answer.
 - When asking a confirmation question → you MUST NOT answer it yourself and proceed as if the decision were made.
 - When asking a confirmation question → you MUST wait for the user's actual reply.
