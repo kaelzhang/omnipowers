@@ -15,18 +15,17 @@ THE QUEUE IS CHECKED BY A COMMAND, NOT BY MEMORY — REPORTING IS THE LAST STEP,
 
 ## When to Use
 
-- The user starts the mode in this session → you MUST arm it before the next unit of work.
+- The user starts the mode in this session, or `managed-mode` arms it → you MUST arm it before the next unit of work.
 - The user ends it, or the goal it was armed for is delivered → you MUST disarm it.
-- The user has not asked for it → you MUST NOT arm it.
-- The user has not asked for it → you MUST NOT install the gate.
-- The user has not asked for it → you MUST NOT ask whether to.
+- Neither the user nor `managed-mode` has started it → you MUST NOT arm it.
+- Neither the user nor `managed-mode` has started it → you MUST NOT install the gate.
+- Neither the user nor `managed-mode` has started it → you MUST NOT ask whether to.
 
 ## Arming the Mode
 
 The gate is absent → read `@installing-the-gate.md` and install it.
 
-- The user starts the mode → you MUST NOT ask consent for gate installation.
-- The user has not started the mode → you MUST NOT install the gate.
+- Arming the mode → you MUST NOT ask consent for gate installation.
 
 Sentinel — `<project-root>/.omnipowers/continuous-mode`, whose presence arms the mode and whose absence disarms it, with this template:
 
@@ -85,6 +84,7 @@ Disarming — removing the sentinel, its adjacent owner file, the gate's marker,
 
 - The goal the mode was armed for is delivered → you MUST disarm.
 - The user ends the mode → you MUST disarm.
+- `managed-mode` exits → you MUST disarm.
 - The work turns into an unrelated task → you MUST disarm.
 - The work turns into an unrelated task → you MUST NOT carry an armed mode into it.
 - Every acceptance item is checked → you MUST disarm in that same round, even when the checkpoint still lists findings.

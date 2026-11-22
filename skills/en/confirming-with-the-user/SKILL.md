@@ -24,6 +24,8 @@ Technical approach decision — a choice that sets the delivered result's struct
 
 Implementation detail — file layout, naming, the organisation of internal helper code, or a library confined to one module.
 
+- `managed-mode` is on → you MUST follow it, not this section, for what reaches the user.
+
 You MUST confirm:
 
 - Goals and outcomes → confirm what the task or project must achieve and the definition of "done", before building against it.
