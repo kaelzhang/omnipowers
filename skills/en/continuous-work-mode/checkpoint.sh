@@ -2,7 +2,10 @@
 # checkpoint.sh — the continuous-work-mode checkpoint.
 #
 #   checkpoint.sh            report the queue and exit 0 (safe to run any time)
-#   checkpoint.sh --gate     Stop-hook gate: exit 2 to block the round from ending
+#   checkpoint.sh --gate     Stop-hook gate: exit 2 + stderr on Claude Code, or
+#                            stdout {"decision":"continue","reason":"..."} on
+#                            Antigravity (auto-detected via "conversationId";
+#                            https://antigravity.google/docs/hooks)
 #
 # The gate is inert unless continuous work mode is armed, so it is safe to
 # install permanently. Arm it by writing the sentinel:
@@ -21,12 +24,30 @@ set -uo pipefail
 MODE=report
 [ "${1:-}" = "--gate" ] && MODE=gate
 
-ROOT=$(git rev-parse --show-toplevel 2>/dev/null) || exit 0
+STDIN_JSON=""
+[ "$MODE" = gate ] && [ ! -t 0 ] && STDIN_JSON=$(head -c 16384 2>/dev/null || true)
+
+GATE_PROTO=exit2
+case "$STDIN_JSON" in
+  *'"conversationId"'*) GATE_PROTO=antigravity ;;
+esac
+
+# Antigravity documents `decision` as required; any value but "continue" lets the stop through.
+gate_allow() {
+  [ "$GATE_PROTO" = antigravity ] && printf '{"decision":"stop"}\n'
+  exit 0
+}
+
+# Hosts do not all document the hook's working directory; the installed script
+# lives inside the project, so its own location is the fallback.
+ROOT=$(git rev-parse --show-toplevel 2>/dev/null) \
+  || ROOT=$(git -C "$(dirname "$0")" rev-parse --show-toplevel 2>/dev/null) \
+  || { [ "$MODE" = gate ] && gate_allow || exit 0; }
 SENTINEL="$ROOT/.omnipowers/continuous-mode"
 MARKER="$ROOT/.omnipowers/continuous-gate.last"
 OWNER="$ROOT/.omnipowers/continuous-mode.owner"
 
-if [ "$MODE" = gate ] && [ ! -f "$SENTINEL" ]; then exit 0; fi
+if [ "$MODE" = gate ] && [ ! -f "$SENTINEL" ]; then gate_allow; fi
 
 # Block at most once per distinct state, so nothing the agent cannot clear can
 # deadlock the session.
@@ -53,14 +74,24 @@ fi
 # arming costs no bookkeeping. The mode lives until its goal is delivered or
 # the user ends it: there is no expiry, and the gate never asks whether to go on.
 if [ "$MODE" = gate ]; then
-  hook_session=""
-  [ -t 0 ] || hook_session=$(head -c 4096 2>/dev/null \
-    | sed -n 's/.*"session_id"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' | head -1)
+  if [ "$GATE_PROTO" = antigravity ]; then
+    # Only a normal finish is gated; errors, step limits and cancels always stop.
+    term_reason=$(printf '%s' "$STDIN_JSON" \
+      | sed -En 's/.*"terminationReason"[[:space:]]*:[[:space:]]*"([^"]*)".*/\1/p' | head -1)
+    case "$term_reason" in
+      *[Ee][Rr][Rr][Oo][Rr]*|*[Mm][Aa][Xx]_[Ss][Tt][Ee][Pp]*|*[Cc][Aa][Nn][Cc][Ee][Ll]*) gate_allow ;;
+    esac
+    case "$STDIN_JSON" in
+      *'"fullyIdle":false'*|*'"fullyIdle": false'*) gate_allow ;;
+    esac
+  fi
+  hook_session=$(printf '%s' "$STDIN_JSON" \
+    | sed -En 's/.*"(session_id|conversationId)"[[:space:]]*:[[:space:]]*"([^"]*)".*/\2/p' | head -1)
   if [ -n "$hook_session" ]; then
     if [ ! -f "$OWNER" ]; then
       mkdir -p "$(dirname "$OWNER")" && printf '%s' "$hook_session" > "$OWNER"
     elif [ "$(cat "$OWNER" 2>/dev/null)" != "$hook_session" ]; then
-      exit 0
+      gate_allow
     fi
   fi
 fi
@@ -83,8 +114,12 @@ fi
 for repo in "${REPOS[@]}"; do
   [ -d "$repo/.git" ] || [ -f "$repo/.git" ] || continue
   label=$(basename "$repo")
-  dirty=$(git -C "$repo" status --porcelain 2>/dev/null \
-          | awk '{ n=$2; sub("/.*","",n); print n }' | sort | uniq -c \
+  dirty=$(git -C "$repo" status --porcelain -uall 2>/dev/null \
+          | awk '{
+              p=substr($0, 4)
+              if (p ~ /^(\.omnipowers\/|\.agents\/hooks\.json$|\.agents\/hooks\/checkpoint\.sh$|\.claude\/hooks\/checkpoint\.sh$|\.claude\/settings\.local\.json$)/) next
+              sub("/.*", "", p); print p
+            }' | sort | uniq -c \
           | awk '{ printf "%s(%s) ", $2, $1 }')
   [ -n "$dirty" ] && add "uncommitted in $label: $dirty"
 
@@ -110,7 +145,7 @@ for repo in "${REPOS[@]}"; do
   #    teaches people to skip it.
   while IFS= read -r f; do
     [ -n "$f" ] || continue
-    case "$f" in .omnipowers/*) continue ;; esac
+    case "$f" in .omnipowers/*|.agents/hooks/*|.claude/hooks/*) continue ;; esac
     case "$f" in
       *.rs|*.swift|*.c|*.h|*.cpp|*.mm|*.py|*.ts|*.tsx|*.js|*.sh|*.proto) ;;
       *) continue ;;
@@ -171,8 +206,9 @@ if [ "${#FINDINGS[@]}" -eq 0 ]; then
   if [ "$MODE" = report ]; then
     echo "checkpoint: queue empty — nothing uncommitted, unpushed, unreferenced, or open."
     [ -f "$SENTINEL" ] && echo "Every acceptance item is checked. Delivered → disarm now: rm $SENTINEL $OWNER $MARKER"
+    exit 0
   fi
-  exit 0
+  gate_allow
 fi
 
 report() {
@@ -192,6 +228,16 @@ report() {
 
 if [ "$MODE" = report ]; then report; exit 0; fi
 
-block_once "$(printf '%s\n' "${FINDINGS[@]}" | shasum | awk '{print $1}')" || exit 0
+block_once "$(printf '%s\n' "${FINDINGS[@]}" | shasum | awk '{print $1}')" || gate_allow
+if [ "$GATE_PROTO" = antigravity ]; then
+  REASON="$(report)"
+  if command -v python3 >/dev/null 2>&1; then
+    python3 -c 'import json, sys; print(json.dumps({"decision": "continue", "reason": sys.argv[1]}))' "$REASON"
+  else
+    escaped=$(printf '%s' "$REASON" | awk '{gsub(/\\/,"\\\\"); gsub(/"/,"\\\""); gsub(/\t/,"\\t"); printf "%s\\n", $0}')
+    printf '{"decision":"continue","reason":"%s"}\n' "${escaped%\\n}"
+  fi
+  exit 0
+fi
 report >&2
 exit 2
