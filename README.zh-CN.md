@@ -36,7 +36,7 @@
 
 ### 快速安装（无需克隆）
 
-使用 [skills.sh](https://skills.sh) 安装器直接从 GitHub 安装；它会自动发现仓库中的所有技能，并安装到你选择的代理中（Claude Code、Codex、Cursor 等）：
+使用 [skills.sh](https://skills.sh) 安装器直接从 GitHub 安装；它会自动发现仓库中的所有技能，并安装到你选择的代理中（Claude Code、Codex、Antigravity、Gemini CLI、Cursor 等）：
 
 ```bash
 npx skills add https://github.com/kaelzhang/omnipowers/tree/main/skills/zh-CN
@@ -47,9 +47,9 @@ URL 决定语言：`skills/zh-CN` 安装简体中文技能，`skills/en` 安装�
 常用变体：
 
 ```bash
-npx skills add https://github.com/kaelzhang/omnipowers/tree/main/skills/zh-CN -g                       # 用户级安装
-npx skills add https://github.com/kaelzhang/omnipowers/tree/main/skills/zh-CN -a claude-code -a codex  # 选择代理
-npx skills add https://github.com/kaelzhang/omnipowers/tree/main/skills/zh-CN --skill brainstorming    # 选择技能
+npx skills add https://github.com/kaelzhang/omnipowers/tree/main/skills/zh-CN -g                                        # 用户级安装
+npx skills add https://github.com/kaelzhang/omnipowers/tree/main/skills/zh-CN -a claude-code -a codex -a antigravity    # 选择代理
+npx skills add https://github.com/kaelzhang/omnipowers/tree/main/skills/zh-CN --skill brainstorming                     # 选择技能
 npx skills update                                            # 后续更新
 ```
 
@@ -58,15 +58,17 @@ npx skills update                                            # 后续更新
 开发技能时，克隆本仓库并通过**符号链接**安装，编辑后会自动生效，不用重新安装：
 
 ```bash
-make dev            # 分析 Claude/Codex 状态，再安装到两者
-make dev LOCALE=zh-CN # 安装中文版本
-make dev FORCE=1    # 已安装时也重新链接
-make status         # 查看安装状态
-make uninstall      # 移除符号链接
+make dev                         # 分析宿主状态，再安装到已配置的宿主
+make dev LOCALE=zh-CN            # 安装中文版本
+make dev TARGETS="codex agy"     # 仅安装到指定宿主（claude | codex | antigravity/agy）
+make dev FORCE=1                 # 已安装时也重新链接
+make status                      # 查看安装状态
+make uninstall                   # 移除已配置宿主的符号链接
+make uninstall TARGETS="codex agy" # 仅移除指定宿主的符号链接
 ```
 
-不受版本控制的 `.install.conf` 用 key=value 行保存 `targets=claude codex` 和 `locale=en`。
-选择优先级依次为 CLI / make 变量（`TARGETS`、`LOCALE`）、环境变量（`OMNIPOWERS_TARGETS`、`OMNIPOWERS_LOCALE`）、`.install.conf`、默认值（两个宿主、英文）。
+不受版本控制的 `.install.conf` 用 key=value 行保存 `targets=claude codex antigravity` 和 `locale=en`。
+选择优先级依次为 CLI / make 变量（`TARGETS`、`LOCALE`）、环境变量（`OMNIPOWERS_TARGETS`、`OMNIPOWERS_LOCALE`）、`.install.conf`、默认值（三个宿主、英文）。
 `make status LOCALE=zh-CN` 预览中文版本的状态；`make dev` 将本仓库已有的链接切换到选定的语言版本。
 
 技能发现路径：
@@ -74,9 +76,10 @@ make uninstall      # 移除符号链接
 | 工具 | 路径 |
 | --- | --- |
 | Claude Code | `~/.claude/skills/<name>/` |
-| Codex | `~/.agents/skills/<name>/` |
+| Codex / Gemini CLI | `~/.agents/skills/<name>/` |
+| Antigravity | `~/.gemini/config/skills/<name>/` |
 
-技能通过符号链接安装，因此编辑 `SKILL.md` 后**不用重新安装**：Claude Code 在会话中实时热重载；Codex 自动检测变更（未显示变更时重启 Codex）。
+技能通过符号链接安装，因此编辑 `SKILL.md` 后**不用重新安装**：Claude Code 在会话中实时热重载；Codex 和 Antigravity 自动检测变更（未显示变更时新建会话或重启）。
 只有新增技能或切换语言版本时，才需重新运行 `make dev`。
 
 ## 技能把文件放在哪里

@@ -1,7 +1,7 @@
 # omnipowers — developer Makefile
 #
-# Installs this repo's skills into Claude Code and Codex by SYMLINK, so edits
-# auto-apply without reinstalling. Run `make help` for targets.
+# Installs this repo's skills into Claude Code, Codex, and Antigravity by SYMLINK,
+# so edits auto-apply without reinstalling. Run `make help` for targets.
 
 SHELL := /bin/bash
 INSTALLER := scripts/install-skills.sh
@@ -22,21 +22,26 @@ RUNS ?=
 JOBS ?=
 TEST_ARGS ?=
 
+TARGET ?=
+TARGETS ?=
+_TARGETS = $(if $(TARGETS),$(TARGETS),$(TARGET))
+
 .DEFAULT_GOAL := help
-.PHONY: help dev status uninstall test optimize optimize-pool optimize-status optimize-adopt optimize-list
+.PHONY: help dev status uninstall test optimize optimize-pool optimize-status optimize-adopt optimize-list \
+        fitness-triggers fitness-validate fitness-round fitness-compliance
 
 help: ## Show available targets
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
-	  | awk 'BEGIN{FS=":.*?## "}{printf "  \033[36m%-10s\033[0m %s\n", $$1, $$2}'
+	  | awk 'BEGIN{FS=":.*?## "}{printf "  \033[36m%-18s\033[0m %s\n", $$1, $$2}'
 
-dev: ## Symlink skills into target hosts (LOCALE=en|zh-CN, TARGETS="claude codex", FORCE=1 to re-link)
-	@FORCE='$(FORCE)' $(if $(TARGETS),OMNIPOWERS_TARGETS='$(TARGETS)',) bash $(INSTALLER) dev $(if $(LOCALE),--locale '$(LOCALE)',)
+dev: ## Symlink skills into target hosts (TARGETS="claude codex antigravity|agy", LOCALE=en|zh-CN, FORCE=1)
+	@FORCE='$(FORCE)' $(if $(_TARGETS),OMNIPOWERS_TARGETS='$(_TARGETS)',) bash $(INSTALLER) dev $(if $(LOCALE),--locale '$(LOCALE)',)
 
-status: ## Show Claude/Codex install state and linked locales (LOCALE=en|zh-CN)
-	@$(if $(TARGETS),OMNIPOWERS_TARGETS='$(TARGETS)',) bash $(INSTALLER) status $(if $(LOCALE),--locale '$(LOCALE)',)
+status: ## Show host install state and linked locales (TARGETS="...", LOCALE=en|zh-CN)
+	@$(if $(_TARGETS),OMNIPOWERS_TARGETS='$(_TARGETS)',) bash $(INSTALLER) status $(if $(LOCALE),--locale '$(LOCALE)',)
 
-uninstall: ## Remove omnipowers skill symlinks (TARGETS="codex" for one host; default: the configured targets)
-	@bash $(INSTALLER) uninstall $(TARGETS) $(if $(LOCALE),--locale '$(LOCALE)',)
+uninstall: ## Remove omnipowers skill symlinks (TARGETS="codex agy" for chosen hosts; default: configured targets)
+	@$(if $(_TARGETS),OMNIPOWERS_TARGETS='$(_TARGETS)',) bash $(INSTALLER) uninstall $(if $(LOCALE),--locale '$(LOCALE)',)
 
 test: ## Run skill tests (free content checks; TEST_ARGS="--integration" also runs agent tests, costs API)
 	@bash tests/run-skill-tests.sh $(TEST_ARGS)

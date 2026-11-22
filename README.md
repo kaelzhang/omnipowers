@@ -38,7 +38,7 @@ A collection of skills that improve coding effectiveness for AI coding agents.
 
 Install straight from GitHub with the [skills.sh](https://skills.sh) installer —
 it auto-discovers every skill in this repo and installs into the agents you pick
-(Claude Code, Codex, Cursor, and more):
+(Claude Code, Codex, Antigravity, Gemini CLI, Cursor, and more):
 
 ```bash
 npx skills add https://github.com/kaelzhang/omnipowers/tree/main/skills/en
@@ -49,9 +49,9 @@ The URL selects the locale: `skills/en` installs English skills, `skills/zh-CN` 
 Useful variants:
 
 ```bash
-npx skills add https://github.com/kaelzhang/omnipowers/tree/main/skills/en -g                       # user-level install
-npx skills add https://github.com/kaelzhang/omnipowers/tree/main/skills/en -a claude-code -a codex  # pick agents
-npx skills add https://github.com/kaelzhang/omnipowers/tree/main/skills/en --skill brainstorming    # pick skills
+npx skills add https://github.com/kaelzhang/omnipowers/tree/main/skills/en -g                                        # user-level install
+npx skills add https://github.com/kaelzhang/omnipowers/tree/main/skills/en -a claude-code -a codex -a antigravity    # pick agents
+npx skills add https://github.com/kaelzhang/omnipowers/tree/main/skills/en --skill brainstorming                     # pick skills
 npx skills update                                            # update later
 ```
 
@@ -61,17 +61,19 @@ For hacking on the skills themselves, clone this repo and install by **symlink**
 so your edits auto-apply without reinstalling:
 
 ```bash
-make dev            # analyze Claude/Codex status, then install for both
-make dev LOCALE=zh-CN # install the Chinese locale
-make dev FORCE=1    # re-link even if already installed
-make status         # show what is installed
-make uninstall      # remove the symlinks
+make dev                         # analyze host status, then install for configured hosts
+make dev LOCALE=zh-CN            # install the Chinese locale
+make dev TARGETS="codex agy"     # install only for chosen hosts (claude | codex | antigravity/agy)
+make dev FORCE=1                 # re-link even if already installed
+make status                      # show what is installed
+make uninstall                   # remove symlinks for configured hosts
+make uninstall TARGETS="codex agy" # remove symlinks only for chosen hosts
 ```
 
-The untracked `.install.conf` stores `targets=claude codex` and `locale=en` as
+The untracked `.install.conf` stores `targets=claude codex antigravity` and `locale=en` as
 key=value lines. Selection precedence is CLI / make variables (`TARGETS`, `LOCALE`),
 then environment (`OMNIPOWERS_TARGETS`, `OMNIPOWERS_LOCALE`), then `.install.conf`,
-then defaults (both hosts, English). `make status LOCALE=zh-CN` previews that locale;
+then defaults (all three hosts, English). `make status LOCALE=zh-CN` previews that locale;
 `make dev` switches this repo's existing links to the selected locale.
 
 Skills are discovered at:
@@ -79,12 +81,13 @@ Skills are discovered at:
 | Tool | Path |
 | --- | --- |
 | Claude Code | `~/.claude/skills/<name>/` |
-| Codex | `~/.agents/skills/<name>/` |
+| Codex / Gemini CLI | `~/.agents/skills/<name>/` |
+| Antigravity | `~/.gemini/config/skills/<name>/` |
 
 Because skills are symlinked, editing a skill's `SKILL.md` takes effect **without
-reinstalling**: Claude Code hot-reloads it live in the session; Codex auto-detects
-the change (restart Codex if it does not show). Re-run `make dev` only when
-you add a new skill or switch locales.
+reinstalling**: Claude Code hot-reloads it live in the session; Codex and Antigravity
+pick up the change automatically (start a new conversation or restart if an update
+does not show). Re-run `make dev` only when you add a new skill or switch locales.
 
 ## Where skills put things
 

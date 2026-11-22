@@ -1,22 +1,24 @@
 #!/usr/bin/env bash
-# install-skills.sh — install omnipowers skills into Claude Code and Codex.
+# install-skills.sh — install omnipowers skills into Claude Code, Codex, and Antigravity.
 #
 # Skills from skills/<locale>/<name> are SYMLINKED as <name>, so edits auto-apply:
 #   - Claude Code hot-reloads SKILL.md edits live in the current session.
 #   - Codex auto-detects skill changes (restart Codex if an update does not show).
+#   - Antigravity discovers global skills from ~/.gemini/config/skills/<name>.
 #
 # Discovery dirs (official):
-#   Claude Code : ~/.claude/skills/<name>   https://code.claude.com/docs/en/skills
-#   Codex       : ~/.agents/skills/<name>   https://developers.openai.com/codex/skills
+#   Claude Code : ~/.claude/skills/<name>         https://code.claude.com/docs/en/skills
+#   Codex       : ~/.agents/skills/<name>         https://developers.openai.com/codex/skills
+#   Antigravity : ~/.gemini/config/skills/<name>  https://antigravity.google/docs/skills
 #
 # Usage:
-#   install-skills.sh status [--locale en|zh-CN] [--targets "claude codex"]
+#   install-skills.sh status [--locale en|zh-CN] [--targets "claude codex antigravity"]
 #   install-skills.sh dev         # analyze, then symlink skills (idempotent; FORCE=1 to relink)
 #   install-skills.sh uninstall   # remove omnipowers symlinks
 #
 # Configuration: CLI > OMNIPOWERS_TARGETS / OMNIPOWERS_LOCALE > .install.conf
-# > defaults (targets=claude codex, locale=en). Never uses LANG.
-# .install.conf contains key=value lines: targets=claude codex and locale=en.
+# > defaults (targets=claude codex antigravity, locale=en). Never uses LANG.
+# .install.conf contains key=value lines: targets=claude codex antigravity and locale=en.
 # Env:
 #   FORCE=1   re-link even if already installed, and replace a foreign symlink.
 #             Never deletes a real file/directory.
@@ -29,9 +31,10 @@ FORCE="${FORCE:-0}"
 
 CLAUDE_DIR="$HOME/.claude/skills"
 CODEX_DIR="$HOME/.agents/skills"
+ANTIGRAVITY_DIR="$HOME/.gemini/config/skills"
 
 # Read data only; never execute checkout configuration as shell code.
-CONF_TARGETS="claude codex"
+CONF_TARGETS="claude codex antigravity"
 CONF_LOCALE="en"
 if [ -f "$REPO/.install.conf" ]; then
   while IFS='=' read -r key value || [ -n "$key" ]; do
@@ -52,7 +55,7 @@ while [ "$#" -gt 0 ]; do
       [ "$#" -ge 2 ] && [ -n "$2" ] || { printf 'missing value for %s\n' "$1" >&2; exit 2; }
       case "$1" in --locale) LOCALE="$2" ;; --targets) CLI_TARGETS="$2" ;; esac
       shift 2 ;;
-    claude|codex) CLI_TARGETS="${CLI_TARGETS:+$CLI_TARGETS }$1"; shift ;;
+    claude|codex|antigravity|agy) CLI_TARGETS="${CLI_TARGETS:+$CLI_TARGETS }$1"; shift ;;
     *) printf 'unknown argument: %s\n' "$1" >&2; exit 2 ;;
   esac
 done
@@ -71,12 +74,25 @@ if [[ "$LOCALE" == */* ]] || [ ! -d "$SKILLS_ROOT/$LOCALE" ]; then
 fi
 SKILLS_DIR="$SKILLS_ROOT/$LOCALE"
 
-target_dir()   { case "$1" in claude) printf '%s' "$CLAUDE_DIR" ;; codex) printf '%s' "$CODEX_DIR" ;; esac; }
-target_label() { case "$1" in claude) printf 'Claude' ;; codex) printf 'Codex ' ;; esac; }
+target_dir()   { case "$1" in claude) printf '%s' "$CLAUDE_DIR" ;; codex) printf '%s' "$CODEX_DIR" ;; antigravity) printf '%s' "$ANTIGRAVITY_DIR" ;; esac; }
+target_label() { case "$1" in claude) printf 'Claude     ' ;; codex) printf 'Codex      ' ;; antigravity) printf 'Antigravity' ;; esac; }
 
-for _t in $TARGETS; do
-  case "$_t" in claude|codex) ;; *) printf 'unknown target: %s (use claude and/or codex)\n' "$_t" >&2; exit 2 ;; esac
-done
+normalize_targets() {
+  local raw="${1//,/ }" out="" t canon
+  for t in $raw; do
+    case "$t" in
+      claude|codex|antigravity) canon="$t" ;;
+      agy) canon="antigravity" ;;
+      *) printf 'unknown target: %s (use claude, codex, and/or antigravity/agy)\n' "$t" >&2; exit 2 ;;
+    esac
+    case " $out " in
+      *" $canon "*) ;;
+      *) out="${out:+$out }$canon" ;;
+    esac
+  done
+  printf '%s' "$out"
+}
+TARGETS="$(normalize_targets "$TARGETS")"
 
 if [ -t 1 ]; then
   B=$'\033[1m'; G=$'\033[32m'; Y=$'\033[33m'; R=$'\033[31m'; C=$'\033[36m'; N=$'\033[0m'
@@ -170,11 +186,20 @@ print_status() {
   info "  selected locale: $LOCALE"
   info "  available locales: $AVAILABLE_LOCALES"
   info ""
-  info "${B}CLIs on PATH${N}"
-  local claude codex
-  claude="$(cli_path claude)"; codex="$(cli_path codex)"
+  info "${B}Hosts${N}"
+  local claude codex agy
+  claude="$(cli_path claude)"; codex="$(cli_path codex)"; agy="$(cli_path agy)"
   if [ -n "$claude" ]; then ok "Claude Code: $claude"; else warn "Claude Code: not found"; fi
   if [ -n "$codex" ];  then ok "Codex: $codex";        else warn "Codex: not found"; fi
+  if [ -n "$agy" ]; then
+    ok "Antigravity: $agy"
+  elif [ -d "$HOME/.gemini/antigravity" ]; then
+    ok "Antigravity: $HOME/.gemini/antigravity"
+  elif [ -d "$HOME/.gemini/antigravity-ide" ]; then
+    ok "Antigravity: $HOME/.gemini/antigravity-ide"
+  else
+    warn "Antigravity: not found"
+  fi
   info ""
   info "${B}Skills in this repo${N}"
   local n=0 name
@@ -185,6 +210,7 @@ print_status() {
   info "  targets: $TARGETS"
   status_target "Claude Code" "$CLAUDE_DIR"
   status_target "Codex" "$CODEX_DIR"
+  status_target "Antigravity" "$ANTIGRAVITY_DIR"
 }
 
 link_one() { # name dir label
@@ -228,18 +254,24 @@ do_install() {
   info "  - Claude Code hot-reloads live (restart once only if ~/.claude/skills"
   info "    did not exist when Claude started)."
   info "  - Codex auto-detects changes (restart Codex if one does not show)."
+  info "  - Antigravity discovers global skills from ~/.gemini/config/skills."
 }
 
 do_uninstall() {
   info "${B}Uninstalling omnipowers skills${N} (targets: $TARGETS)"
-  local t dir link
+  local t dir label link removed
   for t in $TARGETS; do
     dir="$(target_dir "$t")"
-    [ -d "$dir" ] || continue
-    for link in "$dir"/*; do
-      [ -L "$link" ] && ours "$(link_target "$link")" || continue
-      rm -f "$link"; ok "removed $link"
-    done
+    label="$(target_label "$t")"
+    removed=0
+    if [ -d "$dir" ]; then
+      for link in "$dir"/*; do
+        [ -L "$link" ] && ours "$(link_target "$link")" || continue
+        rm -f "$link"; ok "removed $link"; removed=$((removed + 1))
+      done
+      rmdir "$dir" 2>/dev/null || true
+    fi
+    [ "$removed" -gt 0 ] || info "  $label: nothing installed"
   done
 }
 
@@ -247,5 +279,5 @@ case "$COMMAND" in
   status)    print_status ;;
   dev)       print_status; info ""; do_install ;;
   uninstall) do_uninstall ;;
-  *) err "unknown command: $COMMAND"; info 'use: status | dev | uninstall [--locale en|zh-CN] [--targets "claude codex"]'; exit 2 ;;
+  *) err "unknown command: $COMMAND"; info 'use: status | dev | uninstall [--locale en|zh-CN] [--targets "claude codex antigravity"]'; exit 2 ;;
 esac
