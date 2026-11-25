@@ -31,6 +31,7 @@ A collection of skills that improve coding effectiveness for AI coding agents.
 | [writing-handoffs](skills/en/writing-handoffs/SKILL.md) | The user asks to hand off the session — compact it into an evidence-cited, pointer-not-copy document a zero-context agent can resume from |
 | [committing-work](skills/en/committing-work/SKILL.md) | Forming each commit — one coherent logical change, staged path by path, proven by the smallest sufficient check, with a message that stands alone and credits no tool |
 | [writing-documentation](skills/en/writing-documentation/SKILL.md) | Creating or restructuring durable documentation — one entrypoint per set that routes a reader by task to exact files, updated in the same change |
+| [optimizing-context](skills/en/optimizing-context/SKILL.md) | Explicitly asked to slim context, slim the knowledge base, or optimize input size — inventory real runtime load, eliminate tool-enforced bloat, preserve verbatim rulings, seed-test byte/reachability gates, and prove applicable rules still fire |
 
 ## Install
 

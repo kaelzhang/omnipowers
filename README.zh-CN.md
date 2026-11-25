@@ -31,6 +31,7 @@
 | [writing-handoffs](skills/zh-CN/writing-handoffs/SKILL.md) | 用户要求交接会话时——压缩成一份引用证据、提供指针而非复制内容的文档，让没有上下文的代理能接手 |
 | [committing-work](skills/zh-CN/committing-work/SKILL.md) | 组织每次提交时——每次只提交一个连贯的逻辑变更，逐路径暂存，用最小且充分的检查证明，提交消息独立可读且不署名任何工具 |
 | [writing-documentation](skills/zh-CN/writing-documentation/SKILL.md) | 创建或重组长期维护的文档时——每组文档只有一个入口，按读者任务指向确切文件，并随变更同步更新 |
+| [optimizing-context](skills/zh-CN/optimizing-context/SKILL.md) | 用户明确要求精简上下文、精简知识库或优化输入大小时——盘点真实运行时加载，剔除工具已强制的冗余，无损保留裁定原文，植错验证字节预算与可达闸门，并证明适用规则仍能触发 |
 
 ## 安装
 

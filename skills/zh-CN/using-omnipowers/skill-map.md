@@ -51,3 +51,4 @@ stress-testing-a-plan ─(build intent)→ brainstorming → writing-plans
 - **stress-testing-a-plan** — 用户明确请求的计划追问，不产出产物；构建意图归 `brainstorming`。
 - **writing-skills** — 先测试，再创建或编辑技能。
 - **writing-documentation** — 持久项目文档，每组文档只有一个入口，按任务信号路由到明确文件，并在同次变更中更新；不包含技能（`writing-skills`）、交接（`writing-handoffs`）、术语表或决策记录（`domain-modeling`）。
+- **optimizing-context** — 用户明确请求的仓库常驻上下文、知识库加载量或模型输入体积缩减，完整保留每条适用规则与裁定原文，并以闸门校验字节预算与可达性；不包含当前会话压缩（`writing-handoffs`）、单个技能删减（`writing-skills`）和日常文档编辑（`writing-documentation`）。

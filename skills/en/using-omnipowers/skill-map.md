@@ -51,3 +51,4 @@ stress-testing-a-plan ─(build intent)→ brainstorming → writing-plans
 - **stress-testing-a-plan** — explicitly requested interrogation of the user's plan, without artifacts; build intent belongs to `brainstorming`.
 - **writing-skills** — test-first creation or editing of a skill.
 - **writing-documentation** — durable project documentation with one entrypoint per set, task-signal routing to exact files, and updates in the same change; excludes skills (`writing-skills`), handoffs (`writing-handoffs`), and glossary or decision records (`domain-modeling`).
+- **optimizing-context** — explicitly requested reduction of resident repository context, knowledge-base load, or model input volume, preserving every applicable rule and verbatim ruling and gating byte budgets and reachability; excludes live session compaction (`writing-handoffs`), cutting down one skill (`writing-skills`), and ordinary documentation edits (`writing-documentation`).
